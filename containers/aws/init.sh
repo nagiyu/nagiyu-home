@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# DynamoDB テーブル「Auth」を作成 TODO: インデックス名は書き換え
+# DynamoDB テーブル「Auth」を作成
 awslocal dynamodb create-table \
   --table-name Auth \
   --attribute-definitions \
@@ -11,7 +11,7 @@ awslocal dynamodb create-table \
   --global-secondary-indexes \
     '[
       {
-        "IndexName": "GoogleUserId-index-20241215",
+        "IndexName": "GoogleUserId-index-20241216",
         "KeySchema": [
           { "AttributeName": "GoogleUserId", "KeyType": "HASH" }
         ],

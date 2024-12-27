@@ -53,7 +53,7 @@ export default defineConfig(({ command }) => {
       proxy: {
         // ASP.NET MVCのAPIにプロキシ
         '/api': {
-          target: 'https://dev.nagiyu.com', // TODO: 開発環境に合わせる
+          target: 'https://dev.nagiyu.com',
           changeOrigin: true, // オリジンを変更（CORS対策）
           secure: false, // HTTPSを許可（ローカル開発用）
         },
