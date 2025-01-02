@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev:home": "TARGET=home vite",
+    "dev:policy": "TARGET=policy vite",
     "build": "TARGET=all vite build",
     "lint": "eslint \"src/**/*.{js,ts,vue}\""
   },
