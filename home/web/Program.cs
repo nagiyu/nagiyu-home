@@ -41,7 +41,8 @@ builder.WebHost.ConfigureKestrel(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews()
     .AddApplicationPart(typeof(AccountController).Assembly)
-    .AddApplicationPart(typeof(PolicyController).Assembly);
+    .AddApplicationPart(typeof(PolicyController).Assembly)
+    .AddApplicationPart(typeof(PolicyAPIController).Assembly);
 
 builder.Services
     .AddAuthentication(options =>
