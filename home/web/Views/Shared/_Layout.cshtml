@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿﻿@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Configuration
+
+@inject IConfiguration Configuration
+@inject IWebHostEnvironment env
+
+<!DOCTYPE html>
 <html lang="js">
 
 <head>
@@ -9,6 +15,16 @@
 
     <link rel="stylesheet" href="~/js/dist/assets/buefy.css" />
     @await RenderSectionAsync("Css", required: false)
+
+    @* Font Awesome *@
+    <script src="@Configuration["FontAwesome:KitUrl"]" crossorigin="anonymous"></script>
+
+    @if (env.EnvironmentName == "Production")
+    {
+        <meta name="google-adsense-account" content="@Configuration["GoogleAdSense:Account"]">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=@Configuration["GoogleAdSense:Account"]"
+                crossorigin="anonymous"></script>
+    }
 </head>
 
 <body>
