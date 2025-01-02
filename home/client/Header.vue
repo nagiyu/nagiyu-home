@@ -1,38 +1,30 @@
 <template>
-  <nav class="navbar">
-    <!-- 左側のメニュー -->
-    <div class="menu-left">
-      <b-button
-        v-for="(item, index) in leftMenuItems"
-        :key="index"
-        type="is-primary"
-        size="is-medium"
-        tag="a"
-        :href="item.link"
-      >
-        {{ item.label }}
-      </b-button>
-    </div>
+  <b-navbar>
+    <template #brand></template>
 
-    <!-- 右側のメニュー -->
-    <div class="menu-right">
+    <template #start>
+      <template v-for="item in leftMenuItems">
+        <b-navbar-item :href="item.link">
+          <b-button :type="item.type">{{ item.label }}</b-button>
+        </b-navbar-item>
+      </template>
+    </template>
+
+    <template #end>
       <template v-if="UserName">
-        Welcome, {{ UserName }}!!!
+        <b-navbar-item tag="div">
+          Welcome, {{ UserName }}!!!
+        </b-navbar-item>
       </template>
       <template v-else>
-        <b-button
-          v-for="(item, index) in RightMenuItems"
-          :key="index"
-          type="is-light"
-          size="is-medium"
-          tag="a"
-          :href="item.link"
-        >
-          {{ item.label }}
-        </b-button>
+        <template v-for="item in RightMenuItems">
+          <b-navbar-item :href="item.link">
+            <b-button :type="item.type">{{ item.label }}</b-button>
+          </b-navbar-item>
+        </template>
       </template>
-    </div>
-  </nav>
+    </template>
+  </b-navbar>
 </template>
 
 <script lang="ts">
@@ -41,6 +33,7 @@ import { Component, Vue, toNative } from "vue-facing-decorator";
 
 interface MenuItem {
   label: string;
+  type: string;
   link: string;
 }
 
@@ -50,8 +43,8 @@ class Header extends Vue {
    * 左側のメニューボタン
    */
   public leftMenuItems: MenuItem[] = [
-    { label: "Home", link: "/" },
-    { label: "Privacy", link: "/Home/Privacy" },
+    { label: "Home", type: "is-link", link: "/" },
+    { label: "Privacy", type: "is-link", link: "/Home/Privacy" },
   ];
 
   /**
@@ -65,12 +58,12 @@ class Header extends Vue {
   public get RightMenuItems(): MenuItem[] {
     if (this.user === null) {
       return [
-        { label: "Login", link: "/Account/Login" },
-        { label: "Register", link: "/Account/Register" },
+        { label: "Login", type: "is-light", link: "/Account/Login" },
+        { label: "Register", type: "is-primary", link: "/Account/Register" },
       ];
     } else if (this.user.userName === '') {
       return [
-        { label: "Register", link: "/Account/Register" },
+        { label: "Register", type: "is-primary", link: "/Account/Register" },
       ];
     } else {
       return [];
@@ -94,28 +87,3 @@ class Header extends Vue {
 
 export default toNative(Header)
 </script>
-
-<style scoped>
-.navbar {
-  display: flex; /* フレックスボックスで全体を整列 */
-  justify-content: space-between; /* 左と右にボタンを分ける */
-  align-items: center; /* 縦方向で中央揃え */
-  padding: 10px 20px; /* ナビゲーションバーの余白を追加 */
-  background-color: #ffffff; /* 背景色を白に設定 */
-  border-bottom: 1px solid #ddd; /* 下に区切り線 */
-}
-
-.menu-left,
-.menu-right {
-  display: flex; /* フレックスボックスでボタンを並べる */
-  gap: 10px; /* ボタン同士の間隔を10pxに設定 */
-}
-
-.menu-left {
-  justify-content: flex-start; /* 左側ボタンを左に寄せる */
-}
-
-.menu-right {
-  justify-content: flex-end; /* 右側ボタンを右に寄せる */
-}
-</style>
