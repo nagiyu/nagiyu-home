@@ -30,7 +30,7 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Add ads.txt
-      run: echo '${{ secrets.ADS_TXT }}' > Home/wwwroot/ads.txt
+      run: echo '${{ secrets.ADS_TXT }}' > home/web/wwwroot/ads.txt
 
     - name: Publish with dotnet
       run: dotnet publish --configuration Release home/web/Nagiyu.Web.csproj
