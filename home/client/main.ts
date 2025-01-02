@@ -7,13 +7,13 @@ import Buefy from 'buefy'
 import 'buefy/dist/buefy.css'
 
 // Vueアプリを作成
-const headerapp = createApp(Header);
+const headerApp = createApp(Header);
 const footerApp = createApp(Footer);
 
 // Buefyを使用
-headerapp.use(Buefy as any);
+headerApp.use(Buefy as any);
 footerApp.use(Buefy as any);
 
 // アプリをマウント
-headerapp.mount('#vue-header');
+headerApp.mount('#vue-header');
 footerApp.mount('#vue-footer');
