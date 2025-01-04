@@ -44,29 +44,7 @@ jobs:
     - name: Update appsettings.json
       run: echo '${{ secrets.PRODUCTION_APPSETTINGS }}' > bin/appsettings.json
 
-    # - name: Remove Nginx Settings in target path
-    #   uses: appleboy/ssh-action@master
-    #   with:
-    #     host: ${{ secrets.XSERVER_SSH_HOST }}
-    #     username: ${{ secrets.XSERVER_SSH_USERNAME }}
-    #     key: ${{ secrets.XSERVER_SSH_PRIVATE_KEY }}
-    #     port: ${{ secrets.XSERVER_SSH_PORT }}
-    #     script: |
-    #       sudo rm -rf /etc/nginx/sites-enabled/nagiyu
-    #       sudo rm -rf /etc/nginx/sites-available/nagiyu
-    #       sudo rm -rf ${{ secrets.PRODUCTION_TARGET_PATH }}/nginx
-
-    - name: Upload Nginx Settings to server
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.XSERVER_SSH_HOST }}
-        username: ${{ secrets.XSERVER_SSH_USERNAME }}
-        key: ${{ secrets.XSERVER_SSH_PRIVATE_KEY }}
-        port: ${{ secrets.XSERVER_SSH_PORT }}
-        source: nginx/*
-        target: ${{ secrets.PRODUCTION_TARGET_PATH }}
-
-    - name: Replace nginx configuration and Reload nginx
+    - name: Remove Nginx Settings in target path
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.XSERVER_SSH_HOST }}
@@ -74,9 +52,31 @@ jobs:
         key: ${{ secrets.XSERVER_SSH_PRIVATE_KEY }}
         port: ${{ secrets.XSERVER_SSH_PORT }}
         script: |
-          sudo cp ${{ secrets.PRODUCTION_TARGET_PATH }}/nginx/nagiyu /etc/nginx/sites-available/
-          sudo ln -s /etc/nginx/sites-available/nagiyu /etc/nginx/sites-enabled/
-          sudo systemctl restart nginx
+          sudo rm -rf /etc/nginx/sites-enabled/nagiyu
+          sudo rm -rf /etc/nginx/sites-available/nagiyu
+          sudo rm -rf ${{ secrets.PRODUCTION_TARGET_PATH }}/nginx
+
+    # - name: Upload Nginx Settings to server
+    #   uses: appleboy/scp-action@master
+    #   with:
+    #     host: ${{ secrets.XSERVER_SSH_HOST }}
+    #     username: ${{ secrets.XSERVER_SSH_USERNAME }}
+    #     key: ${{ secrets.XSERVER_SSH_PRIVATE_KEY }}
+    #     port: ${{ secrets.XSERVER_SSH_PORT }}
+    #     source: nginx/*
+    #     target: ${{ secrets.PRODUCTION_TARGET_PATH }}
+
+    # - name: Replace nginx configuration and Reload nginx
+    #   uses: appleboy/ssh-action@master
+    #   with:
+    #     host: ${{ secrets.XSERVER_SSH_HOST }}
+    #     username: ${{ secrets.XSERVER_SSH_USERNAME }}
+    #     key: ${{ secrets.XSERVER_SSH_PRIVATE_KEY }}
+    #     port: ${{ secrets.XSERVER_SSH_PORT }}
+    #     script: |
+    #       sudo cp ${{ secrets.PRODUCTION_TARGET_PATH }}/nginx/nagiyu /etc/nginx/sites-available/
+    #       sudo ln -s /etc/nginx/sites-available/nagiyu /etc/nginx/sites-enabled/
+    #       sudo systemctl restart nginx
 
     - name: Public IP Install
       id: ip
