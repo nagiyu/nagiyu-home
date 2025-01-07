@@ -8,16 +8,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:
-    - name: Launch temporary EC2 instance
-      id: launch_temp_instance
+    - name: Check AWS variables
       run: |
-        INSTANCE_ID=$(aws ec2 run-instances \
-          --launch-template LaunchTemplateId=${{ secrets.AWS_LAUNCH_TEMPLATE_ID }},Version=$Latest \
-          --network-interfaces '[{"SubnetId":"${{ secrets.AWS_SUBNET_ID }}","DeviceIndex":0,"AssociatePublicIpAddress":true,"Groups":["${{ secrets.AWS_SECURITY_GROUP_ID }}"]}]' \
-          --query 'Instances[0].InstanceId' \
-          --output text)
-        echo "TEMP_INSTANCE_ID=${INSTANCE_ID}" >> $GITHUB_ENV
+        echo "AWS_LAUNCH_TEMPLATE_ID=${{ secrets.AWS_LAUNCH_TEMPLATE_ID }}"
+        echo "AWS_SUBNET_ID=${{ secrets.AWS_SUBNET_ID }}"
+        echo "AWS_SECURITY_GROUP_ID=${{ secrets.AWS_SECURITY_GROUP_ID }}"
+
+    # steps:
+    # - name: Launch temporary EC2 instance
+    #   id: launch_temp_instance
+    #   run: |
+    #     INSTANCE_ID=$(aws ec2 run-instances \
+    #       --launch-template LaunchTemplateId=${{ secrets.AWS_LAUNCH_TEMPLATE_ID }},Version=$Latest \
+    #       --network-interfaces '[{"SubnetId":"${{ secrets.AWS_SUBNET_ID }}","DeviceIndex":0,"AssociatePublicIpAddress":true,"Groups":["${{ secrets.AWS_SECURITY_GROUP_ID }}"]}]' \
+    #       --query 'Instances[0].InstanceId' \
+    #       --output text)
+    #     echo "TEMP_INSTANCE_ID=${INSTANCE_ID}" >> $GITHUB_ENV
 
     # - name: Wait for temporary instance to become available
     #   run: |
