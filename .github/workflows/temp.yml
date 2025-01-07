@@ -96,11 +96,20 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
+    - name: Get latest launch template version
+      id: get_latest_version
+      run: |
+        LATEST_VERSION=$(aws ec2 describe-launch-template-versions \
+          --launch-template-id ${{ secrets.AWS_LAUNCH_TEMPLATE_ID }} \
+          --query 'sort_by(LaunchTemplateVersions, &VersionNumber)[-1].VersionNumber' \
+          --output text)
+        echo "LATEST_VERSION=${LATEST_VERSION}" >> $GITHUB_ENV
+
     - name: Launch temporary EC2 instance
       id: launch_temp_instance
       run: |
         INSTANCE_ID=$(aws ec2 run-instances \
-          --launch-template LaunchTemplateId=${{ secrets.AWS_LAUNCH_TEMPLATE_ID }},Version=$Latest \
+          --launch-template LaunchTemplateId=${{ secrets.AWS_LAUNCH_TEMPLATE_ID }},Version=${{ env.LATEST_VERSION }} \
           --network-interfaces '[{"SubnetId":"${{ secrets.AWS_SUBNET_ID }}","DeviceIndex":0,"Groups":["${{ secrets.AWS_SECURITY_GROUP_ID }}"]}]' \
           --query 'Instances[0].InstanceId' \
           --output text)
@@ -197,15 +206,6 @@ jobs:
 
     - name: Terminate temporary instance
       run: aws ec2 terminate-instances --instance-ids ${{ env.TEMP_INSTANCE_ID }}
-
-    - name: Get latest launch template version
-      id: get_latest_version
-      run: |
-        LATEST_VERSION=$(aws ec2 describe-launch-template-versions \
-          --launch-template-id ${{ secrets.AWS_LAUNCH_TEMPLATE_ID }} \
-          --query 'sort_by(LaunchTemplateVersions, &VersionNumber)[-1].VersionNumber' \
-          --output text)
-        echo "LATEST_VERSION=${LATEST_VERSION}" >> $GITHUB_ENV
 
     - name: Update Launch Template
       id: update_template
