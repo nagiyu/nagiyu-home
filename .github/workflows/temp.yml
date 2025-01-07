@@ -35,29 +35,29 @@ jobs:
           --output text)
         echo "TEMP_INSTANCE_ID=${INSTANCE_ID}" >> $GITHUB_ENV
 
-    # - name: Wait for temporary instance to become available
-    #   run: |
-    #     while true; do
-    #       STATE=$(aws ec2 describe-instances \
-    #         --instance-ids ${{ env.TEMP_INSTANCE_ID }} \
-    #         --query 'Reservations[0].Instances[0].State.Name' \
-    #         --output text)
-    #       echo "Current instance state: $STATE"
-    #       if [ "$STATE" == "running" ]; then
-    #         echo "Instance is now running!"
-    #         break
-    #       fi
-    #       echo "Waiting for instance to become running..."
-    #       sleep 15
-    #     done
+    - name: Wait for temporary instance to become available
+      run: |
+        while true; do
+          STATE=$(aws ec2 describe-instances \
+            --instance-ids ${{ env.TEMP_INSTANCE_ID }} \
+            --query 'Reservations[0].Instances[0].State.Name' \
+            --output text)
+          echo "Current instance state: $STATE"
+          if [ "$STATE" == "running" ]; then
+            echo "Instance is now running!"
+            break
+          fi
+          echo "Waiting for instance to become running..."
+          sleep 15
+        done
 
-    # - name: Get temporary instance IP
-    #   run: |
-    #     INSTANCE_IP=$(aws ec2 describe-instances \
-    #       --instance-ids ${{ env.TEMP_INSTANCE_ID }} \
-    #       --query "Reservations[0].Instances[0].PublicIpAddress" \
-    #       --output text)
-    #     echo "TEMP_INSTANCE_IP=${INSTANCE_IP}" >> $GITHUB_ENV
+    - name: Get temporary instance IP
+      run: |
+        INSTANCE_IP=$(aws ec2 describe-instances \
+          --instance-ids ${{ env.TEMP_INSTANCE_ID }} \
+          --query "Reservations[0].Instances[0].PublicIpAddress" \
+          --output text)
+        echo "TEMP_INSTANCE_IP=${INSTANCE_IP}" >> $GITHUB_ENV
 
     # - name: Open SecurityGroup
     #   run: aws ec2 authorize-security-group-ingress --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
