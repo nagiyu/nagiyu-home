@@ -1,4 +1,4 @@
-name: deploy
+name: temp
 
 on:
   push:
@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v2
+
     - name: Check AWS variables
       run: |
         echo "AWS_LAUNCH_TEMPLATE_ID=${{ secrets.AWS_LAUNCH_TEMPLATE_ID }}"
