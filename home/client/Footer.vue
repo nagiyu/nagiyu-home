@@ -1,6 +1,12 @@
 <template>
-  <div class="content">
-    &copy; 2024 - Nagiyu.Web - 
-    <a href="/Home/Privacy">Privacy</a>
-  </div>
+  <nav class="breadcrumb is-centered">
+    <ul>
+      <li>
+        <a href="/privacy-policy">プライバシーポリシー</a>
+      </li>
+      <li>
+        <a href="/terms">利用規約</a>
+      </li>
+    </ul>
+  </nav>
 </template>
