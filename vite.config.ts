@@ -19,6 +19,11 @@ const features = [
     root: 'policy/client',
     entry: 'policy/client/main.ts',
   },
+  {
+    name: 'tools',
+    root: 'tools/client',
+    entry: 'tools/client/main.ts',
+  },
 ];
 
 export default defineConfig(({ command }) => {
