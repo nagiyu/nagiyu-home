@@ -48,11 +48,11 @@ awslocal dynamodb create-table \
       {
         "IndexName": "KillRate-index-20250112",
         "KeySchema": [
-          { "AttributeName": "Id", "KeyType": "HASH" }
+          { "AttributeName": "Type", "KeyType": "HASH" }
         ],
         "Projection": {
           "ProjectionType": "INCLUDE",
-          "NonKeyAttributes": ["Type", "Battle", "Rule", "Weapon", "Result", "Kill", "Assist", "Death", "Special", "Date", "MatchTime"]
+          "NonKeyAttributes": ["Battle", "Rule", "Weapon", "Result", "Kill", "Assist", "Death", "Special", "Date", "MatchTime"]
         }
       }
     ]' \
