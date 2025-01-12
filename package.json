@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "dev:common": "TARGET=common vite",
     "dev:home": "TARGET=home vite",
     "dev:policy": "TARGET=policy vite",
     "dev:tools": "TARGET=tools vite",
