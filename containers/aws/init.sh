@@ -41,6 +41,7 @@ awslocal dynamodb create-table \
   --table-name Splatoon3Tracker \
   --attribute-definitions \
     AttributeName=Id,AttributeType=S \
+    AttributeName=Type,AttributeType=S \
   --key-schema \
     AttributeName=Id,KeyType=HASH \
   --global-secondary-indexes \
