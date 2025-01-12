@@ -27,6 +27,11 @@ class Home extends Vue {
       description: "Yahooの乗り換えをコピペしやすい形に変換します。",
       link: "/tools/convert-yahoo-transit",
     },
+    {
+      title: "参考文献つくーる",
+      description: "参考文献を作ります。",
+      link: "/tools/create-bibliography",
+    },
   ];
 }
 
