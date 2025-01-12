@@ -238,6 +238,10 @@ class CreateBibliography extends Vue {
       read: dayjs().format('YYYY-MM-DD'),
     };
   }
+
+  public copy(): void {
+    navigator.clipboard.writeText(this.output);
+  }
 }
 
 export default toNative(CreateBibliography);
