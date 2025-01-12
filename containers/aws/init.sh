@@ -41,7 +41,7 @@ awslocal dynamodb create-table \
   --table-name Splatoon3Tracker \
   --attribute-definitions \
     AttributeName=Id,AttributeType=S \
-    AttributeName=Type,AttributeType=S \
+    AttributeName=RecordType,AttributeType=S \
   --key-schema \
     AttributeName=Id,KeyType=HASH \
   --global-secondary-indexes \
@@ -49,7 +49,7 @@ awslocal dynamodb create-table \
       {
         "IndexName": "KillRate-index-20250112",
         "KeySchema": [
-          { "AttributeName": "Type", "KeyType": "HASH" }
+          { "AttributeName": "RecordType", "KeyType": "HASH" }
         ],
         "Projection": {
           "ProjectionType": "INCLUDE",
@@ -67,7 +67,7 @@ awslocal dynamodb put-item \
   --item \
     '{
       "Id": {"S": "sample-id-1"},
-      "Type": {"S": "KillRate"},
+      "RecordType": {"S": "KillRate"},
       "Battle": {"S": "Xマッチ"},
       "Rule": {"S": "ガチアサリ"},
       "Weapon": {"S": "R-PEN/5H"},
@@ -85,7 +85,7 @@ awslocal dynamodb put-item \
   --item \
     '{
       "Id": {"S": "sample-id-2"},
-      "Type": {"S": "KillRate"},
+      "RecordType": {"S": "KillRate"},
       "Battle": {"S": "バンカラマッチ"},
       "Rule": {"S": "ガチホコ"},
       "Weapon": {"S": "R-PEN/5H"},
@@ -103,7 +103,7 @@ awslocal dynamodb put-item \
   --item \
     '{
       "Id": {"S": "sample-id-3"},
-      "Type": {"S": "KillRate"},
+      "RecordType": {"S": "KillRate"},
       "Battle": {"S": "レギュラーマッチ"},
       "Rule": {"S": "ナワバリバトル"},
       "Weapon": {"S": "イグザミナー"},
