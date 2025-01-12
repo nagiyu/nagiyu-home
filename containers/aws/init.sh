@@ -77,7 +77,7 @@ awslocal dynamodb put-item \
       "Death": {"N": "6"},
       "Special": {"N": "6"},
       "Date": {"S": "2025-01-05T19:49:00Z"},
-      "MatchTime": {"N": "5:00"}
+      "MatchTime": {"S": "5:00"}
     }'
 
 awslocal dynamodb put-item \
@@ -95,7 +95,7 @@ awslocal dynamodb put-item \
       "Death": {"N": "3"},
       "Special": {"N": "1"},
       "Date": {"S": "2025-01-05T20:50:00Z"},
-      "MatchTime": {"N": "1:08"}
+      "MatchTime": {"S": "1:08"}
     }'
 
 awslocal dynamodb put-item \
@@ -113,5 +113,5 @@ awslocal dynamodb put-item \
       "Death": {"N": "3"},
       "Special": {"N": "2"},
       "Date": {"S": "2025-01-11T14:57:00Z"},
-      "MatchTime": {"N": "3:00"}
+      "MatchTime": {"S": "3:00"}
     }'
