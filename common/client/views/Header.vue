@@ -44,8 +44,6 @@ class Header extends Vue {
    */
   public leftMenuItems: MenuItem[] = [
     { label: "ホーム", type: "is-link", link: "/" },
-    { label: "プライバシーポリシー", type: "is-link", link: "/privacy-policy" },
-    { label: "利用規約", type: "is-link", link: "/terms" },
   ];
 
   /**

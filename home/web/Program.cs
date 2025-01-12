@@ -8,6 +8,7 @@ using Nagiyu.Auth.Web.Controllers;
 using Nagiyu.Auth.Web.Middlewares;
 using Nagiyu.Common.Auth.Service.Services;
 using Nagiyu.Policy.Web.Controllers;
+using Nagiyu.Tools.Web.Controllers;
 using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,7 +43,8 @@ builder.WebHost.ConfigureKestrel(options =>
 builder.Services.AddControllersWithViews()
     .AddApplicationPart(typeof(AccountController).Assembly)
     .AddApplicationPart(typeof(PolicyController).Assembly)
-    .AddApplicationPart(typeof(PolicyAPIController).Assembly);
+    .AddApplicationPart(typeof(PolicyAPIController).Assembly)
+    .AddApplicationPart(typeof(ToolsController).Assembly);
 
 builder.Services
     .AddAuthentication(options =>
