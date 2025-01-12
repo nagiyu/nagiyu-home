@@ -12,5 +12,14 @@ namespace Nagiyu.Tools.Web.Controllers
         {
             return View();
         }
+
+        /// <summary>
+        /// 参考文献つくーる
+        /// </summary>
+        [Route("tools/create-bibliography")]
+        public IActionResult CreateBibliography()
+        {
+            return View();
+        }
     }
 }
