@@ -30,7 +30,7 @@
 <body>
     <header id="vue-header"></header>
 
-    <section>
+    <section style="min-height: 75vh;">
         <main class="container">
             @RenderBody()
         </main>
@@ -38,7 +38,7 @@
 
     <footer id="vue-footer" class="footer"></footer>
 
-    <script type="module" src="~/js/dist/home.js"></script>
+    <script type="module" src="~/js/dist/common.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 

@@ -3,14 +3,17 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "dev:common": "TARGET=common vite",
     "dev:home": "TARGET=home vite",
     "dev:policy": "TARGET=policy vite",
+    "dev:tools": "TARGET=tools vite",
     "build": "TARGET=all vite build",
     "lint": "eslint \"src/**/*.{js,ts,vue}\""
   },
   "dependencies": {
     "axios": "^1.7.9",
     "buefy": "npm:@ntohq/buefy-next@^0.1.4",
+    "dayjs": "^1.11.13",
     "vue": "^3.5.13",
     "vue-facing-decorator": "^3.0.4"
   },
