@@ -25,11 +25,13 @@
         </b-field>
 
         <b-field label="ブキ" horizontal>
-          <b-select v-model="result.weapon" expanded>
-            <option v-for="(type, index) in WEAPON_LIST" :key="index" :value="type.type">
-              {{ type.label }}
-            </option>
-          </b-select>
+          <b-autocomplete 
+            v-model="selectedWeapon"
+            :data="filteredWeapons"
+            field="label"
+            :open-on-focus="true"
+            @select="SelectWeapon"
+          />
         </b-field>
 
         <b-field label="結果" horizontal>
@@ -80,21 +82,21 @@
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
 import dayjs from "dayjs";
-import { ResultModel } from "@splatoon3Tracker/models/ResultModel";
 import TimeUtils from "@common/utils/TimeUtils";
+import { ResultModel } from "@splatoon3Tracker/models/ResultModel";
+import ISplatoon3ConstType from "@splatoon3Tracker/interfaces/ISplatoon3ConstType";
 import KillRateUtil from "@splatoon3Tracker/utils/KillRateUtil";
-
-interface IType {
-  type: string;
-  label: string;
-}
+import Splatoon3Utils from "@splatoon3Tracker/utils/Splatoon3Utils";
 
 @Component
 class KillRateDetailModal extends Vue {
-  @Emit('closeDetailModal')
-  public async CloseDetailModal(): Promise<void> {
-    return;
-  }
+  public readonly BATTLE_TYPE_LIST: ISplatoon3ConstType[] = Splatoon3Utils.GetBattleTypes();
+  public readonly RULE_TYPE_LIST: ISplatoon3ConstType[] = Splatoon3Utils.GetRuleTypes();
+  public readonly WEAPON_LIST: ISplatoon3ConstType[] = Splatoon3Utils.GetWeapons();
+
+  public minutes: number = 0;
+  public seconds: number = 0;
+  public selectedWeapon: string = '';
 
   @Prop({ 
     type: Boolean,
@@ -117,29 +119,29 @@ class KillRateDetailModal extends Vue {
   })
   public result: ResultModel = new ResultModel();
 
+  public get filteredWeapons(): ISplatoon3ConstType[] {
+    return this.WEAPON_LIST.filter(w => w.label.indexOf(this.selectedWeapon) >= 0);
+  }
+
+  @Emit('closeDetailModal')
+  public async CloseDetailModal(): Promise<void> {
+    return;
+  }
+
   @Watch('isDetailModalActive')
   public OnIsDetailModalActiveChanged(value: boolean): void {
     if (value) {
       const times = TimeUtils.GetMinutesAndSeconds(this.result.matchTime);
       this.minutes = times.minutes;
       this.seconds = times.seconds;
+      this.selectedWeapon = this.WEAPON_LIST.find(w => w.type === this.result.weapon)?.label || '';
     }
   }
 
-  public readonly BATTLE_TYPE_LIST: IType[] = [
-    { type: "Regular", label: "レギュラー" }
-  ];
-
-  public readonly RULE_TYPE_LIST: IType[] = [
-    { type: "TurfWar", label: "ナワバリバトル" }
-  ];
-
-  public readonly WEAPON_LIST: IType[] = [
-    { type: "Splattershot", label: "スプラシューター" }
-  ];
-
-  public minutes: number = 0;
-  public seconds: number = 0;
+  public SelectWeapon(weapon: ISplatoon3ConstType): void {
+    this.selectedWeapon = weapon.label;
+    this.result.weapon = weapon.type;
+  }
 
   public async Submit(): Promise<void> {
     this.result.recordType = "KillRate";
