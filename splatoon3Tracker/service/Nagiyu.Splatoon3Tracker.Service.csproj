@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\common\service\auth\Nagiyu.Common.Auth.Service.csproj" />
     <ProjectReference Include="..\..\common\service\dynamoDbManager\Nagiyu.Common.DynamoDBManager.csproj" />
   </ItemGroup>
 

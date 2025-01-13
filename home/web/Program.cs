@@ -10,6 +10,7 @@ using Nagiyu.Common.Auth.Service.Services;
 using Nagiyu.Policy.Web.Controllers;
 using Nagiyu.Splatoon3Tracker.Service.Services;
 using Nagiyu.Splatoon3Tracker.Web.Controllers;
+using Nagiyu.Splatoon3Tracker.Web.Policies;
 using Nagiyu.Tools.Web.Controllers;
 using System.Security.Cryptography.X509Certificates;
 
@@ -68,6 +69,10 @@ builder.Services
     });
 
 // ポリシー、ハンドラーの設定
+builder.Services.AddAuthorization(options =>
+{
+    options.AddKillRatePolicy();
+});
 
 var app = builder.Build();
 

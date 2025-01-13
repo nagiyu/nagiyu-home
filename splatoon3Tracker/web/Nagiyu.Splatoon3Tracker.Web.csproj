@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\common\service\auth\Nagiyu.Common.Auth.Service.csproj" />
     <ProjectReference Include="..\service\Nagiyu.Splatoon3Tracker.Service.csproj" />
   </ItemGroup>
 

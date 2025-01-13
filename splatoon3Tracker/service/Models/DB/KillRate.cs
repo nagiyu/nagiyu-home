@@ -8,8 +8,24 @@ namespace Nagiyu.Splatoon3Tracker.Service.Models.DB
 {
     public class KillRate : ObjectBase
     {
+        private string _userId;
+
         [DynamoDBProperty]
-        public Guid UserId { get; set; }
+        public string UserId
+        {
+            get => _userId;
+            set
+            {
+                if (Guid.TryParse(value, out var battleType))
+                {
+                    _userId = battleType.ToString();
+                }
+                else
+                {
+                    _userId = string.Empty;
+                }
+            }
+        }
 
         private string _battle;
 
@@ -111,13 +127,13 @@ namespace Nagiyu.Splatoon3Tracker.Service.Models.DB
 
         public KillRate(Dictionary<string, AttributeValue> keyValuePairs) : base(keyValuePairs)
         {
-            if (keyValuePairs.TryGetValue(nameof(UserId), out var userIdValue) && Guid.TryParse(userIdValue.S, out var userId))
+            if (keyValuePairs.TryGetValue(nameof(UserId), out var userId))
             {
-                UserId = userId;
+                UserId = userId.S;
             }
             else
             {
-                UserId = Guid.Empty;
+                UserId = string.Empty;
             }
 
             if (keyValuePairs.TryGetValue(nameof(Battle), out var battleType))
