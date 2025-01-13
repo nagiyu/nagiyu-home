@@ -53,7 +53,7 @@ awslocal dynamodb create-table \
         ],
         "Projection": {
           "ProjectionType": "INCLUDE",
-          "NonKeyAttributes": ["Battle", "Rule", "Weapon", "Result", "Kill", "Assist", "Death", "Special", "Date", "MatchTime"]
+          "NonKeyAttributes": ["UserId", "Battle", "Rule", "Weapon", "Result", "Kill", "Assist", "Death", "Special", "Date", "MatchTime"]
         }
       }
     ]' \
