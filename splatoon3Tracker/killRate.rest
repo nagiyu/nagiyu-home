@@ -1,4 +1,4 @@
-@host=https://localhost:7164
+@host=https://dev.nagiyu.com
 @id=
 
 ### GET
