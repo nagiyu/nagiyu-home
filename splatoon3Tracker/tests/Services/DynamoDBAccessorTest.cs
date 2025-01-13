@@ -43,6 +43,7 @@ namespace Nagiyu.Splatoon3Tracker.Service.Tests.Services
             var killRate = new KillRate
             {
                 RecordType = Splatoon3Enums.RecordType.KillRate.ToString(),
+                UserId = Guid.NewGuid(),
                 Battle = Splatoon3Enums.BattleType.Regular.ToString(),
                 Rule = Splatoon3Enums.RuleType.TurfWar.ToString(),
                 Weapon = Splatoon3Enums.Weapon.Splattershot.ToString(),
@@ -66,6 +67,7 @@ namespace Nagiyu.Splatoon3Tracker.Service.Tests.Services
             var killRate = new KillRate
             {
                 RecordType = Splatoon3Enums.RecordType.KillRate.ToString(),
+                UserId = Guid.NewGuid(),
                 Battle = Splatoon3Enums.BattleType.Regular.ToString(),
                 Rule = Splatoon3Enums.RuleType.TurfWar.ToString(),
                 Weapon = Splatoon3Enums.Weapon.Splattershot.ToString(),
@@ -99,6 +101,7 @@ namespace Nagiyu.Splatoon3Tracker.Service.Tests.Services
             var killRate = new KillRate
             {
                 RecordType = Splatoon3Enums.RecordType.KillRate.ToString(),
+                UserId = Guid.NewGuid(),
                 Battle = Splatoon3Enums.BattleType.Regular.ToString(),
                 Rule = Splatoon3Enums.RuleType.TurfWar.ToString(),
                 Weapon = Splatoon3Enums.Weapon.Splattershot.ToString(),
