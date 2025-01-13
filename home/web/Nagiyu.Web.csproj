@@ -9,6 +9,7 @@
     <ProjectReference Include="..\..\auth\web\Nagiyu.Auth.Web.csproj" />
     <ProjectReference Include="..\..\common\service\auth\Nagiyu.Common.Auth.Service.csproj" />
     <ProjectReference Include="..\..\policy\web\Nagiyu.Policy.Web.csproj" />
+    <ProjectReference Include="..\..\splatoon3Tracker\web\Nagiyu.Splatoon3Tracker.Web.csproj" />
     <ProjectReference Include="..\..\tools\web\Nagiyu.Tools.Web.csproj" />
   </ItemGroup>
 

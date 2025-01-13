@@ -8,6 +8,8 @@ using Nagiyu.Auth.Web.Controllers;
 using Nagiyu.Auth.Web.Middlewares;
 using Nagiyu.Common.Auth.Service.Services;
 using Nagiyu.Policy.Web.Controllers;
+using Nagiyu.Splatoon3Tracker.Service.Services;
+using Nagiyu.Splatoon3Tracker.Web.Controllers;
 using Nagiyu.Tools.Web.Controllers;
 using System.Security.Cryptography.X509Certificates;
 
@@ -16,6 +18,8 @@ var builder = WebApplication.CreateBuilder(args);
 // サービス登録
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<AuthService>();
+builder.Services.AddSingleton<DynamoDBAccessor>();
+builder.Services.AddSingleton<KillRateService>();
 
 // 環境ごとの Kestrel 設定をロード
 builder.WebHost.ConfigureKestrel(options =>
@@ -44,7 +48,9 @@ builder.Services.AddControllersWithViews()
     .AddApplicationPart(typeof(AccountController).Assembly)
     .AddApplicationPart(typeof(PolicyController).Assembly)
     .AddApplicationPart(typeof(PolicyAPIController).Assembly)
-    .AddApplicationPart(typeof(ToolsController).Assembly);
+    .AddApplicationPart(typeof(ToolsController).Assembly)
+    .AddApplicationPart(typeof(KillRateController).Assembly)
+    .AddApplicationPart(typeof(KillRateAPIController).Assembly);
 
 builder.Services
     .AddAuthentication(options =>

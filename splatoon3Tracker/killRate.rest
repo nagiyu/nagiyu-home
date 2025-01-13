@@ -1,0 +1,45 @@
+@host=https://localhost:7164
+@id=
+
+### GET
+GET {{host}}/api/splatoon3/kill-rate
+Content-Type: application/json
+
+### POST
+POST {{host}}/api/splatoon3/kill-rate
+Content-Type: application/json
+
+{
+    "recordType": "KillRate",
+    "battle": "Regular",
+    "rule": "TurfWar",
+    "weapon": "Splattershot",
+    "result": "Win",
+    "kill": 10,
+    "assist": 5,
+    "death": 3,
+    "special": 2,
+    "date": "2025-01-13T12:00:00",
+    "matchTime": 180
+}
+
+### PUT
+PUT {{host}}/api/splatoon3/kill-rate/{{id}}
+Content-Type: application/json
+
+{
+    "recordType": "KillRate",
+    "battle": "Regular",
+    "rule": "TurfWar",
+    "weapon": "Splattershot",
+    "result": "Win",
+    "kill": 10,
+    "assist": 5,
+    "death": 8,
+    "special": 2,
+    "date": "2025-01-13T12:00:00",
+    "matchTime": 180
+}
+
+### Delete
+DELETE {{host}}/api/splatoon3/kill-rate/{{id}}
