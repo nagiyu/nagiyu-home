@@ -15,7 +15,6 @@ import { Component, Vue, toNative } from "vue-facing-decorator";
 interface IItem {
   title: string;
   description: string;
-  icon: string;
   link: string;
 }
 
@@ -31,6 +30,11 @@ class Home extends Vue {
       title: "参考文献つくーる",
       description: "参考文献を作ります。",
       link: "/tools/create-bibliography",
+    },
+    {
+      title: "キルレ記録",
+      description: "スプラトゥーン3のキルレを記録します。",
+      link: "/splatoon3/kill-rate",
     },
   ];
 }

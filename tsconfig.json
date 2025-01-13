@@ -10,8 +10,14 @@
     "skipLibCheck": true, // 型定義ファイルのチェックをスキップ
     "baseUrl": ".", // ベースディレクトリ
     "paths": {
+      "@common/*": [
+        "common/client/*"
+      ],
       "@auth/*": [
         "auth/client/*"
+      ],
+      "@splatoon3Tracker/*": [
+        "splatoon3Tracker/client/*"
       ],
     },
     "experimentalDecorators": true // デコレータを使えるように
