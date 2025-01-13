@@ -11,20 +11,16 @@
   </b-field>
 
   <b-table :data="killRates">
-    <b-table-column v-slot="props" field="id" label="ID" :visible="false">
-      {{ props.row.id }}
-    </b-table-column>
-
     <b-table-column v-slot="props" field="battle" label="バトル">
-      {{ props.row.battle }}
+      {{ GetBattleLabel(props.row.battle) }}
     </b-table-column>
 
     <b-table-column v-slot="props" field="rule" label="ルール">
-      {{ props.row.rule }}
+      {{ GetRuleLabel(props.row.rule) }}
     </b-table-column>
 
     <b-table-column v-slot="props" field="weapon" label="ブキ">
-      {{ props.row.weapon }}
+      {{ GetWeaponLabel(props.row.weapon) }}
     </b-table-column>
 
     <b-table-column v-slot="props" field="result" label="結果">
@@ -63,6 +59,7 @@ import KillRateUtil from "@splatoon3Tracker/utils/KillRateUtil";
 import { IGetKillRatesResponse } from "@splatoon3Tracker/interfaces/IGetKillRatesResponse";
 import { ResultModel } from "@splatoon3Tracker/models/ResultModel";
 import KillRateDetailModal from "@splatoon3Tracker/components/modals/KillRateDetailModal.vue";
+import Splatoon3Utils from "@splatoon3Tracker/utils/Splatoon3Utils";
 
 @Component({
   components: {
@@ -108,6 +105,21 @@ class KillRate extends Vue {
         await this.FetchKillRates();
       }
     })
+  }
+
+  public GetBattleLabel(battleType: string): string {
+    var battle = Splatoon3Utils.GetBattleTypes().find(b => b.type === battleType);
+    return battle ? battle.label : '';
+  }
+
+  public GetRuleLabel(ruleType: string): string {
+    var rule = Splatoon3Utils.GetRuleTypes().find(b => b.type === ruleType);
+    return rule ? rule.label : '';
+  }
+
+  public GetWeaponLabel(weaponType: string): string {
+    var weapon = Splatoon3Utils.GetWeapons().find(b => b.type === weaponType);
+    return weapon ? weapon.label : '';
   }
 
   private async FetchKillRates(): Promise<void> {
