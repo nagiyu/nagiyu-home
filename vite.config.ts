@@ -29,6 +29,11 @@ const features = [
     root: 'tools/client',
     entry: 'tools/client/main.ts',
   },
+  {
+    name: 'splatoon3Tracker',
+    root: 'splatoon3Tracker/client',
+    entry: 'splatoon3Tracker/client/main.ts',
+  },
 ];
 
 export default defineConfig(({ command }) => {
@@ -60,7 +65,9 @@ export default defineConfig(({ command }) => {
     },
     resolve: {
       alias: {
-        '@auth': path.resolve(__dirname, 'auth/client'), // 絶対パスで`@`を使えるようにする
+        '@common': path.resolve(__dirname, 'common/client'),
+        '@auth': path.resolve(__dirname, 'auth/client'),
+        '@splatoon3Tracker': path.resolve(__dirname, 'splatoon3Tracker/client'),
       },
     },
     server: {

@@ -7,6 +7,7 @@
     "dev:home": "TARGET=home vite",
     "dev:policy": "TARGET=policy vite",
     "dev:tools": "TARGET=tools vite",
+    "dev:splatoon3Tracker": "TARGET=splatoon3Tracker vite",
     "build": "TARGET=all vite build",
     "lint": "eslint \"src/**/*.{js,ts,vue}\""
   },

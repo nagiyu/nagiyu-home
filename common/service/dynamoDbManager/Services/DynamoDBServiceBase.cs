@@ -119,5 +119,19 @@ namespace Nagiyu.Common.DynamoDBManager.Services
 
             await client.UpdateItemAsync(updateRequest);
         }
+
+        protected async Task Delete(string tableName, string keyName, string keyValue)
+        {
+            var deleteRequest = new DeleteItemRequest
+            {
+                TableName = tableName,
+                Key = new Dictionary<string, AttributeValue>
+                {
+                    { keyName, new AttributeValue { S = keyValue } }
+                }
+            };
+
+            await client.DeleteItemAsync(deleteRequest);
+        }
     }
 }
