@@ -17,7 +17,7 @@ namespace Nagiyu.Splatoon3Tracker.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = Splatoon3Consts.KILL_RATE_POLICY)]
+        // [Authorize(Policy = Splatoon3Consts.KILL_RATE_POLICY)]
         [Route("api/splatoon3/kill-rate")]
         public async Task<IActionResult> GetKillRates()
         {
@@ -27,7 +27,7 @@ namespace Nagiyu.Splatoon3Tracker.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = Splatoon3Consts.KILL_RATE_POLICY)]
+        // [Authorize(Policy = Splatoon3Consts.KILL_RATE_POLICY)]
         [Route("api/splatoon3/kill-rate")]
         public async Task<IActionResult> AddKillRate([FromBody] KillRate killRate)
         {
@@ -37,7 +37,7 @@ namespace Nagiyu.Splatoon3Tracker.Web.Controllers
         }
 
         [HttpPut]
-        [Authorize(Policy = Splatoon3Consts.KILL_RATE_POLICY)]
+        // [Authorize(Policy = Splatoon3Consts.KILL_RATE_POLICY)]
         [Route("api/splatoon3/kill-rate/{id}")]
         public async Task<IActionResult> UpdateKillRate([FromRoute] string id, [FromBody] KillRate killRate)
         {
@@ -47,7 +47,7 @@ namespace Nagiyu.Splatoon3Tracker.Web.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Policy = Splatoon3Consts.KILL_RATE_POLICY)]
+        // [Authorize(Policy = Splatoon3Consts.KILL_RATE_POLICY)]
         [Route("api/splatoon3/kill-rate/{id}")]
         public async Task<IActionResult> DeleteKillRate([FromRoute] string id)
         {
