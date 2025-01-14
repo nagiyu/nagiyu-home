@@ -94,8 +94,8 @@ class KillRateDetailModal extends Vue {
   public readonly RULE_TYPE_LIST: ISplatoon3ConstType[] = Splatoon3Utils.GetRuleTypes();
   public readonly WEAPON_LIST: ISplatoon3ConstType[] = Splatoon3Utils.GetWeapons();
 
-  public minutes: number = 0;
-  public seconds: number = 0;
+  public minutes: string = "0";
+  public seconds: string = "0";
   public selectedWeapon: string = '';
 
   @Prop({ 
@@ -132,8 +132,8 @@ class KillRateDetailModal extends Vue {
   public OnIsDetailModalActiveChanged(value: boolean): void {
     if (value) {
       const times = TimeUtils.GetMinutesAndSeconds(this.result.matchTime);
-      this.minutes = times.minutes;
-      this.seconds = times.seconds;
+      this.minutes = times.minutes.toString();
+      this.seconds = times.seconds.toString();
       this.selectedWeapon = this.WEAPON_LIST.find(w => w.type === this.result.weapon)?.label || '';
     }
   }
@@ -146,7 +146,7 @@ class KillRateDetailModal extends Vue {
   public async Submit(): Promise<void> {
     this.result.recordType = "KillRate";
     this.result.date = dayjs(this.result.date).format('YYYY-MM-DDTHH:mm:00');
-    this.result.matchTime = TimeUtils.GetMatchTime(this.minutes, this.seconds);
+    this.result.matchTime = TimeUtils.GetMatchTime(parseInt(this.minutes), parseInt(this.seconds));
 
     if (this.isNew) {
       var id = await KillRateUtil.AddKillRate(this.result);
