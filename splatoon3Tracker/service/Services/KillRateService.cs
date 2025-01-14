@@ -75,7 +75,7 @@ namespace Nagiyu.Splatoon3Tracker.Service.Services
         {
             // var user = await authService.GetUser<UserAuthBase>();
             // return user.UserId.ToString();
-            return "acaa64d6-3da6-49a7-9c52-d57cfe8bdb34";
+            return "test-user-id";
         }
     }
 }
