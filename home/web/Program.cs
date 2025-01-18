@@ -55,6 +55,9 @@ builder.Services.AddControllersWithViews()
     .AddApplicationPart(typeof(KillRateController).Assembly)
     .AddApplicationPart(typeof(KillRateAPIController).Assembly);
 
+// WPA
+builder.Services.AddProgressiveWebApp();
+
 builder.Services
     .AddAuthentication(options =>
     {

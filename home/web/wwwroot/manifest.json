@@ -1,20 +1,19 @@
 {
   "name": "ウチのアプリ",
   "short_name": "アプリ",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#fff",
-  "theme_color": "#317EFB",
+  "description": "アプリです。",
   "icons": [
     {
-      "src": "icon-192x192.png",
+      "src": "/img/icon192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-512x512.png",
+      "src": "/img/icon512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "display": "standalone",
+  "start_url": "/"
 }

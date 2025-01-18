@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.85" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\auth\web\Nagiyu.Auth.Web.csproj" />
     <ProjectReference Include="..\..\common\service\auth\Nagiyu.Common.Auth.Service.csproj" />
     <ProjectReference Include="..\..\policy\web\Nagiyu.Policy.Web.csproj" />
