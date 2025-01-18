@@ -1,42 +1,29 @@
-﻿using Nagiyu.Splatoon3Tracker.Service.Consts;
-using System;
-
-namespace Nagiyu.Splatoon3Tracker.Service.Models
+﻿namespace Nagiyu.Splatoon3Tracker.Service.Models.Requests
 {
     /// <summary>
-    /// KillRate
+    /// AddKillRate Request
     /// </summary>
-    public class KillRate
+    public class KillRateRequest
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        public Guid Id { get; set; }
-
-        /// <summary>
-        /// UserID
-        /// </summary>
-        public Guid UserId { get; set; }
-
         /// <summary>
         /// Battle
         /// </summary>
-        public Splatoon3Enums.BattleType Battle { get; set; }
+        public string Battle { get; set; }
 
         /// <summary>
         /// Rule
         /// </summary>
-        public Splatoon3Enums.RuleType Rule { get; set; }
+        public string Rule { get; set; }
 
         /// <summary>
         /// Weapon
         /// </summary>
-        public Splatoon3Enums.Weapon Weapon { get; set; }
+        public string Weapon { get; set; }
 
         /// <summary>
         /// Result
         /// </summary>
-        public Splatoon3Enums.ResultType Result { get; set; }
+        public string Result { get; set; }
 
         /// <summary>
         /// Kill
@@ -61,7 +48,7 @@ namespace Nagiyu.Splatoon3Tracker.Service.Models
         /// <summary>
         /// Date
         /// </summary>
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         /// <summary>
         /// MatchTime

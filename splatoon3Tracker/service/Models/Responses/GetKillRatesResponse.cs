@@ -4,6 +4,6 @@ namespace Nagiyu.Splatoon3Tracker.Service.Models.Responses
 {
     public class GetKillRatesResponse
     {
-        public List<KillRate> KillRates { get; set; }
+        public List<KillRateResponse> KillRates { get; set; }
     }
 }

@@ -28,7 +28,7 @@
     </b-table-column>
 
     <b-table-column v-slot="props" field="killRate" label="キルレ">
-      {{ props.row.killRate }}
+      {{ CalcKillRate(props.row.kill, props.row.death) }}
     </b-table-column>
 
     <b-table-column v-slot="props" field="matchTime" label="試合時間">
@@ -56,10 +56,10 @@
 import { Component, Vue, toNative } from "vue-facing-decorator";
 import dayjs from "dayjs";
 import KillRateUtil from "@splatoon3Tracker/utils/KillRateUtil";
-import { IGetKillRatesResponse } from "@splatoon3Tracker/interfaces/IGetKillRatesResponse";
-import { ResultModel } from "@splatoon3Tracker/models/ResultModel";
 import KillRateDetailModal from "@splatoon3Tracker/components/modals/KillRateDetailModal.vue";
 import Splatoon3Utils from "@splatoon3Tracker/utils/Splatoon3Utils";
+import { IGetKillRatesResponse } from "@splatoon3Tracker/interfaces/Responses/IGetKillRatesResponse";
+import { IKillRate } from "@splatoon3Tracker/interfaces/IKillRate";
 
 @Component({
   components: {
@@ -67,11 +67,11 @@ import Splatoon3Utils from "@splatoon3Tracker/utils/Splatoon3Utils";
   }
 })
 class KillRate extends Vue {
-  public killRates: ResultModel[] = [];
+  public killRates: IKillRate[] = [];
 
   public isNew: boolean = true;
 
-  public killRate: ResultModel = new ResultModel();
+  public killRate: IKillRate = KillRateUtil.CreateKillRate();
 
   public isDetailModalActive: boolean = false;
 
@@ -79,13 +79,13 @@ class KillRate extends Vue {
     await this.FetchKillRates();
   }
 
-  public OpenDetailModal(result?: ResultModel): void {
+  public OpenDetailModal(result?: IKillRate): void {
     if (result) {
       this.isNew = false;
       this.killRate = result;
     } else {
       this.isNew = true;
-      this.killRate = new ResultModel();
+      this.killRate = KillRateUtil.CreateKillRate();
     }
 
     this.isDetailModalActive = true;
@@ -122,28 +122,22 @@ class KillRate extends Vue {
     return weapon ? weapon.label : '';
   }
 
+  public CalcKillRate(kill: number, death: number): string {
+    if (death === 0) {
+      return kill.toFixed(2);
+    }
+
+    return (kill / death).toFixed(2);
+  }
+
   private async FetchKillRates(): Promise<void> {
     const response: IGetKillRatesResponse | null = await KillRateUtil.GetKillRates();
     this.killRates = [];
 
     if (response) {
-      response.killRates.forEach(killRate => {
-        var result = new ResultModel();
-
-        result.id = killRate.id;
-        result.recordType = killRate.recordType;
-        result.battle = killRate.battle;
-        result.rule = killRate.rule;
-        result.weapon = killRate.weapon;
-        result.result = killRate.result;
-        result.kill = killRate.kill;
-        result.assist = killRate.assist;
-        result.death = killRate.death;
-        result.special = killRate.special;
-        result.date = dayjs(killRate.date).format('YYYY-MM-DD HH:mm');
-        result.matchTime = killRate.matchTime;
-
-        this.killRates.push(result);
+      response.killRates.forEach(killRateResponse => {
+        var killRate = KillRateUtil.ConvertToKillRate(killRateResponse);
+        this.killRates.push(killRate);
       });
     }
   }

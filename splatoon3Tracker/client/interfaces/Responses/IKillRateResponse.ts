@@ -1,4 +1,4 @@
-export interface IKillRate {
+export interface IKillRateResponse {
   id: string;
   battle: string;
   rule: string;
