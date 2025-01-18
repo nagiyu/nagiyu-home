@@ -83,10 +83,10 @@
 import { Component, Emit, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
 import dayjs from "dayjs";
 import TimeUtils from "@common/utils/TimeUtils";
-import { ResultModel } from "@splatoon3Tracker/models/ResultModel";
 import ISplatoon3ConstType from "@splatoon3Tracker/interfaces/ISplatoon3ConstType";
 import KillRateUtil from "@splatoon3Tracker/utils/KillRateUtil";
 import Splatoon3Utils from "@splatoon3Tracker/utils/Splatoon3Utils";
+import { IKillRate } from "@splatoon3Tracker/interfaces/IKillRate";
 
 @Component
 class KillRateDetailModal extends Vue {
@@ -94,9 +94,11 @@ class KillRateDetailModal extends Vue {
   public readonly RULE_TYPE_LIST: ISplatoon3ConstType[] = Splatoon3Utils.GetRuleTypes();
   public readonly WEAPON_LIST: ISplatoon3ConstType[] = Splatoon3Utils.GetWeapons();
 
+  // #region Fields
   public minutes: string = "0";
   public seconds: string = "0";
   public selectedWeapon: string = '';
+  // #endregion
 
   @Prop({ 
     type: Boolean,
@@ -113,11 +115,11 @@ class KillRateDetailModal extends Vue {
   public isNew: boolean = true;
 
   @Prop({
-    type: ResultModel,
+    type: Object,
     required: true,
-    default: new ResultModel()
+    default: KillRateUtil.CreateKillRate()
   })
-  public result: ResultModel = new ResultModel();
+  public result!: IKillRate;
 
   public get filteredWeapons(): ISplatoon3ConstType[] {
     return this.WEAPON_LIST.filter(w => w.label.indexOf(this.selectedWeapon) >= 0);
@@ -144,14 +146,15 @@ class KillRateDetailModal extends Vue {
   }
 
   public async Submit(): Promise<void> {
-    this.result.recordType = "KillRate";
-    this.result.date = dayjs(this.result.date).format('YYYY-MM-DDTHH:mm:00');
+    this.result.date = dayjs(this.result.date).format('YYYY-MM-DD HH:mm');
     this.result.matchTime = TimeUtils.GetMatchTime(parseInt(this.minutes), parseInt(this.seconds));
 
-    if (this.isNew) {
-      var id = await KillRateUtil.AddKillRate(this.result);
+    var request = KillRateUtil.ConvertToKillRateRequest(this.result);
 
-      if (id) {
+    if (this.isNew) {
+      var response = await KillRateUtil.AddKillRate(request);
+
+      if (response) {
         this.CloseDetailModal();
       }
     } else {
@@ -159,7 +162,7 @@ class KillRateDetailModal extends Vue {
         return;
       }
 
-      var result = await KillRateUtil.UpdateKillRate(this.result.id, this.result);
+      var result = await KillRateUtil.UpdateKillRate(this.result.id, request);
 
       if (result) {
         this.CloseDetailModal();

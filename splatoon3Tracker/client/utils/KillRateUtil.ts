@@ -1,6 +1,10 @@
 import axios, { AxiosResponse } from 'axios';
-import { IGetKillRatesResponse } from '@splatoon3Tracker/interfaces/IGetKillRatesResponse';
-import { ResultModel } from '@splatoon3Tracker/models/ResultModel';
+import dayjs from 'dayjs';
+import { IAddKillRateResponse } from '@splatoon3Tracker/interfaces/Responses/IAddKillRateResponse';
+import { IGetKillRatesResponse } from '@splatoon3Tracker/interfaces/Responses/IGetKillRatesResponse';
+import { IKillRate } from '@splatoon3Tracker/interfaces/IKillRate';
+import { IKillRateRequest } from '@splatoon3Tracker/interfaces/Requests/IKillRateRequest';
+import { IKillRateResponse } from '@splatoon3Tracker/interfaces/Responses/IKillRateResponse';
 
 export default class KillRateUtil {
   public static async GetKillRates(): Promise<IGetKillRatesResponse | null> {
@@ -13,18 +17,18 @@ export default class KillRateUtil {
     return null;
   }
 
-  public static async AddKillRate(killRate: ResultModel): Promise<string> {
-    var response = await axios.post<any, AxiosResponse<string, any>>('/api/splatoon3/kill-rate', killRate);
+  public static async AddKillRate(request: IKillRateRequest): Promise<IAddKillRateResponse | null> {
+    var response = await axios.post<any, AxiosResponse<IAddKillRateResponse, any>>('/api/splatoon3/kill-rate', request);
 
     if (response.status === 200) {
       return response.data;
     }
 
-    return '';
+    return null;
   }
 
-  public static async UpdateKillRate(id: string, killRate: ResultModel): Promise<boolean> {
-    var response = await axios.put<any, AxiosResponse<string, any>>(`/api/splatoon3/kill-rate/${id}`, killRate);
+  public static async UpdateKillRate(id: string, request: IKillRateRequest): Promise<boolean> {
+    var response = await axios.put<any, AxiosResponse<string, any>>(`/api/splatoon3/kill-rate/${id}`, request);
 
     if (response.status === 200) {
       return true;
@@ -41,5 +45,66 @@ export default class KillRateUtil {
     }
 
     return false;
+  }
+
+  /**
+   * Create IKillRate
+   * @returns IKillRate
+   */
+  public static CreateKillRate(): IKillRate {
+    return {
+      id: '',
+      battle: '',
+      rule: '',
+      weapon: '',
+      result: '',
+      kill: 0,
+      assist: 0,
+      death: 0,
+      special: 0,
+      date: dayjs().format('YYYY-MM-DD HH:mm'),
+      matchTime: 0
+    }
+  }
+
+  /**
+   * Convert IKillRateResponse to IKillRate
+   * @param request IKillRateResponse
+   * @returns IKillRate
+   */
+  public static ConvertToKillRate(request: IKillRateResponse): IKillRate {
+    return {
+      id: request.id,
+      battle: request.battle,
+      rule: request.rule,
+      weapon: request.weapon,
+      result: request.result,
+      kill: request.kill,
+      assist: request.assist,
+      death: request.death,
+      special: request.special,
+      date: request.date,
+      matchTime: request.matchTime
+    }
+  }
+
+  /**
+   * Convert IKillRate to IKillRateRequest
+   * @param killRate IKillRate
+   * @returns IKillRateRequest
+   */
+  public static ConvertToKillRateRequest(killRate: IKillRate): IKillRateRequest {
+    return {
+      battle: killRate.battle,
+      rule: killRate.rule,
+      weapon: killRate.weapon,
+      result: killRate.result,
+      kill: killRate.kill,
+      assist: killRate.assist,
+      death: killRate.death,
+      special: killRate.special,
+      date: killRate.date,
+      matchTime: killRate.matchTime
+    }
   }
 }

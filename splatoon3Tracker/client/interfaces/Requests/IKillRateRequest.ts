@@ -1,5 +1,4 @@
-export interface IKillRate {
-  id: string;
+export interface IKillRateRequest {
   battle: string;
   rule: string;
   weapon: string;
