@@ -1,4 +1,5 @@
 ﻿using Nagiyu.Common.Auth.Service.Interfaces;
+using Nagiyu.Common.Auth.Service.Models;
 using Nagiyu.Splatoon3Tracker.Service.Exceptions;
 using Nagiyu.Splatoon3Tracker.Service.Models.Requests;
 using Nagiyu.Splatoon3Tracker.Service.Models.Responses;

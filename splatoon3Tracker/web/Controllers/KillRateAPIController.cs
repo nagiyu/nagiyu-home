@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Nagiyu.Splatoon3Tracker.Service.Consts;
 using Nagiyu.Splatoon3Tracker.Service.Exceptions;
 using Nagiyu.Splatoon3Tracker.Service.Models.Requests;
 using Nagiyu.Splatoon3Tracker.Service.Services;
