@@ -107,9 +107,8 @@ namespace Nagiyu.Splatoon3Tracker.Service.Services
         /// <returns>UserID</returns>
         private async Task<Guid> GetUserId()
         {
-            //var user = await authService.GetUser<UserAuthBase>();
-            //return user.UserId;
-            return Guid.Parse("acaa64d6-3da6-49a7-9c52-d57cfe8bdb34");
+            var user = await authService.GetUser<UserAuthBase>();
+            return user.UserId;
         }
     }
 }
