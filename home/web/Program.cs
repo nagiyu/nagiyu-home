@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Nagiyu.Auth.Web.Controllers;
 using Nagiyu.Auth.Web.Middlewares;
+using Nagiyu.Common.Auth.Service.Interfaces;
 using Nagiyu.Common.Auth.Service.Services;
 using Nagiyu.Policy.Web.Controllers;
 using Nagiyu.Splatoon3Tracker.Service.Services;
@@ -18,6 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // サービス登録
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<DynamoDBAccessor>();
 builder.Services.AddSingleton<KillRateService>();

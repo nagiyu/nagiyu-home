@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Nagiyu.Common.Auth.Service.Interfaces;
+using Nagiyu.Common.Auth.Service.Models;
 using Nagiyu.Splatoon3Tracker.Service.Consts;
-using Nagiyu.Splatoon3Tracker.Service.Models.DB;
+using Nagiyu.Splatoon3Tracker.Service.Models.Requests;
 using Nagiyu.Splatoon3Tracker.Service.Services;
 using System;
 using System.Diagnostics;
@@ -10,13 +12,15 @@ using System.Threading.Tasks;
 namespace Nagiyu.Splatoon3Tracker.Service.Tests.Services
 {
     [TestClass]
-    public class DynamoDBAccessorTest
+    public class KillRateServiceTest
     {
         private readonly DynamoDBAccessor dynamoDBAccessor;
+        private readonly IAuthService authService;
+        private readonly KillRateService killRateService;
 
         private readonly IConfiguration configuration;
 
-        public DynamoDBAccessorTest()
+        public KillRateServiceTest()
         {
             var basePath = Directory.GetCurrentDirectory();
             var builder = new ConfigurationBuilder()
@@ -25,29 +29,18 @@ namespace Nagiyu.Splatoon3Tracker.Service.Tests.Services
             configuration = builder.Build();
 
             dynamoDBAccessor = new DynamoDBAccessor(configuration);
-        }
-
-        [TestMethod]
-        public async Task GetKillRatesTest()
-        {
-            var killRates = await dynamoDBAccessor.GetKillRates();
-
-            Assert.IsNotNull(killRates);
-
-            foreach (var killRate in killRates)
-            {
-                Debug.WriteLine($"{killRate.Id}, {killRate.RecordType}, {killRate.UserId}, {killRate.Battle}, {killRate.Rule}, {killRate.Weapon}, {killRate.Result}, {killRate.Kill}, {killRate.Assist}, {killRate.Death}, {killRate.Special}, {killRate.Date}, {killRate.MatchTime}");
-            }
+            authService = new MockAuthService();
+            killRateService = new KillRateService(dynamoDBAccessor, authService);
         }
 
         [TestMethod]
         public async Task AddKillRateTest()
         {
-            var killRate = new KillRateRecord
+            var userId = Guid.NewGuid();
+            MockAuthService.UserId = userId;
+
+            var request = new KillRateRequest()
             {
-                Id = Guid.NewGuid().ToString(),
-                RecordType = Splatoon3Enums.RecordType.KillRate.ToString(),
-                UserId = Guid.NewGuid().ToString(),
                 Battle = Splatoon3Enums.BattleType.Regular.ToString(),
                 Rule = Splatoon3Enums.RuleType.TurfWar.ToString(),
                 Weapon = Splatoon3Enums.Weapon.Splattershot.ToString(),
@@ -57,22 +50,27 @@ namespace Nagiyu.Splatoon3Tracker.Service.Tests.Services
                 Death = 3,
                 Special = 4,
                 Date = "2025-01-13 12:00",
-                MatchTime = 180
+                MatchTime = 180,
             };
 
-            var id = await dynamoDBAccessor.AddKillRate(killRate);
+            var response = await killRateService.AddKillRate(request);
 
-            Assert.IsNotNull(id);
+            Assert.IsNotNull(response.Id);
+            Debug.WriteLine(response.Id);
+
+            var killRates = await dynamoDBAccessor.GetKillRates();
+
+            Assert.IsTrue(killRates.Exists(killRate => killRate.UserId == userId.ToString() && killRate.Id == response.Id));
         }
 
         [TestMethod]
         public async Task UpdateKillRateTest()
         {
-            var killRate = new KillRateRecord
+            var userId = Guid.NewGuid();
+            MockAuthService.UserId = userId;
+
+            var request = new KillRateRequest()
             {
-                Id = Guid.NewGuid().ToString(),
-                RecordType = Splatoon3Enums.RecordType.KillRate.ToString(),
-                UserId = Guid.NewGuid().ToString(),
                 Battle = Splatoon3Enums.BattleType.Regular.ToString(),
                 Rule = Splatoon3Enums.RuleType.TurfWar.ToString(),
                 Weapon = Splatoon3Enums.Weapon.Splattershot.ToString(),
@@ -82,32 +80,28 @@ namespace Nagiyu.Splatoon3Tracker.Service.Tests.Services
                 Death = 3,
                 Special = 4,
                 Date = "2025-01-13 12:00",
-                MatchTime = 180
+                MatchTime = 180,
             };
 
-            var id = await dynamoDBAccessor.AddKillRate(killRate);
+            var response = await killRateService.AddKillRate(request);
 
-            killRate.Id = id;
+            request.Kill = 20;
 
-            killRate.Kill = 20;
-
-            await dynamoDBAccessor.UpdateKillRate(id, killRate);
+            await killRateService.UpdateKillRate(response.Id, request);
 
             var killRates = await dynamoDBAccessor.GetKillRates();
-            var updatedKillRate = killRates.Find(k => k.Id == id);
 
-            Assert.IsNotNull(updatedKillRate);
-            Assert.AreEqual(20, updatedKillRate.Kill);
+            Assert.IsTrue(killRates.Exists(killRate => killRate.UserId == userId.ToString() && killRate.Id == response.Id && killRate.Kill == 20));
         }
 
         [TestMethod]
         public async Task DeleteKillRateTest()
         {
-            var killRate = new KillRateRecord
+            var userId = Guid.NewGuid();
+            MockAuthService.UserId = userId;
+
+            var request = new KillRateRequest()
             {
-                Id = Guid.NewGuid().ToString(),
-                RecordType = Splatoon3Enums.RecordType.KillRate.ToString(),
-                UserId = Guid.NewGuid().ToString(),
                 Battle = Splatoon3Enums.BattleType.Regular.ToString(),
                 Rule = Splatoon3Enums.RuleType.TurfWar.ToString(),
                 Weapon = Splatoon3Enums.Weapon.Splattershot.ToString(),
@@ -117,19 +111,31 @@ namespace Nagiyu.Splatoon3Tracker.Service.Tests.Services
                 Death = 3,
                 Special = 4,
                 Date = "2025-01-13 12:00",
-                MatchTime = 180
+                MatchTime = 180,
             };
 
-            var id = await dynamoDBAccessor.AddKillRate(killRate);
+            var response = await killRateService.AddKillRate(request);
 
-            killRate.Id = id;
-
-            await dynamoDBAccessor.DeleteKillRate(id);
+            await killRateService.DeleteKillRate(response.Id);
 
             var killRates = await dynamoDBAccessor.GetKillRates();
-            var deletedKillRate = killRates.Find(k => k.Id == id);
 
-            Assert.IsNull(deletedKillRate);
+            Assert.IsFalse(killRates.Exists(killRate => killRate.UserId == userId.ToString() && killRate.Id == response.Id));
+        }
+    }
+
+    public class MockAuthService : IAuthService
+    {
+        public static Guid UserId = Guid.NewGuid();
+
+        public Task<T> GetUser<T>() where T : UserAuthBase
+        {
+            return Task.FromResult(new UserAuthBase()
+            {
+                UserId = UserId,
+                UserName = "Test",
+                GoogleUserId = "GoogleUserID",
+            } as T);
         }
     }
 }

@@ -1,8 +1,9 @@
-﻿using Nagiyu.Common.Auth.Service.Models;
-using Nagiyu.Common.Auth.Service.Services;
-using Nagiyu.Splatoon3Tracker.Service.Models;
+﻿using Nagiyu.Common.Auth.Service.Interfaces;
+using Nagiyu.Common.Auth.Service.Models;
+using Nagiyu.Splatoon3Tracker.Service.Exceptions;
+using Nagiyu.Splatoon3Tracker.Service.Models.Requests;
 using Nagiyu.Splatoon3Tracker.Service.Models.Responses;
-using Newtonsoft.Json;
+using Nagiyu.Splatoon3Tracker.Service.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,69 +13,103 @@ namespace Nagiyu.Splatoon3Tracker.Service.Services
     public class KillRateService
     {
         private readonly DynamoDBAccessor dynamoDBAccessor;
-        private readonly AuthService authService;
+        private readonly IAuthService authService;
 
-        public KillRateService(DynamoDBAccessor dynamoDBAccessor, AuthService authService)
+        public KillRateService(DynamoDBAccessor dynamoDBAccessor, IAuthService authService)
         {
             this.dynamoDBAccessor = dynamoDBAccessor;
             this.authService = authService;
         }
 
+        /// <summary>
+        /// KillRate の取得
+        /// </summary>
+        /// <returns>レスポンス</returns>
         public async Task<GetKillRatesResponse> GetKillRates()
         {
-            var dbResulse = await dynamoDBAccessor.GetKillRates();
+            var killRateRecords = await dynamoDBAccessor.GetKillRates();
 
             var result = new GetKillRatesResponse()
             {
-                KillRates = new List<KillRate>()
+                KillRates = new List<KillRateResponse>()
             };
 
-            foreach (var dbKillRate in dbResulse)
-            {
-                var userId = await GetUserId();
+            var userId = await GetUserId();
 
-                if (dbKillRate.UserId != userId)
+            foreach (var killRateRecord in killRateRecords)
+            {
+                var killRate = ModelUtil.ConvertToKillRate(killRateRecord);
+
+                if (killRate.UserId != userId)
                 {
                     continue;
                 }
 
-                result.KillRates.Add(JsonConvert.DeserializeObject<KillRate>(JsonConvert.SerializeObject(dbKillRate)));
+                var killRateResponse = ModelUtil.ConvertToKillRateResponse(killRate);
+                result.KillRates.Add(killRateResponse);
             }
 
             return result;
         }
 
-        public async Task<AddKillRateResponse> AddKillRate(KillRate killRate)
+        /// <summary>
+        /// KillRate の追加
+        /// </summary>
+        /// <param name="request">リクエスト</param>
+        /// <returns>レスポンス</returns>
+        public async Task<AddKillRateResponse> AddKillRate(KillRateRequest request)
         {
-            var dbKillRate = JsonConvert.DeserializeObject<Models.DB.KillRate>(JsonConvert.SerializeObject(killRate));
-            dbKillRate.UserId = await GetUserId();
+            var guid = Guid.NewGuid();
+            var userId = await GetUserId();
+            var killRate = ModelUtil.ConvertToKillRate(guid, userId, request);
+            var killRateRecord = ModelUtil.ConvertToKillRateRecord(killRate);
 
-            var id = await dynamoDBAccessor.AddKillRate(dbKillRate);
+            var id = await dynamoDBAccessor.AddKillRate(killRateRecord);
 
             return new AddKillRateResponse { Id = id };
         }
 
-        public async Task UpdateKillRate(string id, KillRate killRate)
+        /// <summary>
+        /// KillRate の更新
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <param name="request">リクエスト</param>
+        public async Task UpdateKillRate(string id, KillRateRequest request)
         {
-            var guid = Guid.Parse(id);
+            if (!Guid.TryParse(id, out var guid))
+            {
+                throw new ParameterException("Id is invalid.");
+            }
 
-            var dbKillRate = JsonConvert.DeserializeObject<Models.DB.KillRate>(JsonConvert.SerializeObject(killRate));
-            dbKillRate.UserId = await GetUserId();
+            var userId = await GetUserId();
+            var killRate = ModelUtil.ConvertToKillRate(guid, userId, request);
+            var killRateRecord = ModelUtil.ConvertToKillRateRecord(killRate);
 
-            await dynamoDBAccessor.UpdateKillRate(guid, dbKillRate);
+            await dynamoDBAccessor.UpdateKillRate(id, killRateRecord);
         }
 
+        /// <summary>
+        /// KillRate の削除
+        /// </summary>
+        /// <param name="id">ID</param>
         public async Task DeleteKillRate(string id)
         {
-            var guid = Guid.Parse(id);
+            if (!Guid.TryParse(id, out _))
+            {
+                throw new ParameterException("Id is invalid.");
+            }
 
-            await dynamoDBAccessor.DeleteKillRate(guid);
+            await dynamoDBAccessor.DeleteKillRate(id);
         }
 
-        private async Task<string> GetUserId()
+        /// <summary>
+        /// ユーザー ID の取得
+        /// </summary>
+        /// <returns>UserID</returns>
+        private async Task<Guid> GetUserId()
         {
             var user = await authService.GetUser<UserAuthBase>();
-            return user.UserId.ToString();
+            return user.UserId;
         }
     }
 }

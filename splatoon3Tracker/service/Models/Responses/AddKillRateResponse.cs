@@ -1,9 +1,13 @@
-﻿using System;
-
-namespace Nagiyu.Splatoon3Tracker.Service.Models.Responses
+﻿namespace Nagiyu.Splatoon3Tracker.Service.Models.Responses
 {
+    /// <summary>
+    /// AddKillRate Response
+    /// </summary>
     public class AddKillRateResponse
     {
-        public Guid Id { get; set; }
+        /// <summary>
+        /// ID
+        /// </summary>
+        public string Id { get; set; }
     }
 }

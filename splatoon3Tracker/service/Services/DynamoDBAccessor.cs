@@ -26,30 +26,28 @@ namespace Nagiyu.Splatoon3Tracker.Service.Services
             InitializeClient(accessKey, secretKey, region, serviceUrl);
         }
 
-        public async Task<List<KillRate>> GetKillRates()
+        public async Task<List<KillRateRecord>> GetKillRates()
         {
             var items = await GetItems(TABLE_NAME, INDEX_NAME, nameof(Splatoon3Enums.RecordType), Splatoon3Enums.RecordType.KillRate.ToString());
 
-            var killRates = new List<KillRate>();
+            var killRates = new List<KillRateRecord>();
 
             foreach (var item in items)
             {
-                killRates.Add(new KillRate(item));
+                killRates.Add(new KillRateRecord(item));
             }
 
             return killRates;
         }
 
-        public async Task<Guid> AddKillRate(KillRate killRate)
+        public async Task<string> AddKillRate(KillRateRecord killRate)
         {
-            killRate.Id = Guid.NewGuid();
-
             await Add(TABLE_NAME, killRate);
 
             return killRate.Id;
         }
 
-        public async Task UpdateKillRate(Guid id, KillRate killRate)
+        public async Task UpdateKillRate(string id, KillRateRecord killRate)
         {
             // user の全要素を properties に変換
             var properties = new Dictionary<string, AttributeValueUpdate>();
@@ -58,7 +56,7 @@ namespace Nagiyu.Splatoon3Tracker.Service.Services
             foreach (var property in killRate.GetType().GetProperties())
             {
                 // DynamoDB には UserId は含めない
-                if (property.Name == nameof(KillRate.Id))
+                if (property.Name == nameof(KillRateRecord.Id))
                 {
                     continue;
                 }
@@ -83,14 +81,8 @@ namespace Nagiyu.Splatoon3Tracker.Service.Services
                     case TypeCode.Int32:
                         attributeValue.N = value.ToString();
                         break;
-                    case TypeCode.Double:
-                        attributeValue.N = value.ToString();
-                        break;
                     case TypeCode.Boolean:
                         attributeValue.BOOL = (bool)value;
-                        break;
-                    case TypeCode.DateTime:
-                        attributeValue.S = ((DateTime)value).ToString("o"); // ISO 8601 形式
                         break;
                     default:
                         continue; // サポートされていない型はスキップ
@@ -101,15 +93,14 @@ namespace Nagiyu.Splatoon3Tracker.Service.Services
                     Action = AttributeAction.PUT,
                     Value = attributeValue
                 });
-
             }
 
-            await UpdateProperties(TABLE_NAME, nameof(KillRate.Id), id.ToString(), properties);
+            await UpdateProperties(TABLE_NAME, nameof(KillRateRecord.Id), id, properties);
         }
 
-        public async Task DeleteKillRate(Guid id)
+        public async Task DeleteKillRate(string id)
         {
-            await Delete(TABLE_NAME, nameof(KillRate.Id), id.ToString());
+            await Delete(TABLE_NAME, nameof(KillRateRecord.Id), id);
         }
     }
 }

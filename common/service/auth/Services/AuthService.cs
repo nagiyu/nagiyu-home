@@ -2,6 +2,7 @@
 using Amazon.DynamoDBv2.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Nagiyu.Common.Auth.Service.Interfaces;
 using Nagiyu.Common.Auth.Service.Models;
 using Nagiyu.Common.DynamoDBManager.Services;
 using System;
@@ -15,7 +16,7 @@ namespace Nagiyu.Common.Auth.Service.Services
     /// <summary>
     /// 認証サービス
     /// </summary>
-    public class AuthService : DynamoDBServiceBase
+    public class AuthService : DynamoDBServiceBase, IAuthService
     {
         /// <summary>
         /// HTTP コンテキストアクセサ
