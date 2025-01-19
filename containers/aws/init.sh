@@ -32,8 +32,8 @@ awslocal dynamodb put-item \
     '{
       "UserId": {"S": "acaa64d6-3da6-49a7-9c52-d57cfe8bdb34"},
       "GoogleUserId": {"S": "105305940240519833154"},
-      "UserName": {"S": "なぎゆー"}
-      "Role_Splatoon3Tracker": {"S": "User"}
+      "UserName": {"S": "なぎゆー"},
+      "OneSignalSubscriptionId": {"S": "1579fb81-05c6-45b9-9f4d-c0c3236ceba4"}
     }'
 
 # DynamoDB テーブル「Splatoon3Tracker」を作成
