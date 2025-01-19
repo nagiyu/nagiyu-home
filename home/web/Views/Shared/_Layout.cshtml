@@ -33,9 +33,17 @@
         window.OneSignalDeferred = window.OneSignalDeferred || [];
 
         OneSignalDeferred.push(async function(OneSignal) {
-          await OneSignal.init({
-            appId: "@Configuration["OneSignal:AppId"]",
-          });
+            await OneSignal.init({
+                appId: "@Configuration["OneSignal:AppId"]",
+            });
+
+            var subscriptionId = await OneSignal.User.PushSubscription.id;
+
+            if (subscriptionId) {
+                await fetch(`/api/notification/${subscriptionId}`, {
+                    method: "POST"
+                });
+            }
         });
     </script>
 </head>

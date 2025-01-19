@@ -14,5 +14,11 @@ namespace Nagiyu.Common.Auth.Service.Interfaces
         /// <returns>ユーザー情報</returns>
         /// <remarks>未認証: null, 認証済: ユーザー情報</remarks>
         public Task<T> GetUser<T>() where T : UserAuthBase;
+
+        /// <summary>
+        /// ユーザー情報を更新する
+        /// </summary>
+        /// <param name="user">ユーザー情報</param>
+        public Task UpdateUser<T>(T user) where T : UserAuthBase;
     }
 }

@@ -37,6 +37,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nagiyu.Common.Service", "co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nagiyu.Common.Service.Tests", "common\service\tests\Nagiyu.Common.Service.Tests.csproj", "{426F2A46-AD1C-42D5-9D6A-88375C8D2E0B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notification", "Notification", "{BD2D47F3-4CA4-499B-AB83-B7AEE295DD27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nagiyu.Notification.Web", "notification\web\Nagiyu.Notification.Web.csproj", "{0698AB39-F091-4E12-9DA6-85D4E4F1A351}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +91,10 @@ Global
 		{426F2A46-AD1C-42D5-9D6A-88375C8D2E0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{426F2A46-AD1C-42D5-9D6A-88375C8D2E0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{426F2A46-AD1C-42D5-9D6A-88375C8D2E0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0698AB39-F091-4E12-9DA6-85D4E4F1A351}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0698AB39-F091-4E12-9DA6-85D4E4F1A351}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0698AB39-F091-4E12-9DA6-85D4E4F1A351}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0698AB39-F091-4E12-9DA6-85D4E4F1A351}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,5 +114,7 @@ Global
 		{1B131F9E-4ED8-472A-BF6A-72FDAA8584D2} = {D240D605-8A75-47ED-A427-8765D058349F}
 		{FBBBE3F3-C582-4552-A0BC-CB1B904FF823} = {3F440E6F-A692-480A-AE6C-552D6EA96A21}
 		{426F2A46-AD1C-42D5-9D6A-88375C8D2E0B} = {3F440E6F-A692-480A-AE6C-552D6EA96A21}
+		{BD2D47F3-4CA4-499B-AB83-B7AEE295DD27} = {62078E8B-65A4-422C-BA2A-5C05CBDE0530}
+		{0698AB39-F091-4E12-9DA6-85D4E4F1A351} = {BD2D47F3-4CA4-499B-AB83-B7AEE295DD27}
 	EndGlobalSection
 EndGlobal

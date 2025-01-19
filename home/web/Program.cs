@@ -9,6 +9,7 @@ using Nagiyu.Auth.Web.Middlewares;
 using Nagiyu.Common.Auth.Service.Interfaces;
 using Nagiyu.Common.Auth.Service.Services;
 using Nagiyu.Common.Service.Services;
+using Nagiyu.Notification.Web.Controllers;
 using Nagiyu.Policy.Web.Controllers;
 using Nagiyu.Splatoon3Tracker.Service.Services;
 using Nagiyu.Splatoon3Tracker.Web.Controllers;
@@ -54,6 +55,7 @@ builder.Services.AddControllersWithViews()
     .AddApplicationPart(typeof(AccountController).Assembly)
     .AddApplicationPart(typeof(PolicyController).Assembly)
     .AddApplicationPart(typeof(PolicyAPIController).Assembly)
+    .AddApplicationPart(typeof(NotificationAPIController).Assembly)
     .AddApplicationPart(typeof(ToolsController).Assembly)
     .AddApplicationPart(typeof(KillRateController).Assembly)
     .AddApplicationPart(typeof(KillRateAPIController).Assembly);
