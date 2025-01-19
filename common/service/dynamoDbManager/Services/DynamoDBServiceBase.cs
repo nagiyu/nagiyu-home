@@ -58,6 +58,23 @@ namespace Nagiyu.Common.DynamoDBManager.Services
         }
 
         /// <summary>
+        /// 全てのレコードを取得する
+        /// </summary>
+        /// <param name="tableName">テーブル名</param>
+        /// <returns>レコードのリスト</returns>
+        protected async Task<List<Dictionary<string, AttributeValue>>> GetAllItems(string tableName)
+        {
+            var scanRequest = new ScanRequest
+            {
+                TableName = tableName
+            };
+
+            var response = await client.ScanAsync(scanRequest);
+
+            return response.Items;
+        }
+
+        /// <summary>
         /// アイテムを取得する
         /// </summary>
         /// <param name="tableName">テーブル名</param>

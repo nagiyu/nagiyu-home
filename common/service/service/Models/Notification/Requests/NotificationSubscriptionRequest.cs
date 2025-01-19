@@ -3,9 +3,9 @@
 namespace Nagiyu.Common.Service.Models.Notification.Requests
 {
     /// <summary>
-    /// Notification Request
+    /// Notification Request (Subscriptions)
     /// </summary>
-    internal class NotificationRequest
+    internal class NotificationSubscriptionRequest
     {
         /// <summary>
         /// Application ID
@@ -18,24 +18,8 @@ namespace Nagiyu.Common.Service.Models.Notification.Requests
         public NotificationContents Contents { get; set; }
 
         /// <summary>
-        /// Segments
-        /// </summary>
-        public List<string> IncludedSegments { get; set; }
-
-        /// <summary>
         /// Subscription IDs
         /// </summary>
         public List<string> IncludeSubscriptionIds { get; set; }
-    }
-
-    /// <summary>
-    /// Notification Contents
-    /// </summary>
-    internal class NotificationContents
-    {
-        /// <summary>
-        /// English
-        /// </summary>
-        public string En { get; set; }
     }
 }

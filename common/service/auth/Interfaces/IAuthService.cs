@@ -1,4 +1,5 @@
 ﻿using Nagiyu.Common.Auth.Service.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Nagiyu.Common.Auth.Service.Interfaces
@@ -8,6 +9,12 @@ namespace Nagiyu.Common.Auth.Service.Interfaces
     /// </summary>
     public interface IAuthService
     {
+        /// <summary>
+        /// 全てのユーザー情報を取得する
+        /// </summary>
+        /// <returns>ユーザー情報リスト</returns>
+        public Task<List<T>> GetAllUsers<T>() where T : UserAuthBase;
+
         /// <summary>
         /// ユーザー情報を取得する
         /// </summary>

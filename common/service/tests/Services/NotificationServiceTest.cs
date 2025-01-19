@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Nagiyu.Common.Auth.Service.Mocks;
 using Nagiyu.Common.Service.Services;
 using System.IO;
 using System.Net.Http;
@@ -9,6 +10,8 @@ namespace Nagiyu.Common.Service.Tests.Services
     [TestClass]
     public class NotificationServiceTest
     {
+        private readonly IConfiguration configuration;
+
         private readonly NotificationService notificationService;
 
         public NotificationServiceTest()
@@ -17,18 +20,27 @@ namespace Nagiyu.Common.Service.Tests.Services
             var builder = new ConfigurationBuilder()
                 .SetBasePath(basePath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-            var configuration = builder.Build();
+            configuration = builder.Build();
 
             var httpClient = new HttpClient();
 
-            notificationService = new NotificationService(configuration, httpClient);
+            var authService = new MockAuthService();
+
+            notificationService = new NotificationService(configuration, httpClient, authService);
         }
 
         [TestMethod]
-        public async Task PushTotalSubscriptionsTest()
+        public async Task PushNotifyOnlySystemRoleTest()
         {
-            var message = "Test Message";
-            await notificationService.PushTotalSubscriptions(message);
+            MockAuthService.SystemSubscriptionId = configuration["SystemSubscriptionId"];
+
+            await notificationService.PushNotifyOnlySystemRole("System Message Test");
+        }
+
+        [TestMethod]
+        public async Task PushNotifyAllTest()
+        {
+            await notificationService.PushNotifyAll("Test Message");
         }
     }
 }

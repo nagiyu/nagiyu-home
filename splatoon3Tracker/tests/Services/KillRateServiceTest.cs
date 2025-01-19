@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Nagiyu.Common.Auth.Service.Interfaces;
-using Nagiyu.Common.Auth.Service.Models;
+using Nagiyu.Common.Auth.Service.Mocks;
 using Nagiyu.Splatoon3Tracker.Service.Consts;
 using Nagiyu.Splatoon3Tracker.Service.Models.Requests;
 using Nagiyu.Splatoon3Tracker.Service.Services;
@@ -121,21 +121,6 @@ namespace Nagiyu.Splatoon3Tracker.Service.Tests.Services
             var killRates = await dynamoDBAccessor.GetKillRates();
 
             Assert.IsFalse(killRates.Exists(killRate => killRate.UserId == userId.ToString() && killRate.Id == response.Id));
-        }
-    }
-
-    public class MockAuthService : IAuthService
-    {
-        public static Guid UserId = Guid.NewGuid();
-
-        public Task<T> GetUser<T>() where T : UserAuthBase
-        {
-            return Task.FromResult(new UserAuthBase()
-            {
-                UserId = UserId,
-                UserName = "Test",
-                GoogleUserId = "GoogleUserID",
-            } as T);
         }
     }
 }
