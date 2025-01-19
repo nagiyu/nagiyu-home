@@ -11,7 +11,7 @@ awslocal dynamodb create-table \
   --global-secondary-indexes \
     '[
       {
-        "IndexName": "GoogleUserId-index-20250112",
+        "IndexName": "GoogleUserId-index-20250119",
         "KeySchema": [
           { "AttributeName": "GoogleUserId", "KeyType": "HASH" }
         ],
@@ -32,7 +32,8 @@ awslocal dynamodb put-item \
     '{
       "UserId": {"S": "acaa64d6-3da6-49a7-9c52-d57cfe8bdb34"},
       "GoogleUserId": {"S": "105305940240519833154"},
-      "UserName": {"S": "なぎゆー"}
+      "UserName": {"S": "なぎゆー"},
+      "SystemRole": {"S": "Admin"}
     }'
 
 # DynamoDB テーブル「Splatoon3Tracker」を作成
