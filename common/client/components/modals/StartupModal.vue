@@ -88,7 +88,7 @@ class StartupModal extends Vue {
    * モーダル
    */
   public readonly modalStyle = WebUtil.IsMobile()
-    ? { width: '90vw' }
+    ? { width: '85vw' }
     : { width: '30vw' };
 
   /**
