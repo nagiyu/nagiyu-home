@@ -36,6 +36,8 @@
             <LoginItem
               :recommendLoginKey="RECOMMEND_LOGIN_KEY"
               @changeCarouselStatus="ChangeCarouselStatus"
+              @openStartupModal="OpenStartupModal"
+              @closeStartupModal="CloseStartupModal"
             />
           </section>
         </b-carousel-item>

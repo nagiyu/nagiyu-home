@@ -64,6 +64,22 @@ class ConfirmItem extends Vue {
   }
 
   /**
+   * モーダルを開く
+   */
+  @Emit('openStartupModal')
+  public OpenStartupModal(): void {
+    return;
+  }
+
+  /**
+   * モーダルを閉じる
+   */
+  @Emit('closeStartupModal')
+  public CloseStartupModal(): void {
+    return;
+  }
+
+  /**
    * タイプに Web を設定
    */
   public SetConfirm(): void {
@@ -75,7 +91,11 @@ class ConfirmItem extends Vue {
    * プライバシーポリシーモーダルを開く
    */
   public OpenPrivacyPolicyModal(): void {
-    this.isPrivacyPolicyModalActive = true;
+    this.CloseStartupModal();
+
+    this.$nextTick(() => {
+      this.isPrivacyPolicyModalActive = true;
+    });
   }
 
   /**
@@ -83,6 +103,10 @@ class ConfirmItem extends Vue {
    */
   public ClosePrivacyPolicyModal(): void {
     this.isPrivacyPolicyModalActive = false;
+
+    this.$nextTick(() => {
+      this.OpenStartupModal();
+    });
   }
 
   /**
