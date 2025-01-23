@@ -1,6 +1,6 @@
 <template>
   <b-modal v-model="isPrivacyPolicyModalActive" has-modal-card :can-cancel="false">
-    <div class="modal-content">
+    <div class="modal-content" :style="modalStyle">
       <header class="modal-card-head">
         <p class="modal-card-title">
           プライバシーポリシー
@@ -23,6 +23,7 @@
 <script lang="ts">
 import { Component, Emit, Prop, toNative, Vue } from "vue-facing-decorator";
 import PrivacyPolicy from "@common/components/PrivacyPolicy.vue";
+import WebUtil from "@common/utils/WebUtil";
 
 @Component({
   components: {
@@ -30,6 +31,11 @@ import PrivacyPolicy from "@common/components/PrivacyPolicy.vue";
   }
 })
 class PrivacyPolicyModal extends Vue {
+  /**
+   * モーダル
+   */
+  public readonly modalStyle = WebUtil.IsMobile() ? { width: '95vw' } : { width: '30vw' };
+
   /**
    * プライバシーポリシーモーダルの表示状態
    */

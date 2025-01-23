@@ -1,6 +1,6 @@
 <template>
   <b-modal v-model="isStartupModalActive" has-modal-card :can-cancel="false">
-    <div class="modal-content">
+    <div class="modal-content" :style="modalStyle">
       <header class="modal-card-head">
         <p class="modal-card-title">
           確認
@@ -66,6 +66,7 @@ import NotifyItem from "@common/components/carouselItems/NotifyItem.vue";
 import LoginItem from "@common/components/carouselItems/LoginItem.vue";
 import PWAUtils from "@common/utils/PWAUtils";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
+import WebUtil from "@common/utils/WebUtil";
 
 @Component({
   components: {
@@ -79,10 +80,12 @@ class StartupModal extends Vue {
   /**
    * カルーセルのスタイル
    */
-  public readonly carouselStyle = {
-    width: '30vw',
-    height: '50vh'
-  };
+  public readonly carouselStyle = { height: '50vh' };
+
+  /**
+   * モーダル
+   */
+  public readonly modalStyle = WebUtil.IsMobile() ? { width: '95vw' } : { width: '30vw' };
 
   /**
    * タイプのローカルストレージのキー
