@@ -34,7 +34,9 @@ class PrivacyPolicyModal extends Vue {
   /**
    * モーダル
    */
-  public readonly modalStyle = WebUtil.IsMobile() ? { width: '95vw' } : { width: '30vw' };
+  public readonly modalStyle = WebUtil.IsMobile()
+    ? { width: '90vw', 'z-index': 3000 }
+    : { width: '30vw', 'z-index': 3000 };
 
   /**
    * プライバシーポリシーモーダルの表示状態

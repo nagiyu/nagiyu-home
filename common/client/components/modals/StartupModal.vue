@@ -85,7 +85,9 @@ class StartupModal extends Vue {
   /**
    * モーダル
    */
-  public readonly modalStyle = WebUtil.IsMobile() ? { width: '95vw' } : { width: '30vw' };
+  public readonly modalStyle = WebUtil.IsMobile()
+    ? { width: '90vw', 'z-index': 1000 }
+    : { width: '30vw', 'z-index': 1000 };
 
   /**
    * タイプのローカルストレージのキー
