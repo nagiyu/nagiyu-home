@@ -7,7 +7,7 @@
         </p>
       </header>
 
-      <section class="modal-card-body">
+      <section class="modal-card-body" style="height: 80vh;">
         <div class="content">
           <Terms />
         </div>
