@@ -1,4 +1,7 @@
 <template>
+  <div v-if="isTermsModalActive" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
+  </div>
+
   <b-modal v-model="isTermsModalActive" has-modal-card :can-cancel="false">
     <div class="modal-content" :style="modalStyle">
       <header class="modal-card-head">
@@ -35,8 +38,8 @@ class TermsModal extends Vue {
    * モーダル
    */
   public readonly modalStyle = WebUtil.IsMobile()
-    ? { width: '90vw', 'z-index': 3000 }
-    : { width: '30vw', 'z-index': 3000 };
+    ? { width: '90vw' }
+    : { width: '30vw' };
 
   /**
    * 利用規約モーダルの表示状態
