@@ -1,5 +1,5 @@
 <template>
-  <b-modal v-model="isStartupModalActive" has-modal-card :can-cancel="false">
+  <b-modal key="startup-modal" v-model="isStartupModalActive" has-modal-card :can-cancel="false">
     <div class="modal-content" :style="modalStyle">
       <header class="modal-card-head">
         <p class="modal-card-title">
@@ -36,8 +36,6 @@
             <LoginItem
               :recommendLoginKey="RECOMMEND_LOGIN_KEY"
               @changeCarouselStatus="ChangeCarouselStatus"
-              @openStartupModal="OpenStartupModal"
-              @closeStartupModal="CloseStartupModal"
             />
           </section>
         </b-carousel-item>

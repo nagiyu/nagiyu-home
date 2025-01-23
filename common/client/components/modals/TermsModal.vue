@@ -1,8 +1,5 @@
 <template>
-  <div v-if="isTermsModalActive" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
-  </div>
-
-  <b-modal v-model="isTermsModalActive" has-modal-card :can-cancel="false">
+  <b-modal key="terms-modal" v-model="isTermsModalActive" has-modal-card :can-cancel="false">
     <div class="modal-content" :style="modalStyle">
       <header class="modal-card-head">
         <p class="modal-card-title">
