@@ -10,30 +10,13 @@
     <div></div>
     <b-button type="is-success" @click="SetConfirm">同意する</b-button>
   </b-field>
-
-  <PrivacyPolicyModal
-    :isPrivacyPolicyModalActive="isPrivacyPolicyModalActive"
-    @closePrivacyPolicyModal="ClosePrivacyPolicyModal"
-  />
-
-  <TermsModal
-    :isTermsModalActive="isTermsModalActive"
-    @closeTermsModal="CloseTermsModal"
-  />
 </template>
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, toNative } from "vue-facing-decorator";
-import PrivacyPolicyModal from "@common/components/modals/PrivacyPolicyModal.vue";
-import TermsModal from "@common/components/modals/TermsModal.vue";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 
-@Component({
-  components: {
-    PrivacyPolicyModal,
-    TermsModal
-  }
-})
+@Component
 class ConfirmItem extends Vue {
   /**
    * タイプのローカルストレージのキー
@@ -64,39 +47,27 @@ class ConfirmItem extends Vue {
   }
 
   /**
-   * タイプに Web を設定
-   */
-  public SetConfirm(): void {
-    LocalStorageUtil.SetItem(this.confirmKey, "confirm");
-    this.ChangeCarouselStatus();
-  }
-
-  /**
    * プライバシーポリシーモーダルを開く
    */
+  @Emit('openPrivacyPolicyModal')
   public OpenPrivacyPolicyModal(): void {
-    this.isPrivacyPolicyModalActive = true;
-  }
-
-  /**
-   * プライバシーポリシーモーダルを閉じる
-   */
-  public ClosePrivacyPolicyModal(): void {
-    this.isPrivacyPolicyModalActive = false;
+    return;
   }
 
   /**
    * 利用規約モーダルを開く
    */
+  @Emit('openTermsModal')
   public OpenTermsModal(): void {
-    this.isTermsModalActive = true;
+    return;
   }
 
   /**
-   * 利用規約モーダルを閉じる
+   * タイプに Web を設定
    */
-  public CloseTermsModal(): void {
-    this.isTermsModalActive = false;
+  public SetConfirm(): void {
+    LocalStorageUtil.SetItem(this.confirmKey, "confirm");
+    this.ChangeCarouselStatus();
   }
 }
 

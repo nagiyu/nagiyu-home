@@ -1,5 +1,5 @@
 <template>
-  <b-modal key="startup-modal" v-model="isStartupModalActive" has-modal-card :can-cancel="false">
+  <b-modal v-model="isStartupModalActive" has-modal-card :can-cancel="false">
     <div class="modal-content" :style="modalStyle">
       <header class="modal-card-head">
         <p class="modal-card-title">
@@ -27,6 +27,8 @@
             <ConfirmItem
               :confirmKey="CONFIRM_KEY"
               @changeCarouselStatus="ChangeCarouselStatus"
+              @openPrivacyPolicyModal="OpenPrivacyPolicyModal"
+              @openTermsModal="OpenTermsModal"
             />
           </section>
         </b-carousel-item>
@@ -73,7 +75,7 @@ import WebUtil from "@common/utils/WebUtil";
     PWAItem,
     ConfirmItem,
     LoginItem,
-    NotifyItem,
+    NotifyItem
   }
 })
 class StartupModal extends Vue {
@@ -86,7 +88,7 @@ class StartupModal extends Vue {
    * モーダル
    */
   public readonly modalStyle = WebUtil.IsMobile()
-    ? { width: '85vw' }
+    ? { width: '90vw' }
     : { width: '30vw' };
 
   /**
@@ -144,6 +146,22 @@ class StartupModal extends Vue {
    */
   @Emit('closeStartupModal')
   public CloseStartupModal(): void {
+    return;
+  }
+
+  /**
+   * プライバシーポリシーモーダルを開く
+   */
+  @Emit('openPrivacyPolicyModal')
+  public OpenPrivacyPolicyModal(): void {
+    return;
+  }
+
+  /**
+   * 利用規約モーダルを開く
+   */
+  @Emit('openTermsModal')
+  public OpenTermsModal(): void {
     return;
   }
 

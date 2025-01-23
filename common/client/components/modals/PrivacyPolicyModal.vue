@@ -1,5 +1,5 @@
 <template>
-  <b-modal key="privacy-policy-modal" v-model="isPrivacyPolicyModalActive" has-modal-card :can-cancel="false">
+  <b-modal v-model="isPrivacyPolicyModalActive" has-modal-card :can-cancel="false">
     <div class="modal-content" :style="modalStyle">
       <header class="modal-card-head">
         <p class="modal-card-title">
