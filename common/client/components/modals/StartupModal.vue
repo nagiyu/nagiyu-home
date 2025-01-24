@@ -42,7 +42,7 @@
           </section>
         </b-carousel-item>
 
-        <b-carousel-item v-if="IsEnabledNotifyCarouesel()">
+        <b-carousel-item v-if="isEnabledNotifyCarouesel">
           <section class="modal-card-body" :style="carouselStyle">
             <NotifyItem
               :recommendNotifyKey="RECOMMEND_NOTIFY_KEY"
@@ -69,6 +69,7 @@ import LoginItem from "@common/components/carouselItems/LoginItem.vue";
 import PWAUtils from "@common/utils/PWAUtils";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 import WebUtil from "@common/utils/WebUtil";
+import AuthUtil from "@auth/utils/AuthUtil";
 
 @Component({
   components: {
@@ -115,6 +116,11 @@ class StartupModal extends Vue {
    * カルーセルのインデックス
    */
   public carousel: number = 0;
+
+  /**
+   * PWA のカルーセルが有効かどうか
+   */
+  public isEnabledNotifyCarouesel: boolean = false;
 
   /**
    * モーダルの表示状態
@@ -168,7 +174,9 @@ class StartupModal extends Vue {
   /**
    * カルーセルのアイテム数
    */
-  public CarouselItemCount(): number {
+  public async CarouselItemCount(): Promise<number> {
+    await this.ChangeNotifyCaroueselStatus();
+
     var count = 0;
 
     if (this.IsEnabledPWACarouesel()) {
@@ -183,7 +191,7 @@ class StartupModal extends Vue {
       count++;
     }
 
-    if (this.IsEnabledNotifyCarouesel()) {
+    if (this.isEnabledNotifyCarouesel) {
       count++;
     }
 
@@ -212,34 +220,49 @@ class StartupModal extends Vue {
   }
 
   /**
-   * 通知を勧めるカルーセルが有効かどうか
+   * 通知を勧めるカルーセルの状態を変更する
    */
-  public IsEnabledNotifyCarouesel(): boolean {
-    return PWAUtils.IsPWA && LocalStorageUtil.GetItem(this.RECOMMEND_NOTIFY_KEY) === null;
+  public async ChangeNotifyCaroueselStatus(): Promise<void> {
+    if (!PWAUtils.IsPWA) {
+      this.isEnabledNotifyCarouesel = false;
+      return;
+    }
+
+    var subscriptionId = this.GetSubscriptionId();
+
+    var user = await AuthUtil.GetUser<IUserAuthBase>();
+    var userSubscriptionId = user ? user.oneSignalSubscriptionId : null;
+
+    if (subscriptionId !== null && userSubscriptionId !== null && subscriptionId === userSubscriptionId) {
+      this.isEnabledNotifyCarouesel = false;
+      return;
+    }
+
+    this.isEnabledNotifyCarouesel = LocalStorageUtil.GetItem(this.RECOMMEND_NOTIFY_KEY) === null;
   }
 
   /**
    * 前に戻るボタンが有効かどうか
    */
-  public IsEnabledPrevButton(): boolean {
-    return this.CarouselItemCount() !== 1 && this.carousel > 0;
+  public async IsEnabledPrevButton(): Promise<boolean> {
+    return await this.CarouselItemCount() !== 1 && this.carousel > 0;
   }
 
   /**
    * 次に進むボタンが有効かどうか
    */
-  public IsEnabledNextButton(): boolean {
-    return this.CarouselItemCount() !== 1 && this.carousel < this.CarouselItemCount() - 1;
+  public async IsEnabledNextButton(): Promise<boolean> {
+    return await this.CarouselItemCount() !== 1 && this.carousel < await this.CarouselItemCount() - 1;
   }
 
   /**
    * カルーセルのステータスを変更する
    */
-  public ChangeCarouselStatus(): void {
+  public async ChangeCarouselStatus(): Promise<void> {
     this.CloseStartupModal();
 
-    this.$nextTick(() => {
-      if (this.CarouselItemCount() > 0) {
+    this.$nextTick(async () => {
+      if (await this.CarouselItemCount() > 0) {
         this.OpenStartupModal();
       }
     });
@@ -257,6 +280,17 @@ class StartupModal extends Vue {
    */
   public NextCarousel(): void {
     this.carousel++;
+  }
+
+  /**
+   * SubscriptionID を取得する
+   */
+  private GetSubscriptionId(): string | null {
+    if (this.$OneSignal) {
+      return this.$OneSignal.User.PushSubscription.id ?? null;
+    }
+
+    return null;
   }
 }
 
