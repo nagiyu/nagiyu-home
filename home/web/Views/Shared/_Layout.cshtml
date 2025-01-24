@@ -27,25 +27,6 @@
     }
 
     <link rel="manifest" href="/manifest.json">
-
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-
-        OneSignalDeferred.push(async function(OneSignal) {
-            await OneSignal.init({
-                appId: "@Configuration["OneSignal:AppId"]",
-            });
-
-            var subscriptionId = await OneSignal.User.PushSubscription.id;
-
-            if (subscriptionId) {
-                await fetch(`/api/notification/${subscriptionId}`, {
-                    method: "POST"
-                });
-            }
-        });
-    </script>
 </head>
 
 <body>

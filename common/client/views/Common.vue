@@ -20,6 +20,7 @@
 
 <script lang="ts">
 import { Component, Vue, toNative } from "vue-facing-decorator";
+import axios from "axios";
 import StartupModal from "@common/components/modals/StartupModal.vue";
 import PrivacyPolicyModal from "@common/components/modals/PrivacyPolicyModal.vue";
 import TermsModal from "@common/components/modals/TermsModal.vue";
@@ -46,6 +47,14 @@ class Common extends Vue {
    * 利用規約モーダルの表示状態
    */
   public isTermsModalActive: boolean = false;
+
+  public async beforeCreate(): Promise<void> {
+    var subscriptionId = this.$OneSignal.User.PushSubscription.id;
+
+    if (subscriptionId) {
+      await axios.post(`/api/notification/${subscriptionId}`);
+    }
+  }
 
   /**
    * スタートアップモーダルを開く
