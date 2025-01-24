@@ -40,9 +40,9 @@ class NotifyItem extends Vue {
    */
   public async PromptPush(): Promise<void> {
     if (this.$OneSignal) {
-      await this.$OneSignal.Slidedown.promptPush();
-    } else {
-      console.error("OneSignal is not initialized.");
+      await this.$OneSignal.Slidedown.promptPush({
+        force: true
+      });
     }
   }
 
