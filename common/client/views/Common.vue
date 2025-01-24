@@ -1,5 +1,5 @@
 <template>
-  <StartupModal 
+  <StartupModal
     :isStartupModalActive="isStartupModalActive"
     @openStartupModal="OpenStartupModal"
     @closeStartupModal="CloseStartupModal"
