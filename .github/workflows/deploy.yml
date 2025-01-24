@@ -18,6 +18,9 @@ jobs:
       with:
         node-version: '22'
 
+    - name: Update .env
+      run: echo '${{ secrets.PRODUCTION_ENV }}' > .env
+
     - name: Install dependencies
       run: npm install
 
