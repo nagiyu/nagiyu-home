@@ -6,9 +6,8 @@
   <br />
 
   <b-field position="is-centered" class="buttons">
-    <!-- TODO: 要素が1つだとセンタリングされないので暫定追加 -->
-    <div></div>
-    <b-button type="is-success" @click="SetRecommendNotify">OK</b-button>
+    <b-button type="is-success" @click="PromptPush">通知の可否を表示する</b-button>
+    <b-button type="is-warning" @click="SetRecommendNotify">今はやめておく</b-button>
   </b-field>
 </template>
 
@@ -34,6 +33,15 @@ class NotifyItem extends Vue {
   @Emit("changeCarouselStatus")
   public ChangeCarouselStatus(): void {
     return;
+  }
+
+  /**
+   * 通知の許可を表示する
+   */
+  public async PromptPush(): Promise<void> {
+    if (this.$OneSignal) {
+      await this.$OneSignal.Slidedown.promptPush();
+    }
   }
 
   /**
