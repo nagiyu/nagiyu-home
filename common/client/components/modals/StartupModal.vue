@@ -302,7 +302,7 @@ class StartupModal extends Vue {
       return;
     }
 
-    var subscriptionId = this.GetSubscriptionId();
+    var subscriptionId = await this.GetSubscriptionId();
 
     if (subscriptionId !== null) {
       this.isEnabledNotifyCarouesel = false;
@@ -329,9 +329,9 @@ class StartupModal extends Vue {
   /**
    * SubscriptionID を取得する
    */
-  private GetSubscriptionId(): string | null {
+  private async GetSubscriptionId(): Promise<string | null> {
     if (this.$OneSignal) {
-      return this.$OneSignal.User.PushSubscription.id ?? null;
+      return await this.$OneSignal.User.PushSubscription.id ?? null;
     }
 
     return null;
