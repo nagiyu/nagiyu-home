@@ -190,13 +190,6 @@ class StartupModal extends Vue {
   public isEnabledNextButton: boolean = false;
 
   /**
-   * Created フック
-   */
-  public async created(): Promise<void> {
-    await this.$OneSignal.User.PushSubscription.optIn();
-  }
-
-  /**
    * マウント時の処理
    */
   public async mounted(): Promise<void> {
@@ -304,6 +297,7 @@ class StartupModal extends Vue {
    * 通知を勧めるカルーセルの状態を変更する
    */
   private async ChangeNotifyCaroueselStatus(): Promise<void> {
+    await this.$OneSignal.User.PushSubscription.optIn();
     var subscriptionId = this.$OneSignal.User.PushSubscription.id;
     console.log(`DEBUG::: id in Common.vue: ${this.$OneSignal.User.PushSubscription.id}`);
 
