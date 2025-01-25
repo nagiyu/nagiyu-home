@@ -203,7 +203,7 @@ class StartupModal extends Vue {
     this.ChangePWACaroueselStatus();
     this.ChangeConfirmCaroueselStatus();
     await this.ChangeLoginCaroueselStatus();
-    await this.ChangeNotifyCaroueselStatus();
+    this.ChangeNotifyCaroueselStatus();
 
     await this.ChangePrevButtonStatus();
     await this.ChangeNextButtonStatus();
@@ -242,7 +242,7 @@ class StartupModal extends Vue {
     this.ChangePWACaroueselStatus();
     this.ChangeConfirmCaroueselStatus();
     await this.ChangeLoginCaroueselStatus();
-    await this.ChangeNotifyCaroueselStatus();
+    this.ChangeNotifyCaroueselStatus();
 
     var count = 0;
 
@@ -296,7 +296,8 @@ class StartupModal extends Vue {
   /**
    * 通知を勧めるカルーセルの状態を変更する
    */
-  private async ChangeNotifyCaroueselStatus(): Promise<void> {
+  private ChangeNotifyCaroueselStatus(): void {
+    console.log(`DEBUG::: optedIn: ${this.$OneSignal.User.PushSubscription.optedIn}`);
     var subscriptionId = this.$OneSignal.User.PushSubscription.id;
 
     if (subscriptionId !== null && subscriptionId !== undefined) {

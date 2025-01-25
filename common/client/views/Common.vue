@@ -106,9 +106,8 @@ class Common extends Vue {
    * OneSignal の SubscriptionId をバインドする
    */
   private async BindSubscriptionId(): Promise<void> {
+    console.log(`DEBUG::: optedIn: ${this.$OneSignal.User.PushSubscription.optedIn}`);
     var subscriptionId = this.$OneSignal.User.PushSubscription.id;
-
-    console.log(`DEBUG::: SubscriptionId: ${subscriptionId}`);
 
     if (!subscriptionId) {
       return;
