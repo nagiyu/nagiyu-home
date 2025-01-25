@@ -193,6 +193,10 @@ class StartupModal extends Vue {
    * マウント時の処理
    */
   public async mounted(): Promise<void> {
+    this.$OneSignal.User.PushSubscription.addEventListener("change", async () => {
+      await this.ChangeCarouselStatus();
+    });
+
     await this.ChangeCarouselStatus();
   }
 
