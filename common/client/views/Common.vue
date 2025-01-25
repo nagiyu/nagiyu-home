@@ -106,10 +106,9 @@ class Common extends Vue {
    * OneSignal の SubscriptionId をバインドする
    */
   private async BindSubscriptionId(): Promise<void> {
-    await this.$OneSignal.User.PushSubscription.optIn();
-    var subscriptionId = this.$OneSignal.User.PushSubscription.id;
+    var subscriptionId = await this.GetSubscriptionId();
 
-    if (!subscriptionId) {
+    if (subscriptionId !== '') {
       return;
     }
 
@@ -121,6 +120,18 @@ class Common extends Vue {
 
     if (subscriptionId !== user.oneSignalSubscriptionId) {
       await axios.post(`/api/notification/${subscriptionId}`);
+    }
+  }
+
+  /**
+   * OneSignal の SubscriptionId を取得する
+   */
+  private async GetSubscriptionId(): Promise<string> {
+    if (import.meta.env.PROD) {
+      await this.$OneSignal.User.PushSubscription.optIn();
+      return this.$OneSignal.User.PushSubscription.id ?? '';
+    } else {
+      return '';
     }
   }
 }

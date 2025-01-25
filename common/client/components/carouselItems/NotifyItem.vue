@@ -1,7 +1,6 @@
 <template>
   <p>通知を許可してください。</p>
   <p>※環境によっては通知されないことがあります。</p>
-  <p>後から設定を変更することも可能です。</p>
 
   <br />
 
@@ -39,10 +38,12 @@ class NotifyItem extends Vue {
    * 通知の許可を表示する
    */
   public async PromptPush(): Promise<void> {
-    if (this.$OneSignal) {
-      await this.$OneSignal.Slidedown.promptPush({
-        force: true
-      });
+    if (import.meta.env.PROD) {
+      if (this.$OneSignal) {
+        await this.$OneSignal.Slidedown.promptPush({
+          force: true
+        });
+      }
     }
   }
 

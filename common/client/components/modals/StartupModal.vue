@@ -297,15 +297,31 @@ class StartupModal extends Vue {
    * 通知を勧めるカルーセルの状態を変更する
    */
   private async ChangeNotifyCaroueselStatus(): Promise<void> {
-    await this.$OneSignal.User.PushSubscription.optIn();
-    var subscriptionId = this.$OneSignal.User.PushSubscription.id;
+    if (!PWAUtils.IsPWA) {
+      this.isEnabledNotifyCarouesel = false;
+      return;
+    }
 
-    if (subscriptionId !== null && subscriptionId !== undefined) {
+    var subscriptionId = await this.GetSubscriptionId();
+
+    if (subscriptionId !== '') {
       this.isEnabledNotifyCarouesel = false;
       return;
     }
 
     this.isEnabledNotifyCarouesel = LocalStorageUtil.GetItem(this.RECOMMEND_NOTIFY_KEY) === null;
+  }
+
+  /**
+   * OneSignal の SubscriptionId を取得する
+   */
+  private async GetSubscriptionId(): Promise<string> {
+    if (import.meta.env.PROD) {
+      await this.$OneSignal.User.PushSubscription.optIn();
+      return this.$OneSignal.User.PushSubscription.id ?? '';
+    } else {
+      return '';
+    }
   }
 
   /**
