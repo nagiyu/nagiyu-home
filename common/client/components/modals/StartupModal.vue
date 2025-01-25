@@ -299,7 +299,6 @@ class StartupModal extends Vue {
   private async ChangeNotifyCaroueselStatus(): Promise<void> {
     await this.$OneSignal.User.PushSubscription.optIn();
     var subscriptionId = this.$OneSignal.User.PushSubscription.id;
-    console.log(`DEBUG::: id in Common.vue: ${this.$OneSignal.User.PushSubscription.id}`);
 
     if (subscriptionId !== null && subscriptionId !== undefined) {
       this.isEnabledNotifyCarouesel = false;
