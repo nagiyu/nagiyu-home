@@ -283,7 +283,7 @@ class StartupModal extends Vue {
    * ログインを勧めるカルーセルの状態を変更する
    */
   private async ChangeLoginCaroueselStatus(): Promise<void> {
-    var user = AuthUtil.GetUser<IUserAuthBase>();
+    var user = await AuthUtil.GetUser<IUserAuthBase>();
 
     if (user !== null) {
       this.isEnabledLoginCarouesel = false;
