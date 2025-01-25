@@ -53,6 +53,17 @@ namespace Nagiyu.Common.Auth.Service.Services
         }
 
         /// <summary>
+        /// 全てのユーザー情報を取得する
+        /// </summary>
+        /// <returns>ユーザー情報リスト</returns>
+        public async Task<List<T>> GetAllUsers<T>() where T : UserAuthBase
+        {
+            var items = await GetAllItems(tableName);
+
+            return items.Select(item => (T)Activator.CreateInstance(typeof(T), item)).ToList();
+        }
+
+        /// <summary>
         /// ユーザー情報を取得する
         /// </summary>
         /// <returns>ユーザー情報</returns>

@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\common\service\auth\Nagiyu.Common.Auth.Service.csproj" />
+    <ProjectReference Include="..\..\common\service\service\Nagiyu.Common.Service.csproj" />
   </ItemGroup>
 
 </Project>

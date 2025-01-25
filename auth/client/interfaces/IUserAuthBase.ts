@@ -16,4 +16,14 @@ interface IUserAuthBase {
    * GoogleユーザーID
    */
   googleUserId: string;
+
+  /**
+   * システムロール
+   */
+  systemRole: string;
+
+  /**
+   * OneSignal Subscription ID
+   */
+  oneSignalSubscriptionId: string;
 }

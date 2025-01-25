@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nagiyu.Common.Service.Services;
 using Nagiyu.Splatoon3Tracker.Service.Consts;
 using Nagiyu.Splatoon3Tracker.Service.Exceptions;
 using Nagiyu.Splatoon3Tracker.Service.Models.Requests;
@@ -13,9 +14,12 @@ namespace Nagiyu.Splatoon3Tracker.Web.Controllers
     {
         private readonly KillRateService killRateService;
 
-        public KillRateAPIController(KillRateService killRateService)
+        private readonly NotificationService notification;
+
+        public KillRateAPIController(KillRateService killRateService, NotificationService notification)
         {
             this.killRateService = killRateService;
+            this.notification = notification;
         }
 
         [HttpGet]
@@ -78,10 +82,14 @@ namespace Nagiyu.Splatoon3Tracker.Web.Controllers
             }
             catch (ParameterException e)
             {
+                await notification.PushNotifyOnlySystemRole(e.Message);
+
                 return StatusCode(400, e.Message);
             }
             catch (Exception e)
             {
+                await notification.PushNotifyOnlySystemRole(e.Message);
+
                 return StatusCode(500, e.Message);
             }
         }

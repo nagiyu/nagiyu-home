@@ -8,6 +8,8 @@ using Nagiyu.Auth.Web.Controllers;
 using Nagiyu.Auth.Web.Middlewares;
 using Nagiyu.Common.Auth.Service.Interfaces;
 using Nagiyu.Common.Auth.Service.Services;
+using Nagiyu.Common.Service.Services;
+using Nagiyu.Notification.Web.Controllers;
 using Nagiyu.Policy.Web.Controllers;
 using Nagiyu.Splatoon3Tracker.Service.Services;
 using Nagiyu.Splatoon3Tracker.Web.Controllers;
@@ -19,9 +21,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // サービス登録
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<DynamoDBAccessor>();
+builder.Services.AddSingleton<NotificationService>();
 builder.Services.AddSingleton<KillRateService>();
 
 // 環境ごとの Kestrel 設定をロード
@@ -51,9 +55,13 @@ builder.Services.AddControllersWithViews()
     .AddApplicationPart(typeof(AccountController).Assembly)
     .AddApplicationPart(typeof(PolicyController).Assembly)
     .AddApplicationPart(typeof(PolicyAPIController).Assembly)
+    .AddApplicationPart(typeof(NotificationAPIController).Assembly)
     .AddApplicationPart(typeof(ToolsController).Assembly)
     .AddApplicationPart(typeof(KillRateController).Assembly)
     .AddApplicationPart(typeof(KillRateAPIController).Assembly);
+
+// WPA
+builder.Services.AddProgressiveWebApp();
 
 builder.Services
     .AddAuthentication(options =>

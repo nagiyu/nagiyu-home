@@ -29,6 +29,18 @@ namespace Nagiyu.Common.Auth.Service.Models
         public string GoogleUserId { get; set; }
 
         /// <summary>
+        /// システムロール
+        /// </summary>
+        [DynamoDBProperty]
+        public string SystemRole { get; set; }
+
+        /// <summary>
+        /// OneSignal Subscription ID
+        /// </summary>
+        [DynamoDBProperty]
+        public string OneSignalSubscriptionId { get; set; }
+
+        /// <summary>
         /// コンストラクタ
         /// </summary>
         public UserAuthBase()
@@ -66,6 +78,24 @@ namespace Nagiyu.Common.Auth.Service.Models
             else
             {
                 GoogleUserId = string.Empty;
+            }
+
+            if (keyValuePairs.TryGetValue(nameof(SystemRole), out var systemRoleValue))
+            {
+                SystemRole = systemRoleValue.S;
+            }
+            else
+            {
+                SystemRole = string.Empty;
+            }
+
+            if (keyValuePairs.TryGetValue(nameof(OneSignalSubscriptionId), out var oneSignalSubscriptionIdValue))
+            {
+                OneSignalSubscriptionId = oneSignalSubscriptionIdValue.S;
+            }
+            else
+            {
+                OneSignalSubscriptionId = string.Empty;
             }
         }
     }
