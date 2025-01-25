@@ -296,7 +296,7 @@ class StartupModal extends Vue {
 
     var subscriptionId = this.GetSubscriptionId();
 
-    if (subscriptionId === null) {
+    if (subscriptionId !== null) {
       this.isEnabledNotifyCarouesel = false;
       return;
     }
