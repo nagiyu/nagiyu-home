@@ -309,13 +309,6 @@ class StartupModal extends Vue {
       return;
     }
 
-    var user = await AuthUtil.GetUser<IUserAuthBase>();
-
-    if (user !== null && user.oneSignalSubscriptionId === subscriptionId) {
-      this.isEnabledNotifyCarouesel = false;
-      return;
-    }
-
     this.isEnabledNotifyCarouesel = LocalStorageUtil.GetItem(this.RECOMMEND_NOTIFY_KEY) === null;
   }
 
