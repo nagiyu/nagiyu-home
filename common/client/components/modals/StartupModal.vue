@@ -192,8 +192,8 @@ class StartupModal extends Vue {
   /**
    * マウント時の処理
    */
-  public mounted(): void {
-    this.ChangeCarouselStatus();
+  public async mounted(): Promise<void> {
+    await this.ChangeCarouselStatus();
   }
 
   /**
