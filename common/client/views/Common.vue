@@ -24,6 +24,7 @@ import axios from "axios";
 import StartupModal from "@common/components/modals/StartupModal.vue";
 import PrivacyPolicyModal from "@common/components/modals/PrivacyPolicyModal.vue";
 import TermsModal from "@common/components/modals/TermsModal.vue";
+import AuthUtil from "@auth/utils/AuthUtil";
 
 @Component({
   components: {
@@ -48,12 +49,11 @@ class Common extends Vue {
    */
   public isTermsModalActive: boolean = false;
 
+  /**
+   * BeforeCreate フック
+   */
   public async beforeCreate(): Promise<void> {
-    var subscriptionId = this.$OneSignal.User.PushSubscription.id;
-
-    if (subscriptionId) {
-      await axios.post(`/api/notification/${subscriptionId}`);
-    }
+    await this.BindSubscriptionId();
   }
 
   /**
@@ -100,6 +100,27 @@ class Common extends Vue {
   public CloseTermsModal(): void {
     this.isTermsModalActive = false;
     this.isStartupModalActive = true;
+  }
+
+  /**
+   * OneSignal の SubscriptionId をバインドする
+   */
+  private async BindSubscriptionId(): Promise<void> {
+    var subscriptionId = this.$OneSignal.User.PushSubscription.id;
+
+    if (!subscriptionId) {
+      return;
+    }
+
+    var user = await AuthUtil.GetUser<IUserAuthBase>();
+
+    if (!user) {
+      return;
+    }
+
+    if (subscriptionId !== user.oneSignalSubscriptionId) {
+      await axios.post(`/api/notification/${subscriptionId}`);
+    }
   }
 }
 

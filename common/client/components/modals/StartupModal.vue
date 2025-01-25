@@ -69,7 +69,6 @@ import LoginItem from "@common/components/carouselItems/LoginItem.vue";
 import PWAUtils from "@common/utils/PWAUtils";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 import WebUtil from "@common/utils/WebUtil";
-import AuthUtil from "@auth/utils/AuthUtil";
 
 @Component({
   components: {
@@ -297,10 +296,7 @@ class StartupModal extends Vue {
 
     var subscriptionId = this.GetSubscriptionId();
 
-    var user = await AuthUtil.GetUser<IUserAuthBase>();
-    var userSubscriptionId = user ? user.oneSignalSubscriptionId : null;
-
-    if (subscriptionId !== null && userSubscriptionId !== null && subscriptionId === userSubscriptionId) {
+    if (subscriptionId === null) {
       this.isEnabledNotifyCarouesel = false;
       return;
     }
