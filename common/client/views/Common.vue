@@ -50,9 +50,9 @@ class Common extends Vue {
   public isTermsModalActive: boolean = false;
 
   /**
-   * BeforeCreate フック
+   * Created フック
    */
-  public async beforeCreate(): Promise<void> {
+  public async created(): Promise<void> {
     await this.BindSubscriptionId();
   }
 
@@ -105,7 +105,7 @@ class Common extends Vue {
   /**
    * OneSignal の SubscriptionId をバインドする
    */
-  public async BindSubscriptionId(): Promise<void> {
+  private async BindSubscriptionId(): Promise<void> {
     var subscriptionId = this.$OneSignal.User.PushSubscription.id;
 
     if (!subscriptionId) {
