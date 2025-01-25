@@ -202,7 +202,7 @@ class StartupModal extends Vue {
   public async ChangeCarouselStatus(): Promise<void> {
     this.ChangePWACaroueselStatus();
     this.ChangeConfirmCaroueselStatus();
-    this.ChangeLoginCaroueselStatus();
+    await this.ChangeLoginCaroueselStatus();
     await this.ChangeNotifyCaroueselStatus();
 
     await this.ChangePrevButtonStatus();
