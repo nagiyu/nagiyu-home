@@ -13,7 +13,7 @@
         :arrow="false"
         :indicator="false"
       >
-        <b-carousel-item v-if="IsEnabledPWACarouesel()">
+        <b-carousel-item v-if="isEnabledPWACarouesel">
           <section class="modal-card-body" :style="carouselStyle">
             <PWAItem
               :useTypeKey="USE_TYPE_KEY"
@@ -22,7 +22,7 @@
           </section>
         </b-carousel-item>
 
-        <b-carousel-item v-if="IsEnabledConfirmCarouesel()">
+        <b-carousel-item v-if="isEnabledConfirmCarouesel">
           <section class="modal-card-body" :style="carouselStyle">
             <ConfirmItem
               :confirmKey="CONFIRM_KEY"
@@ -33,7 +33,7 @@
           </section>
         </b-carousel-item>
 
-        <b-carousel-item v-if="IsEnabledLoginCarouesel()">
+        <b-carousel-item v-if="isEnabledLoginCarouesel">
           <section class="modal-card-body" :style="carouselStyle">
             <LoginItem
               :recommendLoginKey="RECOMMEND_LOGIN_KEY"
@@ -53,8 +53,8 @@
       </b-carousel>
 
       <footer class="modal-card-foot">
-        <b-button type="is-primary" :disabled="!IsEnabledPrevButton()" @click="PrevCarousel"><</b-button>
-        <b-button type="is-primary" :disabled="!IsEnabledNextButton()" @click="NextCarousel">></b-button>
+        <b-button type="is-primary" :disabled="!isEnabledPrevButton" @click="PrevCarousel"><</b-button>
+        <b-button type="is-primary" :disabled="!isEnabledNextButton" @click="NextCarousel">></b-button>
       </footer>
     </div>
   </b-modal>
@@ -113,16 +113,6 @@ class StartupModal extends Vue {
   public readonly RECOMMEND_NOTIFY_KEY = "RecommendNotify";
 
   /**
-   * カルーセルのインデックス
-   */
-  public carousel: number = 0;
-
-  /**
-   * PWA のカルーセルが有効かどうか
-   */
-  public isEnabledNotifyCarouesel: boolean = false;
-
-  /**
    * モーダルの表示状態
    */
   @Prop({
@@ -131,13 +121,6 @@ class StartupModal extends Vue {
     default: false
   })
   public isStartupModalActive: boolean = false;
-
-  /**
-   * マウント時の処理
-   */
-  public mounted(): void {
-    this.ChangeCarouselStatus();
-  }
 
   /**
    * モーダルを開く
@@ -172,22 +155,106 @@ class StartupModal extends Vue {
   }
 
   /**
+   * カルーセルのインデックス
+   */
+  public carousel: number = 0;
+
+  /**
+   * PWA のカルーセルが有効かどうか
+   */
+  public isEnabledPWACarouesel: boolean = false;
+
+  /**
+   * Confirm のカルーセルが有効かどうか
+   */
+  public isEnabledConfirmCarouesel: boolean = false;
+
+  /**
+   * ログインを勧めるカルーセルが有効かどうか
+   */
+  public isEnabledLoginCarouesel: boolean = false;
+
+  /**
+   * Notify のカルーセルが有効かどうか
+   */
+  public isEnabledNotifyCarouesel: boolean = false;
+
+  /**
+   * 前に戻るボタンが有効かどうか
+   */
+  public isEnabledPrevButton: boolean = false;
+
+  /**
+   * 次に進むボタンが有効かどうか
+   */
+  public isEnabledNextButton: boolean = false;
+
+  /**
+   * マウント時の処理
+   */
+  public mounted(): void {
+    this.ChangeCarouselStatus();
+  }
+
+  /**
+   * カルーセルのステータスを変更する
+   */
+  public async ChangeCarouselStatus(): Promise<void> {
+    this.ChangePWACaroueselStatus();
+    this.ChangeConfirmCaroueselStatus();
+    this.ChangeLoginCaroueselStatus();
+    await this.ChangeNotifyCaroueselStatus();
+
+    await this.ChangePrevButtonStatus();
+    await this.ChangeNextButtonStatus();
+
+    if (await this.CarouselItemCount() === 0) {
+      this.CloseStartupModal();
+    } else {
+      this.OpenStartupModal();
+    }
+  }
+
+  /**
+   * カルーセルを前に戻す
+   */
+  public async PrevCarousel(): Promise<void> {
+    this.carousel--;
+
+    await this.ChangePrevButtonStatus();
+    await this.ChangeNextButtonStatus();
+  }
+
+  /**
+   * カルーセルを次に進める
+   */
+  public async NextCarousel(): Promise<void> {
+    this.carousel++;
+
+    await this.ChangePrevButtonStatus();
+    await this.ChangeNextButtonStatus();
+  }
+
+  /**
    * カルーセルのアイテム数
    */
-  public async CarouselItemCount(): Promise<number> {
+  private async CarouselItemCount(): Promise<number> {
+    this.ChangePWACaroueselStatus();
+    this.ChangeConfirmCaroueselStatus();
+    this.ChangeLoginCaroueselStatus();
     await this.ChangeNotifyCaroueselStatus();
 
     var count = 0;
 
-    if (this.IsEnabledPWACarouesel()) {
+    if (this.isEnabledPWACarouesel) {
       count++;
     }
 
-    if (this.IsEnabledConfirmCarouesel()) {
+    if (this.isEnabledConfirmCarouesel) {
       count++;
     }
 
-    if (this.IsEnabledLoginCarouesel()) {
+    if (this.isEnabledLoginCarouesel) {
       count++;
     }
 
@@ -199,30 +266,30 @@ class StartupModal extends Vue {
   }
 
   /**
-   * PWA のカルーセルが有効かどうか
+   * PWA のカルーセルの状態を変更する
    */
-  public IsEnabledPWACarouesel(): boolean {
-    return !PWAUtils.IsPWA && LocalStorageUtil.GetItem(this.USE_TYPE_KEY) === null;
+  private ChangePWACaroueselStatus(): void {
+    this.isEnabledPWACarouesel = !PWAUtils.IsPWA && LocalStorageUtil.GetItem(this.USE_TYPE_KEY) === null;
   }
 
   /**
-   * Confirm のカルーセルが有効かどうか
+   * Confirm のカルーセルの状態を変更する
    */
-  public IsEnabledConfirmCarouesel(): boolean {
-    return LocalStorageUtil.GetItem(this.CONFIRM_KEY) === null;
+  private ChangeConfirmCaroueselStatus(): void {
+    this.isEnabledConfirmCarouesel = LocalStorageUtil.GetItem(this.CONFIRM_KEY) === null;
   }
 
   /**
-   * ログインを勧めるカルーセルが有効かどうか
+   * ログインを勧めるカルーセルの状態を変更する
    */
-  public IsEnabledLoginCarouesel(): boolean {
-    return LocalStorageUtil.GetItem(this.RECOMMEND_LOGIN_KEY) === null;
+  private ChangeLoginCaroueselStatus(): void {
+    this.isEnabledLoginCarouesel = LocalStorageUtil.GetItem(this.RECOMMEND_LOGIN_KEY) === null;
   }
 
   /**
    * 通知を勧めるカルーセルの状態を変更する
    */
-  public async ChangeNotifyCaroueselStatus(): Promise<void> {
+  private async ChangeNotifyCaroueselStatus(): Promise<void> {
     if (!PWAUtils.IsPWA) {
       this.isEnabledNotifyCarouesel = false;
       return;
@@ -242,44 +309,17 @@ class StartupModal extends Vue {
   }
 
   /**
-   * 前に戻るボタンが有効かどうか
+   * 前に戻るボタンの状態を変更する
    */
-  public async IsEnabledPrevButton(): Promise<boolean> {
-    return await this.CarouselItemCount() !== 1 && this.carousel > 0;
+  private async ChangePrevButtonStatus(): Promise<void> {
+    this.isEnabledPrevButton = await this.CarouselItemCount() !== 1 && this.carousel > 0;
   }
 
   /**
-   * 次に進むボタンが有効かどうか
+   * 次に進むボタンの状態を変更する
    */
-  public async IsEnabledNextButton(): Promise<boolean> {
-    return await this.CarouselItemCount() !== 1 && this.carousel < await this.CarouselItemCount() - 1;
-  }
-
-  /**
-   * カルーセルのステータスを変更する
-   */
-  public async ChangeCarouselStatus(): Promise<void> {
-    this.CloseStartupModal();
-
-    this.$nextTick(async () => {
-      if (await this.CarouselItemCount() > 0) {
-        this.OpenStartupModal();
-      }
-    });
-  }
-
-  /**
-   * カルーセルを前に戻す
-   */
-  public PrevCarousel(): void {
-    this.carousel--;
-  }
-
-  /**
-   * カルーセルを次に進める
-   */
-  public NextCarousel(): void {
-    this.carousel++;
+  private async ChangeNextButtonStatus(): Promise<void> {
+    this.isEnabledNextButton = await this.CarouselItemCount() !== 1 && this.carousel < await this.CarouselItemCount() - 1;
   }
 
   /**
