@@ -5,9 +5,8 @@
   <br />
 
   <b-field position="is-centered" class="buttons">
-    <!-- TODO: 要素が1つだとセンタリングされないので暫定追加 -->
-    <div></div>
-    <b-button type="is-success" @click="SetRecommendLogin">OK</b-button>
+    <b-button type="is-success" @click="ClickLogin">ログイン</b-button>
+    <b-button type="is-warning" @click="SetRecommendLogin">今はやめておく</b-button>
   </b-field>
 </template>
 
@@ -33,6 +32,13 @@ class LoginItem extends Vue {
   @Emit("changeCarouselStatus")
   public ChangeCarouselStatus(): void {
     return;
+  }
+
+  /**
+   * ログインボタンのクリックイベント
+   */
+  public ClickLogin(): void {
+    window.location.href = "/Account/Login";
   }
 
   /**

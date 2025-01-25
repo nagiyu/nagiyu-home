@@ -6,7 +6,7 @@
   <br />
 
   <b-field position="is-centered" class="buttons">
-    <b-button type="is-success" @click="PromptPush">通知の可否を表示する</b-button>
+    <b-button type="is-success" @click="PromptPush">通知設定</b-button>
     <b-button type="is-warning" @click="SetRecommendNotify">今はやめておく</b-button>
   </b-field>
 </template>
