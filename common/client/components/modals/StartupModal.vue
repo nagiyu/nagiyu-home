@@ -69,6 +69,7 @@ import LoginItem from "@common/components/carouselItems/LoginItem.vue";
 import PWAUtils from "@common/utils/PWAUtils";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 import WebUtil from "@common/utils/WebUtil";
+import AuthUtil from "@auth/utils/AuthUtil";
 
 @Component({
   components: {
@@ -240,7 +241,7 @@ class StartupModal extends Vue {
   private async CarouselItemCount(): Promise<number> {
     this.ChangePWACaroueselStatus();
     this.ChangeConfirmCaroueselStatus();
-    this.ChangeLoginCaroueselStatus();
+    await this.ChangeLoginCaroueselStatus();
     await this.ChangeNotifyCaroueselStatus();
 
     var count = 0;
@@ -281,7 +282,14 @@ class StartupModal extends Vue {
   /**
    * ログインを勧めるカルーセルの状態を変更する
    */
-  private ChangeLoginCaroueselStatus(): void {
+  private async ChangeLoginCaroueselStatus(): Promise<void> {
+    var user = AuthUtil.GetUser<IUserAuthBase>();
+
+    if (user !== null) {
+      this.isEnabledLoginCarouesel = false;
+      return;
+    }
+
     this.isEnabledLoginCarouesel = LocalStorageUtil.GetItem(this.RECOMMEND_LOGIN_KEY) === null;
   }
 
