@@ -7,25 +7,15 @@
         </p>
       </header>
 
-      <!--
-      TODO: なんかエラーが出る
-      Uncaught (in promise) Maximum recursive updates exceeded in component <BSteps>. This means you have a reactive effect that is mutating its own dependencies and thus recursively triggering itself. Possible sources include component template, render function, updated hook or watcher source function.
-      Promise.then		
-      OpenStartupModal	@	Common.vue:63
-      ChangeStepsStatus	@	StartupModal.vue:205
-      await in ChangeStepsStatus		
-      mounted	@	StartupModal.vue:187
-      (匿名)	@	main.ts:30
-      -->
       <section class="modal-card-body" :style="carouselStyle">
         <b-steps v-model="stepIndex" :has-navigation="false" mobile-mode="compact">
-          <b-step-item step="1" label="アプリ化" :type="{'is-success': !isEnabledPWAStep}">
+          <b-step-item step="1" label="アプリ化" :type="isEnabledPWAStep ? '' : 'is-success'">
             <PWAItem
               :useTypeKey="USE_TYPE_KEY"
               @changeCarouselStatus="ChangeStepsStatus"
             />
           </b-step-item>
-          <b-step-item step="2" label="同意" :type="{'is-success': !isEnabledConfirmStep}">
+          <b-step-item step="2" label="同意" :type="isEnabledConfirmStep ? '' : 'is-success'">
             <ConfirmItem
               :confirmKey="CONFIRM_KEY"
               @changeCarouselStatus="ChangeStepsStatus"
@@ -33,13 +23,13 @@
               @openTermsModal="OpenTermsModal"
             />
           </b-step-item>
-          <b-step-item step="3" label="ログイン" :type="{'is-success': !isEnabledLoginStep}">
+          <b-step-item step="3" label="ログイン" :type="isEnabledLoginStep ? '' : 'is-success'">
             <LoginItem
               :recommendLoginKey="RECOMMEND_LOGIN_KEY"
               @changeCarouselStatus="ChangeStepsStatus"
             />
           </b-step-item>
-          <b-step-item step="4" label="通知" :type="{'is-success': !isEnabledNotifyStep}">
+          <b-step-item step="4" label="通知" :type="isEnabledNotifyStep ? '' : 'is-success'">
             <NotifyItem
               :recommendNotifyKey="RECOMMEND_NOTIFY_KEY"
               @changeCarouselStatus="ChangeStepsStatus"
