@@ -33,7 +33,9 @@
           </b-step-item>
           <b-step-item step="4" label="通知" :type="isEnabledNotifyStep ? '' : 'is-success'">
             <NotifyItem
+              :isActive="stepIndex === 3"
               :recommendNotifyKey="RECOMMEND_NOTIFY_KEY"
+              :userSubscriptionId="UserSubscriptionId"
               @changeCarouselStatus="ChangeStepsStatus"
             />
           </b-step-item>
@@ -190,6 +192,17 @@ class StartupModal extends Vue {
   }
 
   /**
+   * ユーザーの OneSignal の SubscriptionId
+   */
+  public get UserSubscriptionId(): string {
+    if (this.user === null) {
+      return '';
+    }
+
+    return this.user.oneSignalSubscriptionId;
+  }
+
+  /**
    * Mounted フック
    */
   public async mounted(): Promise<void> {
@@ -274,7 +287,7 @@ class StartupModal extends Vue {
       return;
     }
 
-    var subscriptionId = await this.GetSubscriptionId();
+    var subscriptionId = this.user ? this.user.oneSignalSubscriptionId : '';
 
     if (subscriptionId !== '') {
       this.isEnabledNotifyStep = false;
@@ -293,18 +306,6 @@ class StartupModal extends Vue {
     }
 
     this.user = await AuthUtil.GetUser<IUserAuthBase>();
-  }
-
-  /**
-   * OneSignal の SubscriptionId を取得する
-   */
-  private async GetSubscriptionId(): Promise<string> {
-    if (import.meta.env.PROD) {
-      await this.$OneSignal.User.PushSubscription.optIn();
-      return this.$OneSignal.User.PushSubscription.id ?? '';
-    } else {
-      return '';
-    }
   }
 
   /**

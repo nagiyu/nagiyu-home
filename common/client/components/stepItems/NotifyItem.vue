@@ -1,21 +1,67 @@
 <template>
-  <p>通知を許可してください。</p>
-  <p>※環境によっては通知されないことがあります。</p>
+  <template v-if="IsPWA">
+    <p>通知を設定してください。</p>
+    <p>※環境によっては通知されないことがあります。</p>
 
-  <br />
+    <br />
 
-  <b-field position="is-centered" class="buttons">
-    <b-button type="is-success" @click="PromptPush">通知設定</b-button>
-    <b-button type="is-warning" @click="SetRecommendNotify">今はやめておく</b-button>
-  </b-field>
+    <b-field label="設定" horizontal>
+      <template v-if="!IsEnabledSubscribe">
+        <b-button type="is-success" @click="PromptPush">通知設定</b-button>
+      </template>
+      <template v-else>
+        <span>Completed</span>
+      </template>
+    </b-field>
+
+    <b-field label="紐付け" horizontal>
+      <template v-if="IsEnabledSubscribe">
+        <template v-if="!isConectedSubscribe">
+          <b-button type="is-success" @click="ConnectSubscriptionId">紐付け</b-button>
+        </template>
+        <template v-else>
+          <span>Completed</span>
+        </template>
+      </template>
+    </b-field>
+
+    <b-field label="テスト" horizontal>
+      <template v-if="isConectedSubscribe">
+        <b-button type="is-success">通知</b-button>
+      </template>
+    </b-field>
+
+    <br />
+
+    <b-field position="is-centered" class="buttons">
+      <b-button type="is-success" @click="PromptPush">通知設定</b-button>
+      <b-button type="is-warning" @click="SetRecommendNotify">今はやめておく</b-button>
+    </b-field>
+  </template>
+
+  <template v-else>
+    <p>通知を設定するにはアプリ化してください。</p>
+  </template>
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, toNative, Vue } from "vue-facing-decorator";
+import { Component, Emit, Prop, toNative, Vue, Watch } from "vue-facing-decorator";
+import axios from "axios";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
+import PWAUtils from "@common/utils/PWAUtils";
 
 @Component
 class NotifyItem extends Vue {
+  /**
+   * Step のアクティブ状態
+   */
+  @Prop({
+    type: Boolean,
+    required: true,
+    default: false
+  })
+  public isActive!: boolean;
+
   /**
    * タイプのローカルストレージのキー
    */
@@ -27,6 +73,16 @@ class NotifyItem extends Vue {
   public recommendNotifyKey!: string;
 
   /**
+   * ユーザーの OneSignal の SubscriptionId
+   */
+  @Prop({
+    type: String,
+    required: true,
+    default: ''
+  })
+  public userSubscriptionId!: string;
+
+  /**
    * カルーセルのステータスを変更する
    */
   @Emit("changeCarouselStatus")
@@ -35,16 +91,57 @@ class NotifyItem extends Vue {
   }
 
   /**
+   * isActive の変更時
+   */
+  @Watch("isActive")
+  public OnIsActiveChanged(): void {
+    this.ChangeSubscribeStatus();
+  }
+
+  /**
+   * ユーザーと SubscriptionId が紐付いているか
+   */
+  public isConectedSubscribe: boolean = false;
+
+  /**
+   * OneSignal の SubscriptionId
+   */
+  private subscriptionId: string = '';
+
+  /**
+   * Check if the app is running as a PWA
+   */
+  public get IsPWA(): boolean {
+    return PWAUtils.IsPWA;
+  }
+
+  /**
+   * 通知が許可されているか
+   */
+  public get IsEnabledSubscribe(): boolean {
+    return this.subscriptionId !== '';
+  }
+
+  /**
    * 通知の許可を表示する
    */
   public async PromptPush(): Promise<void> {
     if (import.meta.env.PROD) {
-      if (this.$OneSignal) {
-        await this.$OneSignal.Slidedown.promptPush({
-          force: true
-        });
-      }
+      await this.$OneSignal.Slidedown.promptPush({
+        force: true
+      });
     }
+  }
+
+  /**
+   * OneSignal の SubscriptionId をバインドする
+   */
+  public async ConnectSubscriptionId(): Promise<void> {
+    if (this.subscriptionId !== '') {
+      await axios.post(`/api/notification/${this.subscriptionId}`);
+    }
+
+    this.ChangeSubscribeStatus();
   }
 
   /**
@@ -53,6 +150,16 @@ class NotifyItem extends Vue {
   public SetRecommendNotify(): void {
     LocalStorageUtil.SetItem(this.recommendNotifyKey, "completed");
     this.ChangeCarouselStatus();
+  }
+
+  /**
+   * Subscribe のステータスを変更する
+   */
+  private ChangeSubscribeStatus(): void {
+    if (import.meta.env.PROD) {
+      this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
+    }
+    this.isConectedSubscribe = this.IsEnabledSubscribe && this.subscriptionId === this.userSubscriptionId;
   }
 }
 
