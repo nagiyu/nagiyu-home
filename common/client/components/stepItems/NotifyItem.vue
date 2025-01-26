@@ -130,6 +130,7 @@ class NotifyItem extends Vue {
       await this.$OneSignal.Slidedown.promptPush({
         force: true
       });
+      await this.$OneSignal.User.PushSubscription.optIn();
     }
   }
 
