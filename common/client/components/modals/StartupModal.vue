@@ -8,8 +8,6 @@
       </header>
 
       <section class="modal-card-body" :style="MODAL_CARD_BODY_STYLE">
-        {{ user }}
-
         <b-steps v-model="stepIndex" :has-navigation="false" mobile-mode="compact">
           <b-step-item step="1" label="アプリ化" :type="isEnabledPWAStep ? '' : 'is-success'">
             <PWAItem
@@ -185,7 +183,7 @@ class StartupModal extends Vue {
   /**
    * ユーザー
    */
-  public user: IUserAuthBase | null = null;
+  private user: IUserAuthBase | null = null;
 
   /**
    * ユーザーがログインしているかどうか

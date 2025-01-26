@@ -3,7 +3,6 @@
     <p>通知を設定してください。</p>
     <p>※環境によっては通知されないことがあります。</p>
 
-
     <div>IsEnabledSubscribe: {{ IsEnabledSubscribe }}</div>
     <div>UserSubscriptionId: {{ userSubscriptionId }}</div>
 
@@ -186,6 +185,7 @@ class NotifyItem extends Vue {
    */
   private ChangeSubscribeStatus(): void {
     if (import.meta.env.PROD) {
+      // TODO: iOS だとうまく取れない
       this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
     }
     this.isConectedSubscribe = this.IsEnabledSubscribe && this.subscriptionId === this.userSubscriptionId;
