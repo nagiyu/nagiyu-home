@@ -3,6 +3,10 @@
     <p>通知を設定してください。</p>
     <p>※環境によっては通知されないことがあります。</p>
 
+
+    <div>IsEnabledSubscribe: {{ IsEnabledSubscribe }}</div>
+    <div>UserSubscriptionId: {{ userSubscriptionId }}</div>
+
     <br />
 
     <b-field label="設定" horizontal>
@@ -87,15 +91,13 @@ class NotifyItem extends Vue {
    */
   @Emit("changeCarouselStatus")
   public ChangeCarouselStatus(): void {
-    return;
   }
 
   /**
    * ユーザーを設定する
    */
   @Emit('setUser')
-  public SetUser(): void {
-    return;
+  public async SetUser(): Promise<void> {
   }
 
   /**
@@ -165,7 +167,7 @@ class NotifyItem extends Vue {
     if (this.subscriptionId !== '') {
       await axios.post(`/api/notification/${this.subscriptionId}`);
 
-      this.SetUser();
+      await this.SetUser();
     }
 
     this.ChangeSubscribeStatus();
