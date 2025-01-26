@@ -4,7 +4,7 @@
 
   <br />
 
-  <b-collapse :open="false" aria-id="notify-iso">
+  <b-collapse v-model="isOpenNotifyIOS" aria-id="notify-iso">
     <template #trigger="props">
       <b-button label="iOSの場合" type="is-primary" aria-controls="notify-iso" :aria-expanded="props.open" />
     </template>
@@ -26,7 +26,7 @@
 
   <br />
 
-  <b-collapse :open="false" aria-id="notify-android">
+  <b-collapse v-model="isOpenNotifyAndroid" aria-id="notify-android">
     <template #trigger="props">
       <b-button label="Androidの場合" type="is-primary" aria-controls="notify-android" :aria-expanded="props.open" />
     </template>
@@ -50,7 +50,7 @@
 
   <br />
 
-  <b-collapse :open="false" aria-id="notify-pc">
+  <b-collapse v-model="isOpenNotifyPC" aria-id="notify-pc">
     <template #trigger="props">
       <b-button label="PCの場合" type="is-primary" aria-controls="notify-pc" :aria-expanded="props.open" />
     </template>
@@ -99,6 +99,21 @@ class PWAItem extends Vue {
   public ChangeCarouselStatus(): void {
     return;
   }
+
+  /**
+   * iOS通知の表示状態
+   */
+  public isOpenNotifyIOS: boolean = false;
+
+  /**
+   * Android通知の表示状態
+   */
+  public isOpenNotifyAndroid: boolean = false;
+
+  /**
+   * PC通知の表示状態
+   */
+  public isOpenNotifyPC: boolean = false;
 
   /**
    * タイプに Web を設定
