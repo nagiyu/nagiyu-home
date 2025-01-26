@@ -27,6 +27,7 @@
           <b-step-item step="3" label="ログイン" :type="isEnabledLoginStep ? '' : 'is-success'">
             <LoginItem
               :recommendLoginKey="RECOMMEND_LOGIN_KEY"
+              :isLogin="IsLogin"
               @changeCarouselStatus="ChangeStepsStatus"
             />
           </b-step-item>
@@ -177,9 +178,23 @@ class StartupModal extends Vue {
   public isEnabledNextButton: boolean = false;
 
   /**
+   * ユーザー
+   */
+  private user: IUserAuthBase | null = null;
+
+  /**
+   * ユーザーがログインしているかどうか
+   */
+  public get IsLogin(): boolean {
+    return this.user !== null;
+  }
+
+  /**
    * Mounted フック
    */
   public async mounted(): Promise<void> {
+    this.user = await AuthUtil.GetUser<IUserAuthBase>();
+
     await this.ChangeStepsStatus();
   }
 
@@ -240,9 +255,9 @@ class StartupModal extends Vue {
    * ログインを勧めるカルーセルの状態を変更する
    */
   private async ChangeLoginCaroueselStatus(): Promise<void> {
-    var user = await AuthUtil.GetUser<IUserAuthBase>();
+    await this.SetUser();
 
-    if (user !== null) {
+    if (this.user !== null) {
       this.isEnabledLoginStep = false;
       return;
     }
@@ -267,6 +282,17 @@ class StartupModal extends Vue {
     }
 
     this.isEnabledNotifyStep = LocalStorageUtil.GetItem(this.RECOMMEND_NOTIFY_KEY) === null;
+  }
+
+  /**
+   * ユーザーを設定する
+   */
+  private async SetUser(): Promise<void> {
+    if (this.user !== null) {
+      return;
+    }
+
+    this.user = await AuthUtil.GetUser<IUserAuthBase>();
   }
 
   /**

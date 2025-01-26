@@ -1,13 +1,19 @@
 <template>
-  <p>Googleアカウントでログインすると便利になる機能が多くあります。</p>
-  <p>ログインして使用することをオススメします。</p>
+  <template v-if="!isLogin">
+    <p>Googleアカウントでログインすると便利になる機能が多くあります。</p>
+    <p>ログインして使用することをオススメします。</p>
 
-  <br />
+    <br />
 
-  <b-field position="is-centered" class="buttons">
-    <b-button type="is-success" @click="ClickLogin">ログイン</b-button>
-    <b-button type="is-warning" @click="SetRecommendLogin">今はやめておく</b-button>
-  </b-field>
+    <b-field position="is-centered" class="buttons">
+      <b-button type="is-success" @click="ClickLogin">ログイン</b-button>
+      <b-button type="is-warning" @click="SetRecommendLogin">今はやめておく</b-button>
+    </b-field>
+  </template>
+
+  <template v-else>
+    <p>ログインありがとうございます！</p>
+  </template>
 </template>
 
 <script lang="ts">
@@ -27,11 +33,20 @@ class LoginItem extends Vue {
   public recommendLoginKey!: string;
 
   /**
+   * ユーザーがログインしているかどうか
+   */
+  @Prop({
+    type: Boolean,
+    required: true,
+    default: false
+  })
+  public isLogin: boolean = false;
+
+  /**
    * カルーセルのステータスを変更する
    */
   @Emit("changeCarouselStatus")
   public ChangeCarouselStatus(): void {
-    return;
   }
 
   /**
