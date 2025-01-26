@@ -37,6 +37,7 @@
               :recommendNotifyKey="RECOMMEND_NOTIFY_KEY"
               :userSubscriptionId="UserSubscriptionId"
               @changeCarouselStatus="ChangeStepsStatus"
+              @setUser="SetUser"
             />
           </b-step-item>
         </b-steps>
@@ -251,6 +252,17 @@ class StartupModal extends Vue {
   }
 
   /**
+   * ユーザーを設定する
+   */
+  public async SetUser(): Promise<void> {
+    if (this.user !== null) {
+      return;
+    }
+
+    this.user = await AuthUtil.GetUser<IUserAuthBase>();
+  }
+
+  /**
    * PWA のカルーセルの状態を変更する
    */
   private ChangePWACaroueselStatus(): void {
@@ -295,17 +307,6 @@ class StartupModal extends Vue {
     }
 
     this.isEnabledNotifyStep = LocalStorageUtil.GetItem(this.RECOMMEND_NOTIFY_KEY) === null;
-  }
-
-  /**
-   * ユーザーを設定する
-   */
-  private async SetUser(): Promise<void> {
-    if (this.user !== null) {
-      return;
-    }
-
-    this.user = await AuthUtil.GetUser<IUserAuthBase>();
   }
 
   /**

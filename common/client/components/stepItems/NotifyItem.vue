@@ -14,15 +14,6 @@
       </template>
     </b-field>
 
-    <b-field label="受け入れ" horizontal>
-      <template v-if="!IsOptedSubscribe">
-        <b-button type="is-success" @click="OptedIn">受け入れ</b-button>
-      </template>
-      <template v-else>
-        <span>Completed</span>
-      </template>
-    </b-field>
-
     <b-field label="紐付け" horizontal>
       <template v-if="IsEnabledSubscribe">
         <template v-if="!isConectedSubscribe">
@@ -100,6 +91,14 @@ class NotifyItem extends Vue {
   }
 
   /**
+   * ユーザーを設定する
+   */
+  @Emit('setUser')
+  public SetUser(): void {
+    return;
+  }
+
+  /**
    * isActive の変更時
    */
   @Watch("isActive")
@@ -146,6 +145,7 @@ class NotifyItem extends Vue {
       await this.$OneSignal.Slidedown.promptPush({
         force: true
       });
+      await this.$OneSignal.User.PushSubscription.optIn();
     }
   }
 
@@ -164,6 +164,8 @@ class NotifyItem extends Vue {
   public async ConnectSubscriptionId(): Promise<void> {
     if (this.subscriptionId !== '') {
       await axios.post(`/api/notification/${this.subscriptionId}`);
+
+      this.SetUser();
     }
 
     this.ChangeSubscribeStatus();
@@ -184,7 +186,7 @@ class NotifyItem extends Vue {
     if (import.meta.env.PROD) {
       this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
     }
-    this.isConectedSubscribe = this.IsEnabledSubscribe && this.IsOptedSubscribe && this.subscriptionId === this.userSubscriptionId;
+    this.isConectedSubscribe = this.IsEnabledSubscribe && this.subscriptionId === this.userSubscriptionId;
   }
 }
 

@@ -20,11 +20,9 @@
 
 <script lang="ts">
 import { Component, Vue, toNative } from "vue-facing-decorator";
-import axios from "axios";
 import StartupModal from "@common/components/modals/StartupModal.vue";
 import PrivacyPolicyModal from "@common/components/modals/PrivacyPolicyModal.vue";
 import TermsModal from "@common/components/modals/TermsModal.vue";
-import AuthUtil from "@auth/utils/AuthUtil";
 
 @Component({
   components: {
