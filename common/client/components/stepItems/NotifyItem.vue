@@ -14,6 +14,15 @@
       </template>
     </b-field>
 
+    <b-field label="受け入れ" horizontal>
+      <template v-if="!IsOptedSubscribe">
+        <b-button type="is-success" @click="OptedIn">受け入れ</b-button>
+      </template>
+      <template v-else>
+        <span>Completed</span>
+      </template>
+    </b-field>
+
     <b-field label="紐付け" horizontal>
       <template v-if="IsEnabledSubscribe">
         <template v-if="!isConectedSubscribe">
@@ -123,6 +132,13 @@ class NotifyItem extends Vue {
   }
 
   /**
+   * 通知を受け入れているか
+   */
+  public get IsOptedSubscribe(): boolean {
+    return this.$OneSignal.User.PushSubscription.optedIn ?? false;
+  }
+
+  /**
    * 通知の許可を表示する
    */
   public async PromptPush(): Promise<void> {
@@ -130,6 +146,14 @@ class NotifyItem extends Vue {
       await this.$OneSignal.Slidedown.promptPush({
         force: true
       });
+    }
+  }
+
+  /**
+   * 通知を受け入れる
+   */
+  public async OptedIn(): Promise<void> {
+    if (import.meta.env.PROD) {
       await this.$OneSignal.User.PushSubscription.optIn();
     }
   }
@@ -160,7 +184,7 @@ class NotifyItem extends Vue {
     if (import.meta.env.PROD) {
       this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
     }
-    this.isConectedSubscribe = this.IsEnabledSubscribe && this.subscriptionId === this.userSubscriptionId;
+    this.isConectedSubscribe = this.IsEnabledSubscribe && this.IsOptedSubscribe && this.subscriptionId === this.userSubscriptionId;
   }
 }
 
