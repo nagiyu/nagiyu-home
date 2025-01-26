@@ -7,7 +7,7 @@
         </p>
       </header>
 
-      <section class="modal-card-body" :style="carouselStyle">
+      <section class="modal-card-body" :style="MODAL_CARD_BODY_STYLE">
         <b-steps v-model="stepIndex" :has-navigation="false" mobile-mode="compact">
           <b-step-item step="1" label="アプリ化" :type="isEnabledPWAStep ? '' : 'is-success'">
             <PWAItem
@@ -48,10 +48,10 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, toNative } from "vue-facing-decorator";
-import PWAItem from "@common/components/carouselItems/PWAItem.vue";
-import ConfirmItem from "@common/components/carouselItems/ConfirmItem.vue";
-import NotifyItem from "@common/components/carouselItems/NotifyItem.vue";
-import LoginItem from "@common/components/carouselItems/LoginItem.vue";
+import PWAItem from "@common/components/stepItems/PWAItem.vue";
+import ConfirmItem from "@common/components/stepItems/ConfirmItem.vue";
+import NotifyItem from "@common/components/stepItems/NotifyItem.vue";
+import LoginItem from "@common/components/stepItems/LoginItem.vue";
 import PWAUtils from "@common/utils/PWAUtils";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 import WebUtil from "@common/utils/WebUtil";
@@ -67,9 +67,9 @@ import AuthUtil from "@auth/utils/AuthUtil";
 })
 class StartupModal extends Vue {
   /**
-   * カルーセルのスタイル
+   * Modal Card Body のスタイル
    */
-  public readonly carouselStyle = { height: '50vh' };
+  public readonly MODAL_CARD_BODY_STYLE = { height: '50vh' };
 
   /**
    * モーダル
@@ -144,11 +144,6 @@ class StartupModal extends Vue {
    * ステップのインデックス
    */
   public stepIndex: number = 0;
-
-  /**
-   * カルーセルのインデックス
-   */
-  public carousel: number = 0;
 
   /**
    * PWA のステップが有効かどうか
