@@ -17,6 +17,7 @@
           </b-step-item>
           <b-step-item step="2" label="同意" :type="isEnabledConfirmStep ? '' : 'is-success'">
             <ConfirmItem
+              :isActive="stepIndex === 1"
               :confirmKey="CONFIRM_KEY"
               @changeCarouselStatus="ChangeStepsStatus"
               @openPrivacyPolicyModal="OpenPrivacyPolicyModal"
