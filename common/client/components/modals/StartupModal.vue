@@ -12,7 +12,7 @@
           <b-step-item step="1" label="アプリ化" :type="isEnabledPWAStep ? '' : 'is-success'">
             <PWAItem
               :useTypeKey="USE_TYPE_KEY"
-              @changeCarouselStatus="ChangeStepsStatus"
+              @changeStepsStatus="ChangeStepsStatus"
             />
           </b-step-item>
           <b-step-item step="2" label="同意" :type="isEnabledConfirmStep ? '' : 'is-success'">
