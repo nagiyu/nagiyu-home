@@ -143,7 +143,7 @@ class NotifyItem extends Vue {
    */
   public mounted(): void {
     this.$OneSignal.User.PushSubscription.addEventListener('change', async (event) => {
-      if (event.current.id === '') {
+      if (event.current.id === null || event.current.id === undefined) {
         return;
       }
 
