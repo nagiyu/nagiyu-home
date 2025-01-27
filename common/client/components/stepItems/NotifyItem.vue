@@ -3,6 +3,8 @@
     <p>通知を設定してください。</p>
     <p>※環境によっては通知されないことがあります。</p>
 
+    <div>SubscriptionID: {{ subscriptionId }}</div>
+
     <br />
 
     <b-field label="設定" horizontal>
@@ -115,7 +117,8 @@ class NotifyItem extends Vue {
   /**
    * OneSignal の SubscriptionId
    */
-  private subscriptionId: string = '';
+  // private subscriptionId: string = '';
+  public subscriptionId: string = '';
 
   /**
    * Check if the app is running as a PWA
