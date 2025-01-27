@@ -159,6 +159,12 @@ class NotifyItem extends Vue {
       var subscriptionId = event.current.id;
 
       if (subscriptionId === null || subscriptionId === undefined) {
+        // @ts-ignore
+        this.$buefy.toast.open({
+            duration: 5000,
+            message: 'SubscriptionID is null',
+            type: 'is-danger'
+        })
         this.isLoading = false;
         return;
       }
@@ -182,7 +188,7 @@ class NotifyItem extends Vue {
         force: true
       });
 
-      this.isLoading = false;
+      // ローディングのクローズはイベントリスナーで行う
     }
   }
 
@@ -195,7 +201,7 @@ class NotifyItem extends Vue {
 
       await this.$OneSignal.User.PushSubscription.optIn();
 
-      this.isLoading = false;
+      // ローディングのクローズはイベントリスナーで行う
     }
   }
 
