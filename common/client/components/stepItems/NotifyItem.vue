@@ -96,7 +96,7 @@ class NotifyItem extends Vue {
    * ユーザーを設定する
    */
   @Emit('setUser')
-  public async SetUser(): Promise<void> {
+  public SetUser(): void {
   }
 
   /**
@@ -138,9 +138,18 @@ class NotifyItem extends Vue {
     return this.$OneSignal.User.PushSubscription.optedIn ?? false;
   }
 
+  /**
+   * Mounted フック
+   */
   public mounted(): void {
-    this.$OneSignal.User.PushSubscription.addEventListener('change', (event) => {
-      console.log(`DEBUG::: event.current.id: ${event.current.id}`);
+    this.$OneSignal.User.PushSubscription.addEventListener('change', async (event) => {
+      if (event.current.id === '') {
+        return;
+      }
+
+      await axios.post(`/api/notification/${event.current.id}`);
+
+      this.SetUser();
     });
   }
 
@@ -172,7 +181,7 @@ class NotifyItem extends Vue {
     if (this.subscriptionId !== '') {
       await axios.post(`/api/notification/${this.subscriptionId}`);
 
-      await this.SetUser();
+      this.SetUser();
     }
 
     this.ChangeSubscribeStatus();
