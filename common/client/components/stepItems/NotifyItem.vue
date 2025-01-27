@@ -180,7 +180,14 @@ class NotifyItem extends Vue {
     this.ChangeCarouselStatus();
   }
 
-  public Debug(): void {
+  public async Debug(): Promise<void> {
+    this.isLoading = true;
+
+    // 確実に subscriptionId が取得できるようにするために 3 秒待つ
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    this.isLoading = false;
+
     // @ts-ignore
     this.$buefy.toast.open({
       duration: 5000,
