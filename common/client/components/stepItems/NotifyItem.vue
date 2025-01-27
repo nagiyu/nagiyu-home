@@ -140,7 +140,7 @@ class NotifyItem extends Vue {
 
   public mounted(): void {
     this.$OneSignal.User.PushSubscription.addEventListener('change', (event) => {
-      console.log(`DEBUG::: event: ${event}`);
+      console.log(`DEBUG::: event.current.id: ${event.current.id}`);
     });
   }
 
