@@ -135,39 +135,7 @@ class NotifyItem extends Vue {
    * Mounted フック
    */
   public mounted(): void {
-    this.$OneSignal.User.PushSubscription.addEventListener('change', async (event) => {
-      if (!this.isLogin) {
-        return;
-      }
-
-      this.isLoading = true;
-
-      // 確実に subscriptionId が取得できるようにするために 3 秒待つ
-      await new Promise(resolve => setTimeout(resolve, 3000));
-
-      this.subscriptionId = event.current.id ?? '';
-
-      if (this.subscriptionId === '') {
-        // @ts-ignore
-        this.$buefy.toast.open({
-            duration: 5000,
-            message: 'SubscriptionID is null',
-            type: 'is-danger'
-        })
-
-        this.isLoading = false;
-
-        return;
-      }
-
-      await axios.post(`/api/notification/${this.subscriptionId}`);
-
-      await this.SetUser();
-
-      this.isLoading = false;
-
-      await this.ChangeSubscribeStatus();
-    });
+    this.$OneSignal.User.PushSubscription.addEventListener('change', this.ChangeSubscribeEvent);
   }
 
   /**
@@ -191,6 +159,43 @@ class NotifyItem extends Vue {
   public SetRecommendNotify(): void {
     LocalStorageUtil.SetItem(this.recommendNotifyKey, "completed");
     this.ChangeCarouselStatus();
+  }
+
+  /**
+   * Subscribe のステータス変更時のイベント
+   */
+  private async ChangeSubscribeEvent(): Promise<void> {
+      if (!this.isLogin) {
+        return;
+      }
+
+      this.isLoading = true;
+
+      // 確実に subscriptionId が取得できるようにするために 3 秒待つ
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
+
+      if (this.subscriptionId === '') {
+        // @ts-ignore
+        this.$buefy.toast.open({
+            duration: 5000,
+            message: 'SubscriptionID is null',
+            type: 'is-danger'
+        })
+
+        this.isLoading = false;
+
+        return;
+      }
+
+      await axios.post(`/api/notification/${this.subscriptionId}`);
+
+      await this.SetUser();
+
+      this.isLoading = false;
+
+      await this.ChangeSubscribeStatus();
   }
 
   /**
