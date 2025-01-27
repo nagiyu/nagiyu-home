@@ -148,6 +148,8 @@ class NotifyItem extends Vue {
     if (import.meta.env.PROD) {
       this.isLoading = true;
 
+      await this.$OneSignal.User.PushSubscription.optIn();
+
       await this.$OneSignal.Slidedown.promptPush({
         force: true
       });
@@ -173,8 +175,6 @@ class NotifyItem extends Vue {
       }
 
       this.isLoading = true;
-
-      await this.$OneSignal.User.PushSubscription.optIn();
 
       // 確実に subscriptionId が取得できるようにするために 3 秒待つ
       await new Promise(resolve => setTimeout(resolve, 3000));
