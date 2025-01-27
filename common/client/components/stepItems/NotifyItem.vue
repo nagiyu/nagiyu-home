@@ -237,6 +237,10 @@ class NotifyItem extends Vue {
    * Subscribe のステータスを変更する
    */
   private async ChangeSubscribeStatus(): Promise<void> {
+    if (import.meta.env.PROD) {
+      this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
+    }
+
     this.isConectedSubscribe = this.IsEnabledSubscribe && this.subscriptionId === this.userSubscriptionId;
   }
 }
