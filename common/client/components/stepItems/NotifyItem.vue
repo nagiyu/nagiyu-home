@@ -167,7 +167,7 @@ class NotifyItem extends Vue {
     // @ts-ignore
     this.$buefy.toast.open({
       duration: 5000,
-      message: `this: ${this.subscriptionId}, OneSignal: ${this.$OneSignal.User.PushSubscription.id}`,
+      message: `this: ${this.subscriptionId}, OneSignal: ${this.$OneSignal.User.PushSubscription.optedIn} ${this.$OneSignal.User.PushSubscription.id}`,
       type: 'is-success'
     });
   }
