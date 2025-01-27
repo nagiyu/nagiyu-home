@@ -40,6 +40,10 @@
 
     <br />
 
+    <b-button @click="CheckOptedIn">optedIn</b-button>
+
+    <b-button @click="CheckSubscriptionId">SubscriptionId</b-button>
+
     <b-field position="is-centered" class="buttons">
       <b-button type="is-success" @click="PromptPush">通知設定</b-button>
       <b-button type="is-warning" @click="SetRecommendNotify">今はやめておく</b-button>
@@ -165,7 +169,9 @@ class NotifyItem extends Vue {
             message: 'SubscriptionID is null',
             type: 'is-danger'
         })
+
         this.isLoading = false;
+
         return;
       }
 
@@ -175,6 +181,22 @@ class NotifyItem extends Vue {
 
       this.isLoading = false;
     });
+  }
+
+  public CheckOptedIn(): void {
+    // @ts-ignore
+    this.$buefy.toast.open({
+        duration: 5000,
+        message: `optedIn: ${this.$OneSignal.User.PushSubscription.optedIn}`,
+    })
+  }
+
+  public CheckSubscriptionId(): void {
+    // @ts-ignore
+    this.$buefy.toast.open({
+        duration: 5000,
+        message: `SubscriptionId: ${this.$OneSignal.User.PushSubscription.id}`,
+    })
   }
 
   /**
@@ -188,7 +210,7 @@ class NotifyItem extends Vue {
         force: true
       });
 
-      // ローディングのクローズはイベントリスナーで行う
+      this.isLoading = false;
     }
   }
 
