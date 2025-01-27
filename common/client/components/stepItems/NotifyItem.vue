@@ -8,6 +8,10 @@
 
     <br />
 
+    <b-field label="optIn" horizontal>
+      <b-button type="is-success" @click="OptedIn">受け入れ</b-button>
+    </b-field>
+
     <b-field label="設定" horizontal>
       <template v-if="!IsEnabledSubscribe">
         <b-button type="is-success" @click="PromptPush">通知設定</b-button>
@@ -143,8 +147,7 @@ class NotifyItem extends Vue {
    */
   public mounted(): void {
     this.$OneSignal.User.PushSubscription.addEventListener('change', async (event) => {
-      // TODO: とりあえず await にしている
-      var subscriptionId = await event.current.id;
+      var subscriptionId = event.current.id;
 
       if (subscriptionId === null || subscriptionId === undefined) {
         return;
