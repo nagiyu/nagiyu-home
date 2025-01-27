@@ -3,9 +3,9 @@
     <p>通知を設定してください。</p>
     <p>※環境によっては通知されないことがあります。</p>
 
-    <div>SubscriptionID: {{ subscriptionId }}</div>
-
     <br />
+
+    <b-button @click="Debug">Debug</b-button>
 
     <b-field label="設定" horizontal>
       <template v-if="!IsEnabledSubscribe">
@@ -117,8 +117,7 @@ class NotifyItem extends Vue {
   /**
    * OneSignal の SubscriptionId
    */
-  // private subscriptionId: string = '';
-  public subscriptionId: string = '';
+  private subscriptionId: string = '';
 
   /**
    * Check if the app is running as a PWA
@@ -148,8 +147,6 @@ class NotifyItem extends Vue {
     if (import.meta.env.PROD) {
       this.isLoading = true;
 
-      await this.$OneSignal.User.PushSubscription.optIn();
-
       await this.$OneSignal.Slidedown.promptPush({
         force: true
       });
@@ -166,6 +163,15 @@ class NotifyItem extends Vue {
     this.ChangeCarouselStatus();
   }
 
+  public Debug(): void {
+    // @ts-ignore
+    this.$buefy.toast.open({
+      duration: 5000,
+      message: `this: ${this.subscriptionId}, OneSignal: ${this.$OneSignal.User.PushSubscription.id}`,
+      type: 'is-success'
+    });
+  }
+
   /**
    * Subscribe のステータス変更時のイベント
    */
@@ -179,7 +185,7 @@ class NotifyItem extends Vue {
       // 確実に subscriptionId が取得できるようにするために 3 秒待つ
       await new Promise(resolve => setTimeout(resolve, 3000));
 
-      this.subscriptionId = event.current.id ?? '';
+      this.subscriptionId = event.current.id ?? this.$OneSignal.User.PushSubscription.id ?? '';
 
       if (this.subscriptionId === '') {
         // @ts-ignore
