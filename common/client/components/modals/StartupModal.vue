@@ -35,6 +35,7 @@
             <NotifyItem
               :isActive="stepIndex === 3"
               :recommendNotifyKey="RECOMMEND_NOTIFY_KEY"
+              :isLogin="IsLogin"
               :userSubscriptionId="UserSubscriptionId"
               @changeCarouselStatus="ChangeStepsStatus"
               @setUser="SetUser"

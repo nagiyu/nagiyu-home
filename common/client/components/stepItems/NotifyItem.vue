@@ -3,14 +3,7 @@
     <p>通知を設定してください。</p>
     <p>※環境によっては通知されないことがあります。</p>
 
-    <div>IsEnabledSubscribe: {{ IsEnabledSubscribe }}</div>
-    <div>UserSubscriptionId: {{ userSubscriptionId }}</div>
-
     <br />
-
-    <b-field label="optIn" horizontal>
-      <b-button type="is-success" @click="OptedIn">受け入れ</b-button>
-    </b-field>
 
     <b-field label="設定" horizontal>
       <template v-if="!IsEnabledSubscribe">
@@ -21,17 +14,6 @@
       </template>
     </b-field>
 
-    <b-field label="紐付け" horizontal>
-      <template v-if="IsEnabledSubscribe">
-        <template v-if="!isConectedSubscribe">
-          <b-button type="is-success" @click="ConnectSubscriptionId">紐付け</b-button>
-        </template>
-        <template v-else>
-          <span>Completed</span>
-        </template>
-      </template>
-    </b-field>
-
     <b-field label="テスト" horizontal>
       <template v-if="isConectedSubscribe">
         <b-button type="is-success">通知</b-button>
@@ -39,10 +21,6 @@
     </b-field>
 
     <br />
-
-    <b-button @click="CheckOptedIn">optedIn</b-button>
-
-    <b-button @click="CheckSubscriptionId">SubscriptionId</b-button>
 
     <b-field position="is-centered" class="buttons">
       <b-button type="is-success" @click="PromptPush">通知設定</b-button>
@@ -85,6 +63,13 @@ class NotifyItem extends Vue {
   })
   public recommendNotifyKey!: string;
 
+  @Prop({
+    type: Boolean,
+    required: true,
+    default: false
+  })
+  public isLogin!: boolean;
+
   /**
    * ユーザーの OneSignal の SubscriptionId
    */
@@ -113,8 +98,8 @@ class NotifyItem extends Vue {
    * isActive の変更時
    */
   @Watch("isActive")
-  public OnIsActiveChanged(): void {
-    this.ChangeSubscribeStatus();
+  public async OnIsActiveChanged(): Promise<void> {
+    await this.ChangeSubscribeStatus();
   }
 
   /**
@@ -147,24 +132,22 @@ class NotifyItem extends Vue {
   }
 
   /**
-   * 通知を受け入れているか
-   */
-  public get IsOptedSubscribe(): boolean {
-    return this.$OneSignal.User.PushSubscription.optedIn ?? false;
-  }
-
-  /**
    * Mounted フック
    */
   public mounted(): void {
     this.$OneSignal.User.PushSubscription.addEventListener('change', async (event) => {
+      if (!this.isLogin) {
+        return;
+      }
+
       this.isLoading = true;
-      
-      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      var subscriptionId = event.current.id;
+      // 確実に subscriptionId が取得できるようにするために 3 秒待つ
+      await new Promise(resolve => setTimeout(resolve, 3000));
 
-      if (subscriptionId === null || subscriptionId === undefined) {
+      this.subscriptionId = event.current.id ?? '';
+
+      if (this.subscriptionId === '') {
         // @ts-ignore
         this.$buefy.toast.open({
             duration: 5000,
@@ -177,28 +160,14 @@ class NotifyItem extends Vue {
         return;
       }
 
-      await axios.post(`/api/notification/${subscriptionId}`);
+      await axios.post(`/api/notification/${this.subscriptionId}`);
 
       await this.SetUser();
 
       this.isLoading = false;
+
+      await this.ChangeSubscribeStatus();
     });
-  }
-
-  public CheckOptedIn(): void {
-    // @ts-ignore
-    this.$buefy.toast.open({
-        duration: 5000,
-        message: `optedIn: ${this.$OneSignal.User.PushSubscription.optedIn}`,
-    })
-  }
-
-  public CheckSubscriptionId(): void {
-    // @ts-ignore
-    this.$buefy.toast.open({
-        duration: 5000,
-        message: `SubscriptionId: ${this.$OneSignal.User.PushSubscription.id}`,
-    })
   }
 
   /**
@@ -217,32 +186,6 @@ class NotifyItem extends Vue {
   }
 
   /**
-   * 通知を受け入れる
-   */
-  public async OptedIn(): Promise<void> {
-    if (import.meta.env.PROD) {
-      this.isLoading = true;
-
-      await this.$OneSignal.User.PushSubscription.optIn();
-
-      this.isLoading = false;
-    }
-  }
-
-  /**
-   * OneSignal の SubscriptionId をバインドする
-   */
-  public async ConnectSubscriptionId(): Promise<void> {
-    if (this.subscriptionId !== '') {
-      await axios.post(`/api/notification/${this.subscriptionId}`);
-
-      await this.SetUser();
-    }
-
-    this.ChangeSubscribeStatus();
-  }
-
-  /**
    * 通知の勧誘を完了に設定
    */
   public SetRecommendNotify(): void {
@@ -253,10 +196,7 @@ class NotifyItem extends Vue {
   /**
    * Subscribe のステータスを変更する
    */
-  private ChangeSubscribeStatus(): void {
-    if (import.meta.env.PROD) {
-      this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
-    }
+  private async ChangeSubscribeStatus(): Promise<void> {
     this.isConectedSubscribe = this.IsEnabledSubscribe && this.subscriptionId === this.userSubscriptionId;
   }
 }
