@@ -44,6 +44,8 @@
       <b-button type="is-success" @click="PromptPush">通知設定</b-button>
       <b-button type="is-warning" @click="SetRecommendNotify">今はやめておく</b-button>
     </b-field>
+
+    <b-loading v-model="isLoading" :is-full-page="false"></b-loading>
   </template>
 
   <template v-else>
@@ -100,7 +102,7 @@ class NotifyItem extends Vue {
    * ユーザーを設定する
    */
   @Emit('setUser')
-  public SetUser(): void {
+  public async SetUser(): Promise<void> {
   }
 
   /**
@@ -115,6 +117,11 @@ class NotifyItem extends Vue {
    * ユーザーと SubscriptionId が紐付いているか
    */
   public isConectedSubscribe: boolean = false;
+
+  /**
+   * ローディング中か
+   */
+  public isLoading: boolean = false;
 
   /**
    * OneSignal の SubscriptionId
@@ -147,6 +154,8 @@ class NotifyItem extends Vue {
    */
   public mounted(): void {
     this.$OneSignal.User.PushSubscription.addEventListener('change', async (event) => {
+      this.isLoading = true;
+
       var subscriptionId = event.current.id;
 
       if (subscriptionId === null || subscriptionId === undefined) {
@@ -155,7 +164,9 @@ class NotifyItem extends Vue {
 
       await axios.post(`/api/notification/${subscriptionId}`);
 
-      this.SetUser();
+      await this.SetUser();
+
+      this.isLoading = false;
     });
   }
 
@@ -164,10 +175,13 @@ class NotifyItem extends Vue {
    */
   public async PromptPush(): Promise<void> {
     if (import.meta.env.PROD) {
+      this.isLoading = true;
+
       await this.$OneSignal.Slidedown.promptPush({
         force: true
       });
-      await this.$OneSignal.User.PushSubscription.optIn();
+
+      this.isLoading = false;
     }
   }
 
@@ -176,7 +190,11 @@ class NotifyItem extends Vue {
    */
   public async OptedIn(): Promise<void> {
     if (import.meta.env.PROD) {
+      this.isLoading = true;
+
       await this.$OneSignal.User.PushSubscription.optIn();
+
+      this.isLoading = false;
     }
   }
 
@@ -187,7 +205,7 @@ class NotifyItem extends Vue {
     if (this.subscriptionId !== '') {
       await axios.post(`/api/notification/${this.subscriptionId}`);
 
-      this.SetUser();
+      await this.SetUser();
     }
 
     this.ChangeSubscribeStatus();
