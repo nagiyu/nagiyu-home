@@ -159,6 +159,8 @@ class NotifyItem extends Vue {
   public mounted(): void {
     this.$OneSignal.User.PushSubscription.addEventListener('change', async (event) => {
       this.isLoading = true;
+      
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       var subscriptionId = event.current.id;
 
