@@ -143,11 +143,14 @@ class NotifyItem extends Vue {
    */
   public mounted(): void {
     this.$OneSignal.User.PushSubscription.addEventListener('change', async (event) => {
-      if (event.current.id === null || event.current.id === undefined) {
+      // TODO: とりあえず await にしている
+      var subscriptionId = await event.current.id;
+
+      if (subscriptionId === null || subscriptionId === undefined) {
         return;
       }
 
-      await axios.post(`/api/notification/${event.current.id}`);
+      await axios.post(`/api/notification/${subscriptionId}`);
 
       this.SetUser();
     });
@@ -200,7 +203,6 @@ class NotifyItem extends Vue {
    */
   private ChangeSubscribeStatus(): void {
     if (import.meta.env.PROD) {
-      // TODO: iOS だとうまく取れない
       this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
     }
     this.isConectedSubscribe = this.IsEnabledSubscribe && this.subscriptionId === this.userSubscriptionId;
