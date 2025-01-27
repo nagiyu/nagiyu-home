@@ -167,7 +167,11 @@ class NotifyItem extends Vue {
   /**
    * Subscribe のステータス変更時のイベント
    */
-  private async ChangeSubscribeEvent(): Promise<void> {
+  private async ChangeSubscribeEvent(event: any): Promise<void> {
+      if (event.previous.optedIn) {
+        return;
+      }
+
       if (!this.isLogin) {
         return;
       }
@@ -177,7 +181,7 @@ class NotifyItem extends Vue {
       // 確実に subscriptionId が取得できるようにするために 3 秒待つ
       await new Promise(resolve => setTimeout(resolve, 3000));
 
-      this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
+      this.subscriptionId = event.current.id ?? '';
 
       if (this.subscriptionId === '') {
         // @ts-ignore
