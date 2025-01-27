@@ -159,6 +159,7 @@ class NotifyItem extends Vue {
       var subscriptionId = event.current.id;
 
       if (subscriptionId === null || subscriptionId === undefined) {
+        this.isLoading = false;
         return;
       }
 
