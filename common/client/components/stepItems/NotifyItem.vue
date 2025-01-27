@@ -201,7 +201,7 @@ class NotifyItem extends Vue {
 
       await this.$OneSignal.User.PushSubscription.optIn();
 
-      // ローディングのクローズはイベントリスナーで行う
+      this.isLoading = false;
     }
   }
 
