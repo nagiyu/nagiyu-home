@@ -138,6 +138,12 @@ class NotifyItem extends Vue {
     return this.$OneSignal.User.PushSubscription.optedIn ?? false;
   }
 
+  public mounted(): void {
+    this.$OneSignal.User.PushSubscription.addEventListener('change', (event) => {
+      console.log(`DEBUG::: event: ${event}`);
+    });
+  }
+
   /**
    * 通知の許可を表示する
    */
