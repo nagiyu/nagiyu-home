@@ -7,6 +7,10 @@
 
     <b-button @click="Debug">Debug</b-button>
 
+    <b-field label="OptIn" horizontal>
+      <b-button @click="OptIn">OptIn</b-button>
+    </b-field>
+
     <b-field label="設定" horizontal>
       <template v-if="!IsEnabledSubscribe">
         <b-button type="is-success" @click="PromptPush">通知設定</b-button>
@@ -138,6 +142,19 @@ class NotifyItem extends Vue {
    */
   public mounted(): void {
     this.$OneSignal.User.PushSubscription.addEventListener('change', this.ChangeSubscribeEvent);
+  }
+
+  /**
+   * 紐付け
+   */
+  public async OptIn(): Promise<void> {
+    if (import.meta.env.PROD) {
+      this.isLoading = true;
+
+      await this.$OneSignal.User.PushSubscription.optIn();
+
+      this.isLoading = false;
+    }
   }
 
   /**
