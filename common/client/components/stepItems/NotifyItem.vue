@@ -89,7 +89,11 @@ class NotifyItem extends StepItemBase {
   /**
    * Mounted フック
    */
-  public mounted(): void {
+  public async mounted(): Promise<void> {
+    await this.AsyncWithLoading(async () => {
+      await super.mounted();
+    });
+
     this.$OneSignal.User.PushSubscription.addEventListener('change', async () => {
       await this.AsyncWithLoading(async () => {
         await TimeUtils.Sleep(3000);

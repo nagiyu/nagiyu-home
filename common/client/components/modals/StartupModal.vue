@@ -46,7 +46,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue, toNative } from "vue-facing-decorator";
+import { Component, Emit, Prop, toNative } from "vue-facing-decorator";
+import ViewBase from "@common/views/ViewBase.vue";
 import PWAItem from "@common/components/stepItems/PWAItem.vue";
 import ConfirmItem from "@common/components/stepItems/ConfirmItem.vue";
 import NotifyItem from "@common/components/stepItems/NotifyItem.vue";
@@ -55,7 +56,6 @@ import StartupConst from "@common/consts/StartupConst";
 import PWAUtils from "@common/utils/PWAUtils";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 import WebUtil from "@common/utils/WebUtil";
-import AuthUtil from "@auth/utils/AuthUtil";
 
 @Component({
   components: {
@@ -65,7 +65,7 @@ import AuthUtil from "@auth/utils/AuthUtil";
     NotifyItem
   }
 })
-class StartupModal extends Vue {
+class StartupModal extends ViewBase {
   /**
    * Modal Card Body のスタイル
    */
@@ -156,11 +156,6 @@ class StartupModal extends Vue {
   public isEnabledNextButton: boolean = false;
 
   /**
-   * ユーザー
-   */
-  private user: IUserAuthBase | null = null;
-
-  /**
    * ユーザーがログインしているかどうか
    */
   public get IsLogin(): boolean {
@@ -179,25 +174,12 @@ class StartupModal extends Vue {
   }
 
   /**
-   * Mounted フック
-   */
-  public async mounted(): Promise<void> {
-    this.user = await AuthUtil.GetUser<IUserAuthBase>();
-
-    await this.ChangeStepsStatus();
-  }
-
-  /**
    * ステップのステータスを変更する
    */
   public async ChangeStepsStatus(): Promise<void> {
-    this.ChangePWACaroueselStatus();
-    this.ChangeConfirmCaroueselStatus();
-    await this.ChangeLoginCaroueselStatus();
-    await this.ChangeNotifyCaroueselStatus();
-
-    this.ChangePrevButtonStatus();
-    this.ChangeNextButtonStatus();
+    await this.AsyncWithLoading(async () => {
+      await this.RefreshAllData();
+    });
 
     if (this.isEnabledPWAStep && this.isEnabledConfirmStep && this.isEnabledLoginStep && this.isEnabledNotifyStep) {
       this.CloseStartupModal();
@@ -227,35 +209,41 @@ class StartupModal extends Vue {
   }
 
   /**
-   * ユーザーを設定する
+   * 全データをリフレッシュする
    */
-  public async SetUser(): Promise<void> {
-    if (this.user !== null) {
-      return;
-    }
+  protected async RefreshAllData(): Promise<void> {
+    await this.AsyncWithLoading(async () => {
+      await super.RefreshAllData();
 
-    this.user = await AuthUtil.GetUser<IUserAuthBase>();
+      this.ChangePWACaroueselStatus();
+      this.ChangeConfirmCaroueselStatus();
+      await this.ChangeLoginCaroueselStatus();
+      await this.ChangeNotifyCaroueselStatus();
+
+      this.ChangePrevButtonStatus();
+      this.ChangeNextButtonStatus();
+    });
   }
 
   /**
-   * PWA のカルーセルの状態を変更する
+   * PWA のステップの状態を変更する
    */
   private ChangePWACaroueselStatus(): void {
     this.isEnabledPWAStep = !PWAUtils.IsPWA && LocalStorageUtil.GetItem(StartupConst.STORAGE_USE_TYPE_KEY) === null;
   }
 
   /**
-   * Confirm のカルーセルの状態を変更する
+   * Confirm のステップの状態を変更する
    */
   private ChangeConfirmCaroueselStatus(): void {
     this.isEnabledConfirmStep = LocalStorageUtil.GetItem(StartupConst.STORAGE_CONFIRM_KEY) === null;
   }
 
   /**
-   * ログインを勧めるカルーセルの状態を変更する
+   * ログインを勧めるステップの状態を変更する
    */
   private async ChangeLoginCaroueselStatus(): Promise<void> {
-    await this.SetUser();
+    await this.UpdateUser();
 
     if (this.user !== null) {
       this.isEnabledLoginStep = false;
@@ -266,17 +254,10 @@ class StartupModal extends Vue {
   }
 
   /**
-   * 通知を勧めるカルーセルの状態を変更する
+   * 通知を勧めるステップの状態を変更する
    */
   private async ChangeNotifyCaroueselStatus(): Promise<void> {
     if (!PWAUtils.IsPWA) {
-      this.isEnabledNotifyStep = false;
-      return;
-    }
-
-    var subscriptionId = this.user ? this.user.oneSignalSubscriptionId : '';
-
-    if (subscriptionId !== '') {
       this.isEnabledNotifyStep = false;
       return;
     }
