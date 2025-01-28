@@ -77,6 +77,8 @@ export default class ViewBase extends Vue {
     this.AsyncWithLoading(async () => {
       if (this.user === null) {
         await this.UpdateUser();
+
+        this.$forceUpdate();
       }
     });
   }
