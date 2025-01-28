@@ -138,6 +138,7 @@ class NotifyItem extends StepItemBase {
         subscriptionIds: [this.subscriptionId],
         message: "Test Push"
       });
+      await TimeUtils.Sleep(3000);
     });
   }
 

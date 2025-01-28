@@ -47,6 +47,7 @@ import { Component, Emit, Prop, toNative, Watch } from "vue-facing-decorator";
 import StepItemBase from "@common/components/stepItems/StepItemBase.vue";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 import NotifyUtil from "@common/utils/NotifyUtil";
+import TimeUtils from "@common/utils/TimeUtils";
 
 @Component
 class LoginItem extends StepItemBase {
@@ -110,6 +111,8 @@ class LoginItem extends StepItemBase {
   public async ConnectSubscribe(): Promise<void> {
     this.AsyncWithLoading(async () => {
       await NotifyUtil.RegisterSubscriptionId(this.subscriptionId);
+      await TimeUtils.Sleep(3000);
+      await this.RefreshAllData();
     });
   }
 
@@ -121,6 +124,7 @@ class LoginItem extends StepItemBase {
       await NotifyUtil.PushNotifyByLoginUser({
         message: "Test User Push",
       });
+      await TimeUtils.Sleep(3000);
     });
   }
 
