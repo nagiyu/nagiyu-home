@@ -141,7 +141,7 @@ class LoginItem extends StepItemBase {
     this.AsyncWithLoading(async () => {
       await super.RefreshAllData();
 
-      TimeUtils.Sleep(3000);
+      await TimeUtils.Sleep(3000);
 
       this.isLogin = this.user !== null;
       this.isSubscribeConnected = this.user !== null && this.user.oneSignalSubscriptionId === this.subscriptionId;
