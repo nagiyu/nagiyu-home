@@ -47,7 +47,6 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, toNative, Watch } from "vue-facing-decorator";
-import axios from "axios";
 import StepItemBase from "@common/components/stepItems/StepItemBase.vue";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 
@@ -85,25 +84,19 @@ class NotifyItem extends StepItemBase {
    */
   @Watch("isActive")
   public async OnIsActiveChanged(): Promise<void> {
-    await this.RefreshAllData();
+    this.AsyncWithLoading(async () => {
+      await this.RefreshAllData();
+    });
   }
-
-  /**
-   * 通知が許可されているか
-   */
-  public optedIn: boolean = false;
-
-  /**
-   * OneSignal の SubscriptionId
-   */
-  public subscriptionId: string = '';
 
   /**
    * Mounted フック
    */
   public mounted(): void {
     this.$OneSignal.User.PushSubscription.addEventListener('change', async () => {
-      await this.RefreshAllData();
+      this.AsyncWithLoading(async () => {
+        await this.RefreshAllData();
+      });
     });
   }
 
@@ -148,6 +141,8 @@ class NotifyItem extends StepItemBase {
 
     this.optedIn = this.$OneSignal.User.PushSubscription.optedIn ?? false;
     this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
+
+    this.$forceUpdate();
   }
 }
 
