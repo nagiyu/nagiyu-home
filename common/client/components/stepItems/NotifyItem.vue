@@ -91,7 +91,7 @@ class NotifyItem extends StepItemBase {
    */
   public mounted(): void {
     this.$OneSignal.User.PushSubscription.addEventListener('change', async () => {
-      this.AsyncWithLoading(async () => {
+      await this.AsyncWithLoading(async () => {
         await TimeUtils.Sleep(3000);
         await this.RefreshAllData();
       });
@@ -102,8 +102,8 @@ class NotifyItem extends StepItemBase {
    * 紐付け
    */
   public async OptIn(): Promise<void> {
-    this.OnProductionAsync(async () => {
-      this.AsyncWithLoading(async () => {
+    await this.OnProductionAsync(async () => {
+      await this.AsyncWithLoading(async () => {
         await this.$OneSignal.User.PushSubscription.optIn();
       });
     });
@@ -113,8 +113,8 @@ class NotifyItem extends StepItemBase {
    * 通知の許可を表示する
    */
   public async PromptPush(): Promise<void> {
-    this.OnProductionAsync(async () => {
-      this.AsyncWithLoading(async () => {
+    await this.OnProductionAsync(async () => {
+      await this.AsyncWithLoading(async () => {
         await this.$OneSignal.Slidedown.promptPush({
           force: true
         });
@@ -126,7 +126,7 @@ class NotifyItem extends StepItemBase {
    * テスト通知を送信
    */
   public async TestPush(): Promise<void> {
-    this.AsyncWithLoading(async () => {
+    await this.AsyncWithLoading(async () => {
       await NotifyUtil.PushBySubscriptionIds({
         subscriptionIds: [this.subscriptionId],
         message: "Test Push"

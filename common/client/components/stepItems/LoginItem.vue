@@ -107,7 +107,7 @@ class LoginItem extends StepItemBase {
    * 通知の紐付け
    */
   public async ConnectSubscribe(): Promise<void> {
-    this.AsyncWithLoading(async () => {
+    await this.AsyncWithLoading(async () => {
       await NotifyUtil.RegisterSubscriptionId(this.subscriptionId);
 
       await this.UpdateUser();
@@ -119,7 +119,7 @@ class LoginItem extends StepItemBase {
    * ユーザー通知を送信
    */
   public async TestUserPush(): Promise<void> {
-    this.AsyncWithLoading(async () => {
+    await this.AsyncWithLoading(async () => {
       await NotifyUtil.PushNotifyByLoginUser({
         message: "Test User Push",
       });
