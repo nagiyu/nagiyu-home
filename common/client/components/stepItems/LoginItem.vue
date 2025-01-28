@@ -111,6 +111,15 @@ class LoginItem extends StepItemBase {
   public isTestPushCompleted: boolean = false;
 
   /**
+   * マウント時の処理
+   */
+  public async mounted(): Promise<void> {
+    await this.AsyncWithLoading(async () => {
+      await super.mounted();
+    });
+  }
+
+  /**
    * ログインボタンのクリックイベント
    */
   public ClickLogin(): void {

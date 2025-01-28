@@ -42,6 +42,8 @@
         <b-button type="is-success" :disabled="!isEnabledNextButton" @click="ClickNextButton">></b-button>
       </footer>
     </div>
+
+    <b-loading v-model="isLoading" :is-full-page="false"></b-loading>
   </b-modal>
 </template>
 
@@ -174,6 +176,17 @@ class StartupModal extends ViewBase {
   }
 
   /**
+   * マウント時の処理
+   */
+  public async mounted(): Promise<void> {
+    await this.AsyncWithLoading(async () => {
+      await super.mounted();
+
+      await this.ChangeStepsStatus();
+    });
+  }
+
+  /**
    * ステップのステータスを変更する
    */
   public async ChangeStepsStatus(): Promise<void> {
@@ -181,7 +194,7 @@ class StartupModal extends ViewBase {
       await this.RefreshAllData();
     });
 
-    if (this.isEnabledPWAStep && this.isEnabledConfirmStep && this.isEnabledLoginStep && this.isEnabledNotifyStep) {
+    if (!this.isEnabledPWAStep && !this.isEnabledConfirmStep && !this.isEnabledLoginStep && !this.isEnabledNotifyStep) {
       this.CloseStartupModal();
     } else {
       this.OpenStartupModal();
@@ -217,8 +230,8 @@ class StartupModal extends ViewBase {
 
       this.ChangePWACaroueselStatus();
       this.ChangeConfirmCaroueselStatus();
-      await this.ChangeLoginCaroueselStatus();
-      await this.ChangeNotifyCaroueselStatus();
+      this.ChangeLoginCaroueselStatus();
+      this.ChangeNotifyCaroueselStatus();
 
       this.ChangePrevButtonStatus();
       this.ChangeNextButtonStatus();
@@ -242,7 +255,7 @@ class StartupModal extends ViewBase {
   /**
    * ログインを勧めるステップの状態を変更する
    */
-  private async ChangeLoginCaroueselStatus(): Promise<void> {
+  private ChangeLoginCaroueselStatus(): void {
     if (LocalStorageUtil.GetItem(StartupConst.STORAGE_LOGIN_KEY) !== null) {
       this.isEnabledLoginStep = false;
       return;
@@ -254,7 +267,7 @@ class StartupModal extends ViewBase {
   /**
    * 通知を勧めるステップの状態を変更する
    */
-  private async ChangeNotifyCaroueselStatus(): Promise<void> {
+  private ChangeNotifyCaroueselStatus(): void {
     if (LocalStorageUtil.GetItem(StartupConst.STORAGE_NOTIFY_KEY) !== null) {
       this.isEnabledNotifyStep = false;
       return;
