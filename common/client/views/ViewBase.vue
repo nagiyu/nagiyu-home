@@ -74,7 +74,7 @@ export default class ViewBase extends Vue {
    * 全データをリフレッシュする
    */
   protected async RefreshAllData(): Promise<void> {
-    this.AsyncWithLoading(async () => {
+    await this.AsyncWithLoading(async () => {
       if (this.user === null) {
         await this.UpdateUser();
       }
@@ -85,7 +85,7 @@ export default class ViewBase extends Vue {
    * ユーザーを更新する
    */
   protected async UpdateUser(): Promise<void> {
-    this.AsyncWithLoading(async () => {
+    await this.AsyncWithLoading(async () => {
       this.user = await AuthUtil.GetUser<IUserAuthBase>();
     });
   }

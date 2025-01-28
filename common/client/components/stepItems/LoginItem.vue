@@ -138,15 +138,11 @@ class LoginItem extends StepItemBase {
    * 全データをリフレッシュする
    */
   protected async RefreshAllData(): Promise<void> {
-    this.AsyncWithLoading(async () => {
+    await this.AsyncWithLoading(async () => {
       await super.RefreshAllData();
 
       await TimeUtils.Sleep(3000);
 
-      // @ts-ignore
-      this.$buefy.toast.open({
-        message: "isLogin の状態変更"
-      });
       this.isLogin = this.user !== null;
       this.isSubscribeConnected = this.user !== null && this.user.oneSignalSubscriptionId === this.subscriptionId;
     });
