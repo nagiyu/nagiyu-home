@@ -149,16 +149,6 @@ class NotifyItem extends StepItemBase {
     LocalStorageUtil.SetItem(this.recommendNotifyKey, "completed");
     await this.ChangeStepsStatus();
   }
-
-  /**
-   * 全データをリフレッシュする
-   */
-  protected async RefreshAllData(): Promise<void> {
-    await super.RefreshAllData();
-
-    this.optedIn = this.$OneSignal.User.PushSubscription.optedIn ?? false;
-    this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
-  }
 }
 
 export default toNative(NotifyItem);
