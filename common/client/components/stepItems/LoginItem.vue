@@ -52,6 +52,7 @@ import { Component, Emit, Prop, toNative, Watch } from "vue-facing-decorator";
 import StepItemBase from "@common/components/stepItems/StepItemBase.vue";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 import NotifyUtil from "@common/utils/NotifyUtil";
+import TimeUtils from "@common/utils/TimeUtils";
 
 @Component
 class LoginItem extends StepItemBase {
@@ -146,10 +147,15 @@ class LoginItem extends StepItemBase {
    * 全データをリフレッシュする
    */
   protected async RefreshAllData(): Promise<void> {
-    await super.RefreshAllData();
+    this.AsyncWithLoading(async () => {
+      await super.RefreshAllData();
 
-    this.isLogin = this.user !== null;
-    this.isSubscribeConnected = this.user !== null && this.user.oneSignalSubscriptionId === this.subscriptionId;
+      this.isLogin = this.user !== null;
+      this.isSubscribeConnected = this.user !== null && this.user.oneSignalSubscriptionId === this.subscriptionId;
+
+      // 完全に描画するために少し待つ
+      await TimeUtils.Sleep(3000);
+    });
   }
 }
 
