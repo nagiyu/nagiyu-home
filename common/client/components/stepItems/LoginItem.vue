@@ -141,7 +141,7 @@ class LoginItem extends StepItemBase {
     this.AsyncWithLoading(async () => {
       await super.RefreshAllData();
 
-      console.log(`DEBUG::: Wait ${this.isLoading}`);
+      console.log(`DEBUG::: 待つ`);
       await TimeUtils.Sleep(3000);
 
       this.isLogin = this.user !== null;

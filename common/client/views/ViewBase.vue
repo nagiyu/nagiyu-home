@@ -38,10 +38,12 @@ export default class ViewBase extends Vue {
       return await func();
     }
 
+    console.log(`DEBUG::: ローディングはじめ`);
     this.isLoading = true;
     try {
       return await func();
     } finally {
+      console.log(`DEBUG::: ローディング終わり`);
       this.isLoading = false;
     }
   }
@@ -76,7 +78,6 @@ export default class ViewBase extends Vue {
   protected async RefreshAllData(): Promise<void> {
     this.AsyncWithLoading(async () => {
       if (this.user === null) {
-        console.log(`DEBUG::: UpdateUser ${this.isLoading}`);
         await this.UpdateUser();
       }
     });
