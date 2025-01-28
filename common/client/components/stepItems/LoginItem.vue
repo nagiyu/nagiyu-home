@@ -53,6 +53,7 @@ import StartupConst from "@common/consts/StartupConst";
 import StepItemBase from "@common/components/stepItems/StepItemBase.vue";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 import NotifyUtil from "@common/utils/NotifyUtil";
+import TimeUtils from "@common/utils/TimeUtils";
 
 @Component
 class LoginItem extends StepItemBase {
@@ -140,10 +141,7 @@ class LoginItem extends StepItemBase {
     this.AsyncWithLoading(async () => {
       await super.RefreshAllData();
 
-      // @ts-ignore
-      this.$buefy.toast.open({
-        message: this.user
-      });
+      TimeUtils.Sleep(3000);
 
       this.isLogin = this.user !== null;
       this.isSubscribeConnected = this.user !== null && this.user.oneSignalSubscriptionId === this.subscriptionId;
