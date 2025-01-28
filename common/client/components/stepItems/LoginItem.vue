@@ -1,51 +1,45 @@
 <template>
-  <template v-if="!isLogin || !isSubscribeConnected">
-    <p>Googleアカウントでログインすると便利になる機能が多くあります。</p>
-    <p>ログインして使用することをオススメします。</p>
+  <p>Googleアカウントでログインすると便利になる機能が多くあります。</p>
+  <p>ログインして使用することをオススメします。</p>
 
-    <br />
+  <br />
 
-    <b-field label="ログイン" horizontal>
-      <template v-if="!isLogin">
-        <b-button type="is-success" @click="ClickLogin">ログイン</b-button>
-      </template>
-      <template v-else>
-        <span>Completed</span>
-      </template>
-    </b-field>
+  <b-field label="ログイン" horizontal>
+    <template v-if="!isLogin">
+      <b-button type="is-success" @click="ClickLogin">ログイン</b-button>
+    </template>
+    <template v-else>
+      <span>Completed</span>
+    </template>
+  </b-field>
 
-    <b-field label="紐付け" horizontal>
-      <template v-if="IsPWA">
-        <template v-if="isSubscribeConnected">
-          <b-button type="is-success" @click="ConnectSubscribe">通知の紐付け</b-button>
-        </template>
+  <b-field label="紐付け" horizontal>
+    <template v-if="IsPWA">
+      <template v-if="isSubscribeConnected">
+        <b-button type="is-success" @click="ConnectSubscribe">通知の紐付け</b-button>
       </template>
-      <template v-else>
-        <span>通知を有効にするにはアプリ化してください。</span>
-      </template>
-    </b-field>
+    </template>
+    <template v-else>
+      <span>通知を有効にするにはアプリ化してください。</span>
+    </template>
+  </b-field>
 
-    <b-field label="通知テスト" horizontal>
-      <template v-if="IsPWA">
-        <template v-if="isSubscribeConnected">
-          <b-button type="is-success" @click="TestUserPush">ユーザー通知</b-button>
-        </template>
+  <b-field label="通知テスト" horizontal>
+    <template v-if="IsPWA">
+      <template v-if="isSubscribeConnected">
+        <b-button type="is-success" @click="TestUserPush">ユーザー通知</b-button>
       </template>
-      <template v-else>
-        <span>通知を有効にするにはアプリ化してください。</span>
-      </template>
-    </b-field>
+    </template>
+    <template v-else>
+      <span>通知を有効にするにはアプリ化してください。</span>
+    </template>
+  </b-field>
 
-    <b-field position="is-centered" class="buttons">
-      <!-- TODO: 要素が1つだとセンタリングされないので暫定追加 -->
-      <div></div>
-      <b-button type="is-warning" @click="SetRecommendLogin">今はやめておく</b-button>
-    </b-field>
-  </template>
-
-  <template v-else>
-    <p>ログインありがとうございます！</p>
-  </template>
+  <b-field position="is-centered" class="buttons">
+    <!-- TODO: 要素が1つだとセンタリングされないので暫定追加 -->
+    <div></div>
+    <b-button type="is-warning" @click="SetRecommendLogin">今はやめておく</b-button>
+  </b-field>
 </template>
 
 <script lang="ts">
