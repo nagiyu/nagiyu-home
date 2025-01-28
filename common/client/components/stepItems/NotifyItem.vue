@@ -49,6 +49,7 @@
 import { Component, Emit, Prop, toNative, Watch } from "vue-facing-decorator";
 import StepItemBase from "@common/components/stepItems/StepItemBase.vue";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
+import TimeUtils from "@common/utils/TimeUtils";
 
 @Component
 class NotifyItem extends StepItemBase {
@@ -94,13 +95,9 @@ class NotifyItem extends StepItemBase {
    */
   public mounted(): void {
     this.$OneSignal.User.PushSubscription.addEventListener('change', async () => {
-      // @ts-ignore
-      this.$buefy.toast.open({
-        message: '通知の設定が変更されました。',
-        type: 'is-info'
-      });
-
       this.AsyncWithLoading(async () => {
+        await TimeUtils.Sleep(1000);
+
         await this.RefreshAllData();
       });
     });
@@ -147,8 +144,6 @@ class NotifyItem extends StepItemBase {
 
     this.optedIn = this.$OneSignal.User.PushSubscription.optedIn ?? false;
     this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
-
-    this.$forceUpdate();
   }
 }
 

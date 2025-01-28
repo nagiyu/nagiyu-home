@@ -78,8 +78,6 @@ export default class ViewBase extends Vue {
       if (this.user === null) {
         await this.UpdateUser();
       }
-
-      this.$forceUpdate();
     });
   }
 
