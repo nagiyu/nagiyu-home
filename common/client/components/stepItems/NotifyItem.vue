@@ -111,7 +111,7 @@ class NotifyItem extends StepItemBase {
   public Debug(): void {
     // @ts-ignore
     this.$buefy.toast.open({
-      message: `permission: ${this.$OneSignal.Notifications.permission}`,
+      message: `SubscriptionID: ${this.$OneSignal.User.PushSubscription.id}`,
       type: "is-success"
     });
   }
