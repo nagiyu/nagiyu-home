@@ -76,6 +76,7 @@ export default class ViewBase extends Vue {
   protected async RefreshAllData(): Promise<void> {
     this.AsyncWithLoading(async () => {
       if (this.user === null) {
+        console.log(`DEBUG::: UpdateUser ${this.isLoading}`);
         await this.UpdateUser();
       }
     });
