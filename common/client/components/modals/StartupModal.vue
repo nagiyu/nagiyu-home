@@ -33,9 +33,9 @@
           </b-step-item>
           <b-step-item step="4" label="ログイン" :type="isEnabledLoginStep ? '' : 'is-success'">
             <LoginItem
+              :isActive="stepIndex === 3"
               :recommendLoginKey="RECOMMEND_LOGIN_KEY"
-              :isLogin="IsLogin"
-              @changeCarouselStatus="ChangeStepsStatus"
+              @changeStepsStatus="ChangeStepsStatus"
             />
           </b-step-item>
         </b-steps>

@@ -97,20 +97,9 @@ class NotifyItem extends StepItemBase {
    * Mounted フック
    */
   public mounted(): void {
-    this.$OneSignal.User.PushSubscription.addEventListener('change', async (event) => {
+    this.$OneSignal.User.PushSubscription.addEventListener('change', async () => {
       this.AsyncWithLoading(async () => {
         await TimeUtils.Sleep(3000);
-
-        var message = '';
-        message += `Old: ${event.previous.id} ${event.previous.optedIn}\n`;
-        message += `New: ${event.current.id} ${event.current.optedIn}`;
-
-        // @ts-ignore
-        this.$buefy.toast.open({
-          message: message,
-          type: "is-success"
-        });
-
         await this.RefreshAllData();
       });
     });
@@ -144,12 +133,10 @@ class NotifyItem extends StepItemBase {
    * テスト通知を送信
    */
   public async TestPush(): Promise<void> {
-    this.OnProductionAsync(async () => {
-      this.AsyncWithLoading(async () => {
-        await NotifyUtil.PushBySubscriptionIds({
-          subscriptionIds: [this.subscriptionId],
-          message: "Test Push"
-        });
+    this.AsyncWithLoading(async () => {
+      await NotifyUtil.PushBySubscriptionIds({
+        subscriptionIds: [this.subscriptionId],
+        message: "Test Push"
       });
     });
   }
@@ -159,8 +146,7 @@ class NotifyItem extends StepItemBase {
    */
   public async SetRecommendNotify(): Promise<void> {
     LocalStorageUtil.SetItem(this.recommendNotifyKey, "completed");
-
-    await this.RefreshAllData();
+    await this.ChangeStepsStatus();
   }
 
   /**

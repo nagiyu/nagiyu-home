@@ -21,4 +21,12 @@ export default class NotifyUtil {
   public static async PushNotifyByLoginUser(request: PushNotifyByLoginUserRequest): Promise<void> {
     await axios.post("/api/notification/push-by-login-user", request);
   }
+
+  /**
+   * Subscription ID 登録
+   * @param id Subscription ID
+   */
+  public static async RegisterSubscriptionId(id: string): Promise<void> {
+    await axios.post(`/api/notification/${id}`);
+  }
 }
