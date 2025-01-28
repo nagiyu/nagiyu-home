@@ -15,11 +15,13 @@
     </b-field>
 
     <b-field label="受け入れ" horizontal>
-      <template v-if="subscriptionId === ''">
-        <b-button @click="PromptPush">通知の受け入れ</b-button>
-      </template>
-      <template v-else>
-        <span>Completed</span>
+      <template v-if="optedIn">
+        <template v-if="subscriptionId === ''">
+          <b-button @click="PromptPush">通知の受け入れ</b-button>
+        </template>
+        <template v-else>
+          <span>Completed</span>
+        </template>
       </template>
     </b-field>
 
