@@ -5,16 +5,21 @@
   <br />
 
   <b-field label="ログイン" horizontal>
-    <template v-if="!isLogin">
-      <b-button type="is-success" @click="ClickLogin">ログイン</b-button>
+    <template v-if="optedIn">
+      <template v-if="!isLogin">
+        <b-button type="is-success" @click="ClickLogin">ログイン</b-button>
+      </template>
+      <template v-else>
+        <span>Completed</span>
+      </template>
     </template>
     <template v-else>
-      <span>Completed</span>
+      <span>通知を許可してからログインしてください。</span>
     </template>
   </b-field>
 
   <b-field label="紐付け" horizontal>
-    <template v-if="IsPWA">
+    <template v-if="isEnableNotify">
       <template v-if="!isSubscribeConnected">
         <b-button type="is-success" @click="ConnectSubscribe">通知の紐付け</b-button>
       </template>
@@ -23,25 +28,24 @@
       </template>
     </template>
     <template v-else>
-      <span>通知を有効にするにはアプリ化してください。</span>
+      <span>通知を有効にしてから設定してください。</span>
     </template>
   </b-field>
 
   <b-field label="通知テスト" horizontal>
-    <template v-if="IsPWA">
+    <template v-if="isEnableNotify">
       <template v-if="isSubscribeConnected">
         <b-button type="is-success" @click="TestUserPush">ユーザー通知</b-button>
       </template>
     </template>
     <template v-else>
-      <span>通知を有効にするにはアプリ化してください。</span>
+      <span>通知を有効にしてから設定してください。</span>
     </template>
   </b-field>
 
   <b-field position="is-centered" class="buttons">
-    <!-- TODO: 要素が1つだとセンタリングされないので暫定追加 -->
-    <div></div>
     <b-button type="is-warning" @click="SetRecommendLogin">今はやめておく</b-button>
+    <b-button type="is-success" :disabled="!isTestPushCompleted" @click="SetLoginCompleted">完了</b-button>
   </b-field>
 
   <b-loading v-model="isLoading" :is-full-page="false"></b-loading>
@@ -97,6 +101,16 @@ class LoginItem extends StepItemBase {
   }
 
   /**
+   * 通知が有効かどうか
+   */
+  public isEnableNotify: boolean = false;
+
+  /**
+   * テスト通知の完了フラグ
+   */
+  public isTestPushCompleted: boolean = false;
+
+  /**
    * ログインボタンのクリックイベント
    */
   public ClickLogin(): void {
@@ -123,6 +137,19 @@ class LoginItem extends StepItemBase {
       await NotifyUtil.PushNotifyByLoginUser({
         message: "Test User Push",
       });
+
+      this.isTestPushCompleted = true;
+    });
+  }
+
+  /**
+   * ログインを完了に設定
+   */
+  public async SetLoginCompleted(): Promise<void> {
+    LocalStorageUtil.SetItem(StartupConst.STORAGE_LOGIN_KEY, "completed");
+
+    this.AsyncWithLoading(async () => {
+      await this.ChangeStepsStatus();
     });
   }
 
@@ -131,7 +158,10 @@ class LoginItem extends StepItemBase {
    */
   public async SetRecommendLogin(): Promise<void> {
     LocalStorageUtil.SetItem(StartupConst.STORAGE_RECOMMEND_LOGIN_KEY, "completed");
-    await this.ChangeStepsStatus();
+
+    this.AsyncWithLoading(async () => {
+      await this.ChangeStepsStatus();
+    });
   }
 
   /**
@@ -145,6 +175,7 @@ class LoginItem extends StepItemBase {
 
       this.isLogin = this.user !== null;
       this.isSubscribeConnected = this.user !== null && this.user.oneSignalSubscriptionId === this.subscriptionId;
+      this.isEnableNotify = LocalStorageUtil.GetItem(StartupConst.STORAGE_NOTIFY_KEY) === null;
     });
   }
 }

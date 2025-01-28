@@ -243,9 +243,7 @@ class StartupModal extends ViewBase {
    * ログインを勧めるステップの状態を変更する
    */
   private async ChangeLoginCaroueselStatus(): Promise<void> {
-    await this.UpdateUser();
-
-    if (this.user !== null) {
+    if (LocalStorageUtil.GetItem(StartupConst.STORAGE_LOGIN_KEY) !== null) {
       this.isEnabledLoginStep = false;
       return;
     }
@@ -257,7 +255,7 @@ class StartupModal extends ViewBase {
    * 通知を勧めるステップの状態を変更する
    */
   private async ChangeNotifyCaroueselStatus(): Promise<void> {
-    if (!PWAUtils.IsPWA) {
+    if (LocalStorageUtil.GetItem(StartupConst.STORAGE_NOTIFY_KEY) !== null) {
       this.isEnabledNotifyStep = false;
       return;
     }

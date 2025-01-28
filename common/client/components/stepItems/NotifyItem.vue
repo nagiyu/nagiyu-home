@@ -34,9 +34,8 @@
     <br />
 
     <b-field position="is-centered" class="buttons">
-      <!-- TODO: 要素が1つだとセンタリングされないので暫定追加 -->
-      <div></div>
       <b-button type="is-warning" @click="SetRecommendNotify">今はやめておく</b-button>
+      <b-button type="is-success" :disabled="!isTestPushCompleted" @click="SetNotifyCompleted">完了</b-button>
     </b-field>
 
     <b-loading v-model="isLoading" :is-full-page="false"></b-loading>
@@ -87,6 +86,11 @@ class NotifyItem extends StepItemBase {
   }
 
   /**
+   * テスト通知の完了フラグ
+   */
+  public isTestPushCompleted: boolean = false;
+
+  /**
    * Mounted フック
    */
   public async mounted(): Promise<void> {
@@ -135,6 +139,19 @@ class NotifyItem extends StepItemBase {
         subscriptionIds: [this.subscriptionId],
         message: "Test Push"
       });
+
+      this.isTestPushCompleted = true;
+    });
+  }
+
+  /**
+   * 通知を完了に設定
+   */
+  public async SetNotifyCompleted(): Promise<void> {
+    LocalStorageUtil.SetItem(StartupConst.STORAGE_NOTIFY_KEY, "completed");
+
+    this.AsyncWithLoading(async () => {
+      await this.ChangeStepsStatus();
     });
   }
 
@@ -143,7 +160,10 @@ class NotifyItem extends StepItemBase {
    */
   public async SetRecommendNotify(): Promise<void> {
     LocalStorageUtil.SetItem(StartupConst.STORAGE_RECOMMEND_NOTIFY_KEY, "completed");
-    await this.ChangeStepsStatus();
+
+    this.AsyncWithLoading(async () => {
+      await this.ChangeStepsStatus();
+    });
   }
 }
 
