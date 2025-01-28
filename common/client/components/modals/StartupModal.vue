@@ -24,21 +24,18 @@
               @openTermsModal="OpenTermsModal"
             />
           </b-step-item>
-          <b-step-item step="3" label="ログイン" :type="isEnabledLoginStep ? '' : 'is-success'">
+          <b-step-item step="3" label="通知" :type="isEnabledNotifyStep ? '' : 'is-success'">
+            <NotifyItem
+              :isActive="stepIndex === 2"
+              :recommendNotifyKey="RECOMMEND_NOTIFY_KEY"
+              @changeStepsStatus="ChangeStepsStatus"
+            />
+          </b-step-item>
+          <b-step-item step="4" label="ログイン" :type="isEnabledLoginStep ? '' : 'is-success'">
             <LoginItem
               :recommendLoginKey="RECOMMEND_LOGIN_KEY"
               :isLogin="IsLogin"
               @changeCarouselStatus="ChangeStepsStatus"
-            />
-          </b-step-item>
-          <b-step-item step="4" label="通知" :type="isEnabledNotifyStep ? '' : 'is-success'">
-            <NotifyItem
-              :isActive="stepIndex === 3"
-              :recommendNotifyKey="RECOMMEND_NOTIFY_KEY"
-              :isLogin="IsLogin"
-              :userSubscriptionId="UserSubscriptionId"
-              @changeCarouselStatus="ChangeStepsStatus"
-              @setUser="SetUser"
             />
           </b-step-item>
         </b-steps>

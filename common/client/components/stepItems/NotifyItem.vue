@@ -5,15 +5,18 @@
 
     <br />
 
-    <b-button @click="Debug">Debug</b-button>
-
-    <b-field label="OptIn" horizontal>
-      <b-button @click="OptIn">OptIn</b-button>
+    <b-field label="許可" horizontal>
+      <template v-if="!optedIn">
+        <b-button @click="OptIn">通知の許可</b-button>
+      </template>
+      <template v-else>
+        <span>Completed</span>
+      </template>
     </b-field>
 
-    <b-field label="設定" horizontal>
-      <template v-if="!IsEnabledSubscribe">
-        <b-button type="is-success" @click="PromptPush">通知設定</b-button>
+    <b-field label="受け入れ" horizontal>
+      <template v-if="subscriptionId === ''">
+        <b-button @click="PromptPush">通知の受け入れ</b-button>
       </template>
       <template v-else>
         <span>Completed</span>
@@ -21,15 +24,16 @@
     </b-field>
 
     <b-field label="テスト" horizontal>
-      <template v-if="isConectedSubscribe">
-        <b-button type="is-success">通知</b-button>
+      <template v-if="optedIn && subscriptionId !== ''">
+        <b-button>端末通知</b-button>
       </template>
     </b-field>
 
     <br />
 
     <b-field position="is-centered" class="buttons">
-      <b-button type="is-success" @click="PromptPush">通知設定</b-button>
+      <!-- TODO: 要素が1つだとセンタリングされないので暫定追加 -->
+      <div></div>
       <b-button type="is-warning" @click="SetRecommendNotify">今はやめておく</b-button>
     </b-field>
 
@@ -42,13 +46,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, toNative, Vue, Watch } from "vue-facing-decorator";
+import { Component, Emit, Prop, toNative, Watch } from "vue-facing-decorator";
 import axios from "axios";
+import StepItemBase from "@common/components/stepItems/StepItemBase.vue";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
-import PWAUtils from "@common/utils/PWAUtils";
 
 @Component
-class NotifyItem extends Vue {
+class NotifyItem extends StepItemBase {
   /**
    * Step のアクティブ状態
    */
@@ -69,35 +73,11 @@ class NotifyItem extends Vue {
   })
   public recommendNotifyKey!: string;
 
-  @Prop({
-    type: Boolean,
-    required: true,
-    default: false
-  })
-  public isLogin!: boolean;
-
   /**
-   * ユーザーの OneSignal の SubscriptionId
+   * ステップのステータスを変更する
    */
-  @Prop({
-    type: String,
-    required: true,
-    default: ''
-  })
-  public userSubscriptionId!: string;
-
-  /**
-   * カルーセルのステータスを変更する
-   */
-  @Emit("changeCarouselStatus")
-  public ChangeCarouselStatus(): void {
-  }
-
-  /**
-   * ユーザーを設定する
-   */
-  @Emit('setUser')
-  public async SetUser(): Promise<void> {
+  @Emit("changeStepsStatus")
+  public async ChangeStepsStatus(): Promise<void> {
   }
 
   /**
@@ -105,143 +85,69 @@ class NotifyItem extends Vue {
    */
   @Watch("isActive")
   public async OnIsActiveChanged(): Promise<void> {
-    await this.ChangeSubscribeStatus();
-  }
-
-  /**
-   * ユーザーと SubscriptionId が紐付いているか
-   */
-  public isConectedSubscribe: boolean = false;
-
-  /**
-   * ローディング中か
-   */
-  public isLoading: boolean = false;
-
-  /**
-   * OneSignal の SubscriptionId
-   */
-  private subscriptionId: string = '';
-
-  /**
-   * Check if the app is running as a PWA
-   */
-  public get IsPWA(): boolean {
-    return PWAUtils.IsPWA;
+    await this.RefreshAllData();
   }
 
   /**
    * 通知が許可されているか
    */
-  public get IsEnabledSubscribe(): boolean {
-    return this.subscriptionId !== '';
-  }
+  public optedIn: boolean = false;
+
+  /**
+   * OneSignal の SubscriptionId
+   */
+  public subscriptionId: string = '';
 
   /**
    * Mounted フック
    */
   public mounted(): void {
-    this.$OneSignal.User.PushSubscription.addEventListener('change', this.ChangeSubscribeEvent);
+    this.$OneSignal.User.PushSubscription.addEventListener('change', async () => {
+      await this.RefreshAllData();
+    });
   }
 
   /**
    * 紐付け
    */
   public async OptIn(): Promise<void> {
-    if (import.meta.env.PROD) {
-      this.isLoading = true;
-
-      await this.$OneSignal.User.PushSubscription.optIn();
-
-      this.isLoading = false;
-    }
+    this.OnProductionAsync(async () => {
+      this.AsyncWithLoading(async () => {
+        await this.$OneSignal.User.PushSubscription.optIn();
+      });
+    });
   }
 
   /**
    * 通知の許可を表示する
    */
   public async PromptPush(): Promise<void> {
-    if (import.meta.env.PROD) {
-      this.isLoading = true;
-
-      await this.$OneSignal.Slidedown.promptPush({
-        force: true
+    this.OnProductionAsync(async () => {
+      this.AsyncWithLoading(async () => {
+        await this.$OneSignal.Slidedown.promptPush({
+          force: true
+        });
       });
-
-      this.isLoading = false;
-    }
+    });
   }
 
   /**
    * 通知の勧誘を完了に設定
    */
-  public SetRecommendNotify(): void {
+  public async SetRecommendNotify(): Promise<void> {
     LocalStorageUtil.SetItem(this.recommendNotifyKey, "completed");
-    this.ChangeCarouselStatus();
-  }
 
-  public async Debug(): Promise<void> {
-    this.isLoading = true;
-
-    // 確実に subscriptionId が取得できるようにするために 3 秒待つ
-    await new Promise(resolve => setTimeout(resolve, 3000));
-
-    this.isLoading = false;
-
-    // @ts-ignore
-    this.$buefy.toast.open({
-      duration: 5000,
-      message: `this: ${this.subscriptionId}, OneSignal: ${this.$OneSignal.User.PushSubscription.optedIn} ${this.$OneSignal.User.PushSubscription.id}`,
-      type: 'is-success'
-    });
+    await this.RefreshAllData();
   }
 
   /**
-   * Subscribe のステータス変更時のイベント
+   * 全データをリフレッシュする
    */
-  private async ChangeSubscribeEvent(event: any): Promise<void> {
-      if (!this.isLogin) {
-        return;
-      }
+  protected async RefreshAllData(): Promise<void> {
+    await super.RefreshAllData();
 
-      this.isLoading = true;
-
-      // 確実に subscriptionId が取得できるようにするために 3 秒待つ
-      await new Promise(resolve => setTimeout(resolve, 3000));
-
-      this.subscriptionId = event.current.id ?? this.$OneSignal.User.PushSubscription.id ?? '';
-
-      if (this.subscriptionId === '') {
-        // @ts-ignore
-        this.$buefy.toast.open({
-            duration: 5000,
-            message: 'SubscriptionID is null',
-            type: 'is-danger'
-        })
-
-        this.isLoading = false;
-
-        return;
-      }
-
-      await axios.post(`/api/notification/${this.subscriptionId}`);
-
-      await this.SetUser();
-
-      this.isLoading = false;
-
-      await this.ChangeSubscribeStatus();
-  }
-
-  /**
-   * Subscribe のステータスを変更する
-   */
-  private async ChangeSubscribeStatus(): Promise<void> {
-    if (import.meta.env.PROD) {
-      this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
-    }
-
-    this.isConectedSubscribe = this.IsEnabledSubscribe && this.subscriptionId === this.userSubscriptionId;
+    this.optedIn = this.$OneSignal.User.PushSubscription.optedIn ?? false;
+    this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
   }
 }
 
