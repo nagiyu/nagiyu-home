@@ -86,12 +86,6 @@ export default class ViewBase extends Vue {
    */
   protected async UpdateUser(): Promise<void> {
     this.AsyncWithLoading(async () => {
-      // @ts-ignore
-      this.$buefy.toast.open({
-        message: "ユーザー情報取得！",
-        type: "is-info"
-      });
-
       this.user = await AuthUtil.GetUser<IUserAuthBase>();
     });
   }
