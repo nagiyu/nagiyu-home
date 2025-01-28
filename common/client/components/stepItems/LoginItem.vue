@@ -4,6 +4,8 @@
 
   <br />
 
+  <b-button @click="Debug">Debug</b-button>
+
   <b-field label="ログイン" horizontal>
     <template v-if="!isLogin">
       <b-button type="is-success" @click="ClickLogin">ログイン</b-button>
@@ -94,6 +96,14 @@ class LoginItem extends StepItemBase {
         await this.RefreshAllData();
       });
     }
+  }
+
+  public Debug(): void {
+    // @ts-ignore
+    this.$buefy.toast.open({
+      message: this.user,
+      type: "is-success",
+    });
   }
 
   /**
