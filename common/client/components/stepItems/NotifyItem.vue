@@ -27,7 +27,7 @@
 
     <b-field label="テスト" horizontal>
       <template v-if="optedIn && subscriptionId !== ''">
-        <b-button>端末通知</b-button>
+        <b-button @click="TestPush">端末通知</b-button>
       </template>
     </b-field>
 
@@ -51,6 +51,7 @@
 import { Component, Emit, Prop, toNative, Watch } from "vue-facing-decorator";
 import StepItemBase from "@common/components/stepItems/StepItemBase.vue";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
+import NotifyUtil from "@common/utils/NotifyUtil";
 import TimeUtils from "@common/utils/TimeUtils";
 
 @Component
@@ -124,6 +125,20 @@ class NotifyItem extends StepItemBase {
       this.AsyncWithLoading(async () => {
         await this.$OneSignal.Slidedown.promptPush({
           force: true
+        });
+      });
+    });
+  }
+
+  /**
+   * テスト通知を送信
+   */
+  public async TestPush(): Promise<void> {
+    this.OnProductionAsync(async () => {
+      this.AsyncWithLoading(async () => {
+        await NotifyUtil.PushBySubscriptionIds({
+          subscriptionIds: [this.subscriptionId],
+          message: "Test Push"
         });
       });
     });
