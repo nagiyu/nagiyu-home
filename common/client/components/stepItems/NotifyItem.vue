@@ -99,7 +99,7 @@ class NotifyItem extends StepItemBase {
   public mounted(): void {
     this.$OneSignal.User.PushSubscription.addEventListener('change', async () => {
       this.AsyncWithLoading(async () => {
-        await TimeUtils.Sleep(1000);
+        await TimeUtils.Sleep(2000);
 
         await this.RefreshAllData();
       });
@@ -123,10 +123,6 @@ class NotifyItem extends StepItemBase {
   public async PromptPush(): Promise<void> {
     this.OnProductionAsync(async () => {
       this.AsyncWithLoading(async () => {
-        await this.$OneSignal.User.PushSubscription.optOut();
-        TimeUtils.Sleep(1000);
-        await this.$OneSignal.User.PushSubscription.optIn();
-        TimeUtils.Sleep(1000);
         await this.$OneSignal.Slidedown.promptPush({
           force: true
         });
