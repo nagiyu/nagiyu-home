@@ -158,7 +158,8 @@ class LoginItem extends StepItemBase {
     this.isLogin = this.user !== null;
     this.isSubscribeConnected = this.user !== null && this.user.oneSignalSubscriptionId === this.subscriptionId;
 
-    console.log('DEBUG::: User: ', this.user);
+    console.log('DEBUG::: User: ');
+    console.log(this.user);
     console.log(`DEBUG::: SubscriptionId: ${this.subscriptionId}`);
   }
 }
