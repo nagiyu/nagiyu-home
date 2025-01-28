@@ -101,7 +101,6 @@ class NotifyItem extends StepItemBase {
 
     this.$OneSignal.User.PushSubscription.addEventListener('change', async () => {
       await this.AsyncWithLoading(async () => {
-        await TimeUtils.Sleep(3000);
         await this.RefreshAllData();
       });
     });
@@ -164,6 +163,17 @@ class NotifyItem extends StepItemBase {
 
     this.AsyncWithLoading(async () => {
       await this.ChangeStepsStatus();
+    });
+  }
+
+  /**
+   * 全データをリフレッシュする
+   */
+  protected async RefreshAllData(): Promise<void> {
+    await this.AsyncWithLoading(async () => {
+      await TimeUtils.Sleep(3000);
+
+      await super.RefreshAllData();
     });
   }
 }
