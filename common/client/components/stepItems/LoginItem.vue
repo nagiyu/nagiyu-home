@@ -57,7 +57,6 @@ import StartupConst from "@common/consts/StartupConst";
 import StepItemBase from "@common/components/stepItems/StepItemBase.vue";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 import NotifyUtil from "@common/utils/NotifyUtil";
-import TimeUtils from "@common/utils/TimeUtils";
 
 @Component
 class LoginItem extends StepItemBase {
@@ -181,10 +180,8 @@ class LoginItem extends StepItemBase {
     await this.AsyncWithLoading(async () => {
       await super.RefreshAllData();
 
-      await TimeUtils.Sleep(3000);
-
       this.isLogin = this.user !== null;
-      this.isSubscribeConnected = this.user !== null && this.user.oneSignalSubscriptionId === this.subscriptionId;
+      this.isSubscribeConnected = this.user !== null && this.user.oneSignalSubscriptionId !== '' && this.user.oneSignalSubscriptionId === this.subscriptionId;
       this.isEnableNotify = LocalStorageUtil.GetItem(StartupConst.STORAGE_NOTIFY_KEY) !== null;
     });
   }

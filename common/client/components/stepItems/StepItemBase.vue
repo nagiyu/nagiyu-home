@@ -16,10 +16,12 @@ export default class StepItemBase extends ViewBase {
    * 全データをリフレッシュする
    */
   protected async RefreshAllData(): Promise<void> {
-    await super.RefreshAllData();
+    await this.AsyncWithLoading(async () => {
+      await super.RefreshAllData();
 
-    this.optedIn = this.$OneSignal.User.PushSubscription.optedIn ?? false;
-    this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
+      this.optedIn = this.$OneSignal.User.PushSubscription.optedIn ?? false;
+      this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
+  });
   }
 }
 </script>
