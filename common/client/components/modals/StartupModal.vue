@@ -7,32 +7,31 @@
         </p>
       </header>
 
-      <section class="modal-card-body" :style="carouselStyle">
+      <section class="modal-card-body" :style="MODAL_CARD_BODY_STYLE">
         <b-steps v-model="stepIndex" :has-navigation="false" mobile-mode="compact">
           <b-step-item step="1" label="アプリ化" :type="isEnabledPWAStep ? '' : 'is-success'">
             <PWAItem
-              :useTypeKey="USE_TYPE_KEY"
-              @changeCarouselStatus="ChangeStepsStatus"
+              @changeStepsStatus="ChangeStepsStatus"
             />
           </b-step-item>
           <b-step-item step="2" label="同意" :type="isEnabledConfirmStep ? '' : 'is-success'">
             <ConfirmItem
-              :confirmKey="CONFIRM_KEY"
+              :isActive="stepIndex === 1"
               @changeCarouselStatus="ChangeStepsStatus"
               @openPrivacyPolicyModal="OpenPrivacyPolicyModal"
               @openTermsModal="OpenTermsModal"
             />
           </b-step-item>
-          <b-step-item step="3" label="ログイン" :type="isEnabledLoginStep ? '' : 'is-success'">
-            <LoginItem
-              :recommendLoginKey="RECOMMEND_LOGIN_KEY"
-              @changeCarouselStatus="ChangeStepsStatus"
+          <b-step-item step="3" label="通知" :type="isEnabledNotifyStep ? '' : 'is-success'">
+            <NotifyItem
+              :isActive="stepIndex === 2"
+              @changeStepsStatus="ChangeStepsStatus"
             />
           </b-step-item>
-          <b-step-item step="4" label="通知" :type="isEnabledNotifyStep ? '' : 'is-success'">
-            <NotifyItem
-              :recommendNotifyKey="RECOMMEND_NOTIFY_KEY"
-              @changeCarouselStatus="ChangeStepsStatus"
+          <b-step-item step="4" label="ログイン" :type="isEnabledLoginStep ? '' : 'is-success'">
+            <LoginItem
+              :isActive="stepIndex === 3"
+              @changeStepsStatus="ChangeStepsStatus"
             />
           </b-step-item>
         </b-steps>
@@ -43,19 +42,22 @@
         <b-button type="is-success" :disabled="!isEnabledNextButton" @click="ClickNextButton">></b-button>
       </footer>
     </div>
+
+    <b-loading v-model="isLoading" :is-full-page="false"></b-loading>
   </b-modal>
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue, toNative } from "vue-facing-decorator";
-import PWAItem from "@common/components/carouselItems/PWAItem.vue";
-import ConfirmItem from "@common/components/carouselItems/ConfirmItem.vue";
-import NotifyItem from "@common/components/carouselItems/NotifyItem.vue";
-import LoginItem from "@common/components/carouselItems/LoginItem.vue";
+import { Component, Emit, Prop, toNative } from "vue-facing-decorator";
+import ViewBase from "@common/views/ViewBase.vue";
+import PWAItem from "@common/components/stepItems/PWAItem.vue";
+import ConfirmItem from "@common/components/stepItems/ConfirmItem.vue";
+import NotifyItem from "@common/components/stepItems/NotifyItem.vue";
+import LoginItem from "@common/components/stepItems/LoginItem.vue";
+import StartupConst from "@common/consts/StartupConst";
 import PWAUtils from "@common/utils/PWAUtils";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 import WebUtil from "@common/utils/WebUtil";
-import AuthUtil from "@auth/utils/AuthUtil";
 
 @Component({
   components: {
@@ -65,11 +67,11 @@ import AuthUtil from "@auth/utils/AuthUtil";
     NotifyItem
   }
 })
-class StartupModal extends Vue {
+class StartupModal extends ViewBase {
   /**
-   * カルーセルのスタイル
+   * Modal Card Body のスタイル
    */
-  public readonly carouselStyle = { height: '50vh' };
+  public readonly MODAL_CARD_BODY_STYLE = { height: '50vh' };
 
   /**
    * モーダル
@@ -77,26 +79,6 @@ class StartupModal extends Vue {
   public readonly modalStyle = WebUtil.IsMobile()
     ? { width: '90vw' }
     : { width: '30vw' };
-
-  /**
-   * タイプのローカルストレージのキー
-   */
-  public readonly USE_TYPE_KEY = "UseType";
-
-  /**
-   * 確認のローカルストレージのキー
-   */
-  public readonly CONFIRM_KEY = "Confirm";
-
-  /**
-   * ログインを勧めるカルーセルのローカルストレージのキー
-   */
-  public readonly RECOMMEND_LOGIN_KEY = "RecommendLogin";
-
-  /**
-   * 通知を勧めるカルーセルのローカルストレージのキー
-   */
-  public readonly RECOMMEND_NOTIFY_KEY = "RecommendNotify";
 
   /**
    * モーダルの表示状態
@@ -146,11 +128,6 @@ class StartupModal extends Vue {
   public stepIndex: number = 0;
 
   /**
-   * カルーセルのインデックス
-   */
-  public carousel: number = 0;
-
-  /**
    * PWA のステップが有効かどうか
    */
   public isEnabledPWAStep: boolean = false;
@@ -181,25 +158,42 @@ class StartupModal extends Vue {
   public isEnabledNextButton: boolean = false;
 
   /**
-   * Mounted フック
+   * ユーザーがログインしているかどうか
+   */
+  public get IsLogin(): boolean {
+    return this.user !== null;
+  }
+
+  /**
+   * ユーザーの OneSignal の SubscriptionId
+   */
+  public get UserSubscriptionId(): string {
+    if (this.user === null) {
+      return '';
+    }
+
+    return this.user.oneSignalSubscriptionId;
+  }
+
+  /**
+   * マウント時の処理
    */
   public async mounted(): Promise<void> {
-    await this.ChangeStepsStatus();
+    await this.AsyncWithLoading(async () => {
+      await this.UpdateUser();
+      await this.ChangeStepsStatus();
+    });
   }
 
   /**
    * ステップのステータスを変更する
    */
   public async ChangeStepsStatus(): Promise<void> {
-    this.ChangePWACaroueselStatus();
-    this.ChangeConfirmCaroueselStatus();
-    await this.ChangeLoginCaroueselStatus();
-    await this.ChangeNotifyCaroueselStatus();
+    await this.AsyncWithLoading(async () => {
+      await this.RefreshAllData();
+    });
 
-    this.ChangePrevButtonStatus();
-    this.ChangeNextButtonStatus();
-
-    if (this.isEnabledPWAStep && this.isEnabledConfirmStep && this.isEnabledLoginStep && this.isEnabledNotifyStep) {
+    if (!this.isEnabledPWAStep && !this.isEnabledConfirmStep && !this.isEnabledLoginStep && !this.isEnabledNotifyStep) {
       this.CloseStartupModal();
     } else {
       this.OpenStartupModal();
@@ -227,62 +221,58 @@ class StartupModal extends Vue {
   }
 
   /**
-   * PWA のカルーセルの状態を変更する
+   * 全データをリフレッシュする
+   */
+  protected async RefreshAllData(): Promise<void> {
+    await this.AsyncWithLoading(async () => {
+      await super.RefreshAllData();
+
+      this.ChangePWACaroueselStatus();
+      this.ChangeConfirmCaroueselStatus();
+      this.ChangeLoginCaroueselStatus();
+      this.ChangeNotifyCaroueselStatus();
+
+      this.ChangePrevButtonStatus();
+      this.ChangeNextButtonStatus();
+    });
+  }
+
+  /**
+   * PWA のステップの状態を変更する
    */
   private ChangePWACaroueselStatus(): void {
-    this.isEnabledPWAStep = !PWAUtils.IsPWA && LocalStorageUtil.GetItem(this.USE_TYPE_KEY) === null;
+    this.isEnabledPWAStep = !PWAUtils.IsPWA && LocalStorageUtil.GetItem(StartupConst.STORAGE_USE_TYPE_KEY) === null;
   }
 
   /**
-   * Confirm のカルーセルの状態を変更する
+   * Confirm のステップの状態を変更する
    */
   private ChangeConfirmCaroueselStatus(): void {
-    this.isEnabledConfirmStep = LocalStorageUtil.GetItem(this.CONFIRM_KEY) === null;
+    this.isEnabledConfirmStep = LocalStorageUtil.GetItem(StartupConst.STORAGE_CONFIRM_KEY) === null;
   }
 
   /**
-   * ログインを勧めるカルーセルの状態を変更する
+   * ログインを勧めるステップの状態を変更する
    */
-  private async ChangeLoginCaroueselStatus(): Promise<void> {
-    var user = await AuthUtil.GetUser<IUserAuthBase>();
-
-    if (user !== null) {
+  private ChangeLoginCaroueselStatus(): void {
+    if (LocalStorageUtil.GetItem(StartupConst.STORAGE_LOGIN_KEY) !== null) {
       this.isEnabledLoginStep = false;
       return;
     }
 
-    this.isEnabledLoginStep = LocalStorageUtil.GetItem(this.RECOMMEND_LOGIN_KEY) === null;
+    this.isEnabledLoginStep = LocalStorageUtil.GetItem(StartupConst.STORAGE_RECOMMEND_LOGIN_KEY) === null;
   }
 
   /**
-   * 通知を勧めるカルーセルの状態を変更する
+   * 通知を勧めるステップの状態を変更する
    */
-  private async ChangeNotifyCaroueselStatus(): Promise<void> {
-    if (!PWAUtils.IsPWA) {
+  private ChangeNotifyCaroueselStatus(): void {
+    if (LocalStorageUtil.GetItem(StartupConst.STORAGE_NOTIFY_KEY) !== null) {
       this.isEnabledNotifyStep = false;
       return;
     }
 
-    var subscriptionId = await this.GetSubscriptionId();
-
-    if (subscriptionId !== '') {
-      this.isEnabledNotifyStep = false;
-      return;
-    }
-
-    this.isEnabledNotifyStep = LocalStorageUtil.GetItem(this.RECOMMEND_NOTIFY_KEY) === null;
-  }
-
-  /**
-   * OneSignal の SubscriptionId を取得する
-   */
-  private async GetSubscriptionId(): Promise<string> {
-    if (import.meta.env.PROD) {
-      await this.$OneSignal.User.PushSubscription.optIn();
-      return this.$OneSignal.User.PushSubscription.id ?? '';
-    } else {
-      return '';
-    }
+    this.isEnabledNotifyStep = LocalStorageUtil.GetItem(StartupConst.STORAGE_RECOMMEND_NOTIFY_KEY) === null;
   }
 
   /**

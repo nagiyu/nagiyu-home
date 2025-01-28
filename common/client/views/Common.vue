@@ -20,11 +20,9 @@
 
 <script lang="ts">
 import { Component, Vue, toNative } from "vue-facing-decorator";
-import axios from "axios";
 import StartupModal from "@common/components/modals/StartupModal.vue";
 import PrivacyPolicyModal from "@common/components/modals/PrivacyPolicyModal.vue";
 import TermsModal from "@common/components/modals/TermsModal.vue";
-import AuthUtil from "@auth/utils/AuthUtil";
 
 @Component({
   components: {
@@ -48,13 +46,6 @@ class Common extends Vue {
    * 利用規約モーダルの表示状態
    */
   public isTermsModalActive: boolean = false;
-
-  /**
-   * Created フック
-   */
-  public async created(): Promise<void> {
-    await this.BindSubscriptionId();
-  }
 
   /**
    * スタートアップモーダルを開く
@@ -100,39 +91,6 @@ class Common extends Vue {
   public CloseTermsModal(): void {
     this.isTermsModalActive = false;
     this.isStartupModalActive = true;
-  }
-
-  /**
-   * OneSignal の SubscriptionId をバインドする
-   */
-  private async BindSubscriptionId(): Promise<void> {
-    var subscriptionId = await this.GetSubscriptionId();
-
-    if (subscriptionId !== '') {
-      return;
-    }
-
-    var user = await AuthUtil.GetUser<IUserAuthBase>();
-
-    if (!user) {
-      return;
-    }
-
-    if (subscriptionId !== user.oneSignalSubscriptionId) {
-      await axios.post(`/api/notification/${subscriptionId}`);
-    }
-  }
-
-  /**
-   * OneSignal の SubscriptionId を取得する
-   */
-  private async GetSubscriptionId(): Promise<string> {
-    if (import.meta.env.PROD) {
-      await this.$OneSignal.User.PushSubscription.optIn();
-      return this.$OneSignal.User.PushSubscription.id ?? '';
-    } else {
-      return '';
-    }
   }
 }
 
