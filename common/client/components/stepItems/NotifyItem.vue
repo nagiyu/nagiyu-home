@@ -94,6 +94,12 @@ class NotifyItem extends StepItemBase {
    */
   public mounted(): void {
     this.$OneSignal.User.PushSubscription.addEventListener('change', async () => {
+      // @ts-ignore
+      this.$buefy.toast.open({
+        message: '通知の設定が変更されました。',
+        type: 'is-info'
+      });
+
       this.AsyncWithLoading(async () => {
         await this.RefreshAllData();
       });
