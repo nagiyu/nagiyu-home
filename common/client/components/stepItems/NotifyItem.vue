@@ -7,7 +7,7 @@
 
     <b-field label="許可" horizontal>
       <template v-if="!optedIn">
-        <b-button @click="OptIn">通知の許可</b-button>
+        <b-button type="is-success" @click="OptIn">通知の許可</b-button>
       </template>
       <template v-else>
         <span>Completed</span>
@@ -17,7 +17,7 @@
     <b-field label="受け入れ" horizontal>
       <template v-if="optedIn">
         <template v-if="subscriptionId === ''">
-          <b-button @click="PromptPush">通知の受け入れ</b-button>
+          <b-button type="is-success" @click="PromptPush">通知の受け入れ</b-button>
         </template>
         <template v-else>
           <span>Completed</span>
@@ -27,7 +27,7 @@
 
     <b-field label="テスト" horizontal>
       <template v-if="optedIn && subscriptionId !== ''">
-        <b-button @click="TestPush">端末通知</b-button>
+        <b-button type="is-success" @click="TestPush">端末通知</b-button>
       </template>
     </b-field>
 
@@ -123,6 +123,10 @@ class NotifyItem extends StepItemBase {
   public async PromptPush(): Promise<void> {
     this.OnProductionAsync(async () => {
       this.AsyncWithLoading(async () => {
+        await this.$OneSignal.User.PushSubscription.optOut();
+        TimeUtils.Sleep(1000);
+        await this.$OneSignal.User.PushSubscription.optIn();
+        TimeUtils.Sleep(1000);
         await this.$OneSignal.Slidedown.promptPush({
           force: true
         });
