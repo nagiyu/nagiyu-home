@@ -95,7 +95,8 @@ class NotifyItem extends StepItemBase {
    */
   public async mounted(): Promise<void> {
     await this.AsyncWithLoading(async () => {
-      await super.mounted();
+      await this.UpdateUser();
+      await this.RefreshAllData();
     });
 
     this.$OneSignal.User.PushSubscription.addEventListener('change', async () => {

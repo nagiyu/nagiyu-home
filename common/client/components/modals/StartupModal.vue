@@ -180,8 +180,7 @@ class StartupModal extends ViewBase {
    */
   public async mounted(): Promise<void> {
     await this.AsyncWithLoading(async () => {
-      await super.mounted();
-
+      await this.UpdateUser();
       await this.ChangeStepsStatus();
     });
   }

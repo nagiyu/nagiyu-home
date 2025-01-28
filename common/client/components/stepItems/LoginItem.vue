@@ -115,7 +115,8 @@ class LoginItem extends StepItemBase {
    */
   public async mounted(): Promise<void> {
     await this.AsyncWithLoading(async () => {
-      await super.mounted();
+      await this.UpdateUser();
+      await this.RefreshAllData();
     });
   }
 
@@ -184,7 +185,7 @@ class LoginItem extends StepItemBase {
 
       this.isLogin = this.user !== null;
       this.isSubscribeConnected = this.user !== null && this.user.oneSignalSubscriptionId === this.subscriptionId;
-      this.isEnableNotify = LocalStorageUtil.GetItem(StartupConst.STORAGE_NOTIFY_KEY) === null;
+      this.isEnableNotify = LocalStorageUtil.GetItem(StartupConst.STORAGE_NOTIFY_KEY) !== null;
     });
   }
 }

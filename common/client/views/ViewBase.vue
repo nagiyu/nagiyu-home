@@ -47,16 +47,6 @@ export default class ViewBase extends Vue {
   }
 
   /**
-   * マウント時の処理
-   */
-  public async mounted(): Promise<void> {
-    await this.AsyncWithLoading(async () => {
-      await this.UpdateUser();
-      await this.RefreshAllData();
-    });
-  }
-
-  /**
    * 本番ビルド時のみ処理を実行する
    * @param func 処理
    */
