@@ -5,6 +5,8 @@
 
     <br />
 
+    <b-button @click="Debug">Debug</b-button>
+
     <b-field label="許可" horizontal>
       <template v-if="!optedIn">
         <b-button type="is-success" @click="OptIn">通知の許可</b-button>
@@ -103,6 +105,14 @@ class NotifyItem extends StepItemBase {
 
         await this.RefreshAllData();
       });
+    });
+  }
+
+  public Debug(): void {
+    // @ts-ignore
+    this.$buefy.toast.open({
+      message: `permission: ${this.$OneSignal.Notifications.permission}`,
+      type: "is-success"
     });
   }
 
