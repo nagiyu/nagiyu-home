@@ -113,8 +113,18 @@ class LoginItem extends StepItemBase {
    */
   public async ConnectSubscribe(): Promise<void> {
     this.AsyncWithLoading(async () => {
-      await NotifyUtil.RegisterSubscriptionId(this.subscriptionId);
-      await TimeUtils.Sleep(3000);
+      try {
+        await NotifyUtil.RegisterSubscriptionId(this.subscriptionId);
+      } catch (error) {
+        // @ts-ignore
+        this.$buefy.toast.open({
+          message: error,
+          type: "is-danger",
+        })
+
+        return;
+      }
+
       await this.RefreshAllData();
     });
   }
