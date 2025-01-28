@@ -15,8 +15,11 @@
 
   <b-field label="紐付け" horizontal>
     <template v-if="IsPWA">
-      <template v-if="isSubscribeConnected">
+      <template v-if="!isSubscribeConnected">
         <b-button type="is-success" @click="ConnectSubscribe">通知の紐付け</b-button>
+      </template>
+      <template v-else>
+        <span>Completed</span>
       </template>
     </template>
     <template v-else>
