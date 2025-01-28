@@ -5,8 +5,6 @@
 
     <br />
 
-    <b-button @click="Debug">Debug</b-button>
-
     <b-field label="許可" horizontal>
       <template v-if="!optedIn">
         <b-button type="is-success" @click="OptIn">通知の許可</b-button>
@@ -99,20 +97,22 @@ class NotifyItem extends StepItemBase {
    * Mounted フック
    */
   public mounted(): void {
-    this.$OneSignal.User.PushSubscription.addEventListener('change', async () => {
+    this.$OneSignal.User.PushSubscription.addEventListener('change', async (event) => {
       this.AsyncWithLoading(async () => {
-        await TimeUtils.Sleep(2000);
+        await TimeUtils.Sleep(3000);
+
+        var message = '';
+        message += `Old: ${event.previous.id} ${event.previous.optedIn}\n`;
+        message += `New: ${event.current.id} ${event.current.optedIn}`;
+
+        // @ts-ignore
+        this.$buefy.toast.open({
+          message: message,
+          type: "is-success"
+        });
 
         await this.RefreshAllData();
       });
-    });
-  }
-
-  public Debug(): void {
-    // @ts-ignore
-    this.$buefy.toast.open({
-      message: `SubscriptionID: ${this.$OneSignal.User.PushSubscription.id}`,
-      type: "is-success"
     });
   }
 
