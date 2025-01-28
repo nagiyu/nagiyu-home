@@ -88,9 +88,11 @@ class NotifyItem extends StepItemBase {
    */
   @Watch("isActive")
   public async OnIsActiveChanged(): Promise<void> {
-    this.AsyncWithLoading(async () => {
-      await this.RefreshAllData();
-    });
+    if (this.isActive) {
+      this.AsyncWithLoading(async () => {
+        await this.RefreshAllData();
+      });
+    }
   }
 
   /**

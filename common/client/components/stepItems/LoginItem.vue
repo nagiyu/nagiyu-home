@@ -43,6 +43,8 @@
     <div></div>
     <b-button type="is-warning" @click="SetRecommendLogin">今はやめておく</b-button>
   </b-field>
+
+  <b-loading v-model="isLoading" :is-full-page="false"></b-loading>
 </template>
 
 <script lang="ts">
@@ -95,15 +97,11 @@ class LoginItem extends StepItemBase {
    */
   @Watch("isActive")
   public async OnIsActiveChanged(): Promise<void> {
-    this.AsyncWithLoading(async () => {
-      // @ts-ignore
-      this.$buefy.toast.open({
-        message: "LoginItem の isActive が変更されました。",
-        type: "is-info"
+    if (this.isActive) {
+      this.AsyncWithLoading(async () => {
+        await this.RefreshAllData();
       });
-
-      await this.RefreshAllData();
-    });
+    }
   }
 
   /**
