@@ -20,6 +20,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
+import StartupConst from "@common/consts/StartupConst";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 
 @Component
@@ -33,16 +34,6 @@ class ConfirmItem extends Vue {
     default: false
   })
   public isActive!: boolean;
-
-  /**
-   * タイプのローカルストレージのキー
-   */
-  @Prop({
-    type: String,
-    required: true,
-    default: null
-  })
-  public confirmKey!: string;
 
   /**
    * カルーセルのステータスを変更する
@@ -95,7 +86,7 @@ class ConfirmItem extends Vue {
    * タイプに Web を設定
    */
   public SetConfirm(): void {
-    LocalStorageUtil.SetItem(this.confirmKey, "confirm");
+    LocalStorageUtil.SetItem(StartupConst.STORAGE_CONFIRM_KEY, "confirm");
     this.ChangeConfirmStatus();
     this.ChangeCarouselStatus();
   }
@@ -104,7 +95,7 @@ class ConfirmItem extends Vue {
    * Confirm のステータスを変更する
    */
   private ChangeConfirmStatus(): void {
-    this.isConfirmed = LocalStorageUtil.GetItem(this.confirmKey) === "confirm";
+    this.isConfirmed = LocalStorageUtil.GetItem(StartupConst.STORAGE_CONFIRM_KEY) === "confirm";
   }
 }
 

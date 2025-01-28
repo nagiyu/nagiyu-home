@@ -49,6 +49,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, toNative, Watch } from "vue-facing-decorator";
+import StartupConst from "@common/consts/StartupConst";
 import StepItemBase from "@common/components/stepItems/StepItemBase.vue";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 import NotifyUtil from "@common/utils/NotifyUtil";
@@ -65,16 +66,6 @@ class NotifyItem extends StepItemBase {
     default: false
   })
   public isActive!: boolean;
-
-  /**
-   * タイプのローカルストレージのキー
-   */
-  @Prop({
-    type: String,
-    required: true,
-    default: null
-  })
-  public recommendNotifyKey!: string;
 
   /**
    * ステップのステータスを変更する
@@ -147,7 +138,7 @@ class NotifyItem extends StepItemBase {
    * 通知の勧誘を完了に設定
    */
   public async SetRecommendNotify(): Promise<void> {
-    LocalStorageUtil.SetItem(this.recommendNotifyKey, "completed");
+    LocalStorageUtil.SetItem(StartupConst.STORAGE_RECOMMEND_NOTIFY_KEY, "completed");
     await this.ChangeStepsStatus();
   }
 }

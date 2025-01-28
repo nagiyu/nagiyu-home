@@ -83,22 +83,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, toNative, Vue } from "vue-facing-decorator";
+import { Component, Emit, toNative, Vue } from "vue-facing-decorator";
+import StartupConst from "@common/consts/StartupConst";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 import PWAUtils from "@common/utils/PWAUtils";
 
 @Component
 class PWAItem extends Vue {
-  /**
-   * タイプのローカルストレージのキー
-   */
-  @Prop({
-    type: String,
-    required: true,
-    default: null
-  })
-  public useTypeKey!: string;
-
   /**
    * カルーセルのステータスを変更する
    */
@@ -132,7 +123,7 @@ class PWAItem extends Vue {
    * タイプに Web を設定
    */
   public SetUseWeb(): void {
-    LocalStorageUtil.SetItem(this.useTypeKey, "web");
+    LocalStorageUtil.SetItem(StartupConst.STORAGE_USE_TYPE_KEY, "web");
     this.ChangeStepsStatus();
   }
 }

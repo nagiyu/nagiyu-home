@@ -11,14 +11,12 @@
         <b-steps v-model="stepIndex" :has-navigation="false" mobile-mode="compact">
           <b-step-item step="1" label="アプリ化" :type="isEnabledPWAStep ? '' : 'is-success'">
             <PWAItem
-              :useTypeKey="USE_TYPE_KEY"
               @changeStepsStatus="ChangeStepsStatus"
             />
           </b-step-item>
           <b-step-item step="2" label="同意" :type="isEnabledConfirmStep ? '' : 'is-success'">
             <ConfirmItem
               :isActive="stepIndex === 1"
-              :confirmKey="CONFIRM_KEY"
               @changeCarouselStatus="ChangeStepsStatus"
               @openPrivacyPolicyModal="OpenPrivacyPolicyModal"
               @openTermsModal="OpenTermsModal"
@@ -27,14 +25,12 @@
           <b-step-item step="3" label="通知" :type="isEnabledNotifyStep ? '' : 'is-success'">
             <NotifyItem
               :isActive="stepIndex === 2"
-              :recommendNotifyKey="RECOMMEND_NOTIFY_KEY"
               @changeStepsStatus="ChangeStepsStatus"
             />
           </b-step-item>
           <b-step-item step="4" label="ログイン" :type="isEnabledLoginStep ? '' : 'is-success'">
             <LoginItem
               :isActive="stepIndex === 3"
-              :recommendLoginKey="RECOMMEND_LOGIN_KEY"
               @changeStepsStatus="ChangeStepsStatus"
             />
           </b-step-item>
@@ -55,6 +51,7 @@ import PWAItem from "@common/components/stepItems/PWAItem.vue";
 import ConfirmItem from "@common/components/stepItems/ConfirmItem.vue";
 import NotifyItem from "@common/components/stepItems/NotifyItem.vue";
 import LoginItem from "@common/components/stepItems/LoginItem.vue";
+import StartupConst from "@common/consts/StartupConst";
 import PWAUtils from "@common/utils/PWAUtils";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 import WebUtil from "@common/utils/WebUtil";
@@ -80,26 +77,6 @@ class StartupModal extends Vue {
   public readonly modalStyle = WebUtil.IsMobile()
     ? { width: '90vw' }
     : { width: '30vw' };
-
-  /**
-   * タイプのローカルストレージのキー
-   */
-  public readonly USE_TYPE_KEY = "UseType";
-
-  /**
-   * 確認のローカルストレージのキー
-   */
-  public readonly CONFIRM_KEY = "Confirm";
-
-  /**
-   * ログインを勧めるカルーセルのローカルストレージのキー
-   */
-  public readonly RECOMMEND_LOGIN_KEY = "RecommendLogin";
-
-  /**
-   * 通知を勧めるカルーセルのローカルストレージのキー
-   */
-  public readonly RECOMMEND_NOTIFY_KEY = "RecommendNotify";
 
   /**
    * モーダルの表示状態
@@ -264,14 +241,14 @@ class StartupModal extends Vue {
    * PWA のカルーセルの状態を変更する
    */
   private ChangePWACaroueselStatus(): void {
-    this.isEnabledPWAStep = !PWAUtils.IsPWA && LocalStorageUtil.GetItem(this.USE_TYPE_KEY) === null;
+    this.isEnabledPWAStep = !PWAUtils.IsPWA && LocalStorageUtil.GetItem(StartupConst.STORAGE_USE_TYPE_KEY) === null;
   }
 
   /**
    * Confirm のカルーセルの状態を変更する
    */
   private ChangeConfirmCaroueselStatus(): void {
-    this.isEnabledConfirmStep = LocalStorageUtil.GetItem(this.CONFIRM_KEY) === null;
+    this.isEnabledConfirmStep = LocalStorageUtil.GetItem(StartupConst.STORAGE_CONFIRM_KEY) === null;
   }
 
   /**
@@ -285,7 +262,7 @@ class StartupModal extends Vue {
       return;
     }
 
-    this.isEnabledLoginStep = LocalStorageUtil.GetItem(this.RECOMMEND_LOGIN_KEY) === null;
+    this.isEnabledLoginStep = LocalStorageUtil.GetItem(StartupConst.STORAGE_RECOMMEND_LOGIN_KEY) === null;
   }
 
   /**
@@ -304,7 +281,7 @@ class StartupModal extends Vue {
       return;
     }
 
-    this.isEnabledNotifyStep = LocalStorageUtil.GetItem(this.RECOMMEND_NOTIFY_KEY) === null;
+    this.isEnabledNotifyStep = LocalStorageUtil.GetItem(StartupConst.STORAGE_RECOMMEND_NOTIFY_KEY) === null;
   }
 
   /**

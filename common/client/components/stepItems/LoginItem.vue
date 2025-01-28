@@ -49,6 +49,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, toNative, Watch } from "vue-facing-decorator";
+import StartupConst from "@common/consts/StartupConst";
 import StepItemBase from "@common/components/stepItems/StepItemBase.vue";
 import LocalStorageUtil from "@common/utils/LocalStorageUtil";
 import NotifyUtil from "@common/utils/NotifyUtil";
@@ -65,16 +66,6 @@ class LoginItem extends StepItemBase {
     default: false
   })
   public isActive!: boolean;
-
-  /**
-   * タイプのローカルストレージのキー
-   */
-  @Prop({
-    type: String,
-    required: true,
-    default: null
-  })
-  public recommendLoginKey!: string;
 
   /**
    * ユーザーがログインしているかどうか
@@ -139,7 +130,7 @@ class LoginItem extends StepItemBase {
    * ログインの勧誘を完了に設定
    */
   public async SetRecommendLogin(): Promise<void> {
-    LocalStorageUtil.SetItem(this.recommendLoginKey, "completed");
+    LocalStorageUtil.SetItem(StartupConst.STORAGE_RECOMMEND_LOGIN_KEY, "completed");
     await this.ChangeStepsStatus();
   }
 
