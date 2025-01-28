@@ -118,6 +118,7 @@ class LoginItem extends StepItemBase {
     this.AsyncWithLoading(async () => {
       await NotifyUtil.RegisterSubscriptionId(this.subscriptionId);
 
+      await this.UpdateUser();
       await this.RefreshAllData();
     });
   }
