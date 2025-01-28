@@ -20,8 +20,6 @@ export default class StepItemBase extends ViewBase {
 
     this.optedIn = this.$OneSignal.User.PushSubscription.optedIn ?? false;
     this.subscriptionId = this.$OneSignal.User.PushSubscription.id ?? '';
-
-    this.$forceUpdate();
   }
 }
 </script>
