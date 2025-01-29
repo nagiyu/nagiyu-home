@@ -1,5 +1,30 @@
 #!/bin/bash
 
+# テスト用 DynamoDB テーブル「Test」を作成
+awslocal dynamodb create-table \
+  --table-name Test \
+  --attribute-definitions \
+    AttributeName=Id,AttributeType=S \
+    AttributeName=IndexId,AttributeType=S \
+  --key-schema \
+    AttributeName=Id,KeyType=HASH \
+  --global-secondary-indexes \
+    '[
+      {
+        "IndexName": "Test-index",
+        "KeySchema": [
+          { "AttributeName": "IndexId", "KeyType": "HASH" }
+        ],
+        "Projection": {
+          "ProjectionType": "INCLUDE",
+          "NonKeyAttributes": ["IndexColumn1"]
+        }
+      }
+    ]' \
+  --billing-mode PAY_PER_REQUEST \
+  --table-class STANDARD \
+  --sse-specification Enabled=true,SSEType=AES256
+
 # DynamoDB テーブル「Auth」を作成
 awslocal dynamodb create-table \
   --table-name Auth \
