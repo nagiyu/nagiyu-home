@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Amazon;
 using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
 using Microsoft.Extensions.Configuration;
 using Nagiyu.Common.Service.Models.DB;
@@ -25,11 +24,6 @@ namespace Nagiyu.Common.Service.Services
         /// DynamoDB クライアント
         /// </summary>
         private readonly AmazonDynamoDBClient client;
-
-        /// <summary>
-        /// DynamoDB コンテキスト
-        /// </summary>
-        private readonly DynamoDBContext context;
 
         /// <summary>
         /// コンストラクタ
@@ -63,9 +57,6 @@ namespace Nagiyu.Common.Service.Services
 
             // DynamoDBクライアントを初期化
             client = new AmazonDynamoDBClient(accessKey, secretKey, config);
-
-            // DynamoDBContextを初期化
-            context = new DynamoDBContext(client);
         }
 
         /// <summary>
@@ -95,20 +86,51 @@ namespace Nagiyu.Common.Service.Services
         }
 
         /// <summary>
-        /// 全てのレコードを取得する
+        /// レコードを取得する
         /// </summary>
-        /// <returns>レコードのリスト</returns>
-        public async Task<List<T>> GetAllRecords<T>() where T : RecordBase
+        /// <param name="expressions">条件</param>
+        /// <param name="limit">取得件数</param>
+        /// <param name="startId">開始ID</param>
+        /// <returns>レコードのリスト, 次のID</returns>
+        public async Task<(List<T>, Guid?)> GetRecords<T>(Dictionary<string, string> expressions = null, int limit = 0, Guid? startId = null) where T : RecordBase
         {
             var request = new ScanRequest
             {
                 TableName = TableName
             };
 
+            if (expressions != null)
+            {
+                request.FilterExpression = string.Join(" AND ", expressions.Keys.Select(key => $"{key} = :{key}"));
+                request.ExpressionAttributeValues = expressions.ToDictionary(kv => $":{kv.Key}", kv => new AttributeValue { S = kv.Value });
+            }
+
+            if (limit > 0)
+            {
+                request.Limit = limit;
+            }
+
+            if (startId != null)
+            {
+                request.ExclusiveStartKey = new Dictionary<string, AttributeValue>
+                {
+                    {
+                        nameof(RecordBase.Id),
+                        new AttributeValue { S = startId.ToString() }
+                    }
+                };
+            }
+
             var response = await client.ScanAsync(request);
             var items = response.Items;
 
-            return items.Select(item => (T)Activator.CreateInstance(typeof(T), item)).ToList();
+            Guid? nextId = null;
+            if (response.LastEvaluatedKey.Count > 0 && Guid.TryParse(response.LastEvaluatedKey.FirstOrDefault().Value.S, out var id))
+            {
+                nextId = id;
+            }
+
+            return (items.Select(item => (T)Activator.CreateInstance(typeof(T), item)).ToList(), nextId);
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
@@ -45,6 +46,83 @@ namespace Nagiyu.Common.Service.Tests.Services
         }
 
         [TestMethod]
+        public async Task GetRecordsWithExpressions()
+        {
+            var record1 = new TestRecord
+            {
+                Column1 = "Column3",
+                IndexId = Guid.NewGuid().ToString(),
+                IndexColumn1 = "IndexColumn3"
+            };
+            var record2 = new TestRecord
+            {
+                Column1 = "Column3",
+                IndexId = Guid.NewGuid().ToString(),
+                IndexColumn1 = "IndexColumn4"
+            };
+
+            await service.AddRecord(record1);
+            await service.AddRecord(record2);
+
+            var expressions1 = new Dictionary<string, string>
+            {
+                { nameof(TestRecord.Column1), "Column3" }
+            };
+            var result1 = await service.GetRecords<TestRecord>(expressions: expressions1);
+
+            foreach (var record in result1.Item1)
+            {
+                Assert.AreEqual("Column3", record.Column1);
+            }
+
+            var expressions2 = new Dictionary<string, string>
+            {
+                { nameof(TestRecord.Column1), "Column3" },
+                { nameof(TestRecord.IndexColumn1), "IndexColumn3" }
+            };
+            var result2 = await service.GetRecords<TestRecord>(expressions: expressions2);
+
+            foreach (var record in result2.Item1)
+            {
+                Assert.AreEqual("Column3", record.Column1);
+                Assert.AreEqual("IndexColumn3", record.IndexColumn1);
+            }
+        }
+
+        [TestMethod]
+        public async Task GetRecordsWithLimit()
+        {
+            var record1 = new TestRecord
+            {
+                Column1 = "Column1",
+                IndexId = Guid.NewGuid().ToString(),
+                IndexColumn1 = "IndexColumn1"
+            };
+            var record2 = new TestRecord
+            {
+                Column1 = "Column2",
+                IndexId = Guid.NewGuid().ToString(),
+                IndexColumn1 = "IndexColumn2"
+            };
+
+            await service.AddRecord(record1);
+            await service.AddRecord(record2);
+
+            var result1 = await service.GetRecords<TestRecord>(limit: 1);
+
+            Assert.AreEqual(1, result1.Item1.Count);
+            Assert.IsNotNull(result1.Item2);
+
+            var result2 = await service.GetRecords<TestRecord>(limit: 1, startId: result1.Item2);
+
+            Assert.AreNotEqual(result1.Item1.FirstOrDefault().Id, result2.Item1.FirstOrDefault().Id);
+
+            var result3 = await service.GetRecords<TestRecord>(limit: 1000);
+
+            Assert.IsNull(result3.Item2);
+        }
+
+        [TestMethod]
         public async Task AddRecordTest()
         {
             var record = new TestRecord
@@ -56,9 +134,9 @@ namespace Nagiyu.Common.Service.Tests.Services
 
             await service.AddRecord(record);
 
-            var records = await service.GetAllRecords<TestRecord>();
+            var records = await service.GetRecords<TestRecord>();
 
-            Assert.IsTrue(records.Exists(r => r.Id == record.Id));
+            Assert.IsTrue(records.Item1.Exists(r => r.Id == record.Id));
         }
 
         [TestMethod]
@@ -79,9 +157,9 @@ namespace Nagiyu.Common.Service.Tests.Services
 
             await service.UpdateRecord(record);
 
-            var records = await service.GetAllRecords<TestRecord>();
+            var records = await service.GetRecords<TestRecord>();
 
-            Assert.IsTrue(records.Exists(r => r.Column1 == record.Column1));
+            Assert.IsTrue(records.Item1.Exists(r => r.Column1 == record.Column1));
         }
 
         [TestMethod]
@@ -148,9 +226,9 @@ namespace Nagiyu.Common.Service.Tests.Services
 
             await service.DeleteRecord(id);
 
-            var records = await service.GetAllRecords<TestRecord>();
+            var records = await service.GetRecords<TestRecord>();
 
-            Assert.IsFalse(records.Exists(r => r.Id == id.ToString()));
+            Assert.IsFalse(records.Item1.Exists(r => r.Id == id.ToString()));
         }
 
         [TestMethod]
@@ -167,9 +245,9 @@ namespace Nagiyu.Common.Service.Tests.Services
 
             await service.DeleteRecord(record);
 
-            var records = await service.GetAllRecords<TestRecord>();
+            var records = await service.GetRecords<TestRecord>();
 
-            Assert.IsFalse(records.Exists(r => r.Id == id.ToString()));
+            Assert.IsFalse(records.Item1.Exists(r => r.Id == id.ToString()));
         }
     }
 
