@@ -241,10 +241,29 @@ namespace Nagiyu.Common.Service.Services
                     case TypeCode.Int32:
                         attributeValue.N = value.ToString();
                         break;
+                    case TypeCode.Int64:
+                        attributeValue.N = value.ToString();
+                        break;
+                    case TypeCode.Double:
+                        attributeValue.N = value.ToString();
+                        break;
                     case TypeCode.Boolean:
                         attributeValue.BOOL = (bool)value;
                         break;
+                    case TypeCode.Object when value is List<string> list:
+                        attributeValue.SS = list;
+                        break;
+                    case TypeCode.Object when value is List<int> list:
+                        attributeValue.NS = list.Select(i => i.ToString()).ToList();
+                        break;
+                    case TypeCode.Object when value is List<long> list:
+                        attributeValue.NS = list.Select(i => i.ToString()).ToList();
+                        break;
+                    case TypeCode.Object when value is List<double> list:
+                        attributeValue.NS = list.Select(i => i.ToString()).ToList();
+                        break;
                     default:
+                        System.Diagnostics.Trace.WriteLine($"Unsupported type: {value.GetType()}");
                         continue; // サポートされていない型はスキップ
                 }
 

@@ -34,6 +34,14 @@ namespace Nagiyu.Common.Service.Tests.Services
             var record = new TestRecord
             {
                 Column1 = "Column1",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
                 IndexId = Guid.NewGuid().ToString(),
                 IndexColumn1 = "IndexColumn1"
             };
@@ -51,12 +59,28 @@ namespace Nagiyu.Common.Service.Tests.Services
             var record1 = new TestRecord
             {
                 Column1 = "Column3",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
                 IndexId = Guid.NewGuid().ToString(),
                 IndexColumn1 = "IndexColumn3"
             };
             var record2 = new TestRecord
             {
                 Column1 = "Column3",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
                 IndexId = Guid.NewGuid().ToString(),
                 IndexColumn1 = "IndexColumn4"
             };
@@ -95,12 +119,28 @@ namespace Nagiyu.Common.Service.Tests.Services
             var record1 = new TestRecord
             {
                 Column1 = "Column1",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
                 IndexId = Guid.NewGuid().ToString(),
                 IndexColumn1 = "IndexColumn1"
             };
             var record2 = new TestRecord
             {
                 Column1 = "Column2",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
                 IndexId = Guid.NewGuid().ToString(),
                 IndexColumn1 = "IndexColumn2"
             };
@@ -128,6 +168,14 @@ namespace Nagiyu.Common.Service.Tests.Services
             var record = new TestRecord
             {
                 Column1 = "Column1",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
                 IndexId = Guid.NewGuid().ToString(),
                 IndexColumn1 = "IndexColumn1"
             };
@@ -145,6 +193,14 @@ namespace Nagiyu.Common.Service.Tests.Services
             var record = new TestRecord
             {
                 Column1 = "Column1",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
                 IndexId = Guid.NewGuid().ToString(),
                 IndexColumn1 = "IndexColumn1"
             };
@@ -165,9 +221,17 @@ namespace Nagiyu.Common.Service.Tests.Services
         [TestMethod]
         public async Task UpdateExtendedRecordTest()
         {
-            var record = new ExtendedTestRecord
+            var record = new TestRecord
             {
                 Column1 = "Column1",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
                 IndexId = Guid.NewGuid().ToString(),
                 IndexColumn1 = "IndexColumn1"
             };
@@ -180,12 +244,11 @@ namespace Nagiyu.Common.Service.Tests.Services
 
             await service.UpdateRecord(record);
 
-            var result1 = await service.GetRecord<ExtendedTestRecord>(id);
+            var result1 = await service.GetRecord<TestRecord>(id);
 
             Assert.AreEqual(record.Column1, result1.Column1);
-            Assert.AreEqual(record.Column2, result1.Column2);
 
-            record.Column2 = "UpdatedColumn2";
+            record.Column1 = "UpdatedColumn1";
 
             await Task.Delay(1000);
 
@@ -194,12 +257,22 @@ namespace Nagiyu.Common.Service.Tests.Services
             var result2 = await service.GetRecord<ExtendedTestRecord>(id);
 
             Assert.AreEqual(record.Column1, result2.Column1);
-            Assert.AreEqual(record.Column2, result2.Column2);
 
             var newRecord = new ExtendedTestRecord
             {
                 Id = id.ToString(),
-                Column2 = "NewColumn2"
+                Column1 = record.Column1,
+                Column2 = "NewColumn2",
+                StringColumns = record.StringColumns,
+                IntColumn = record.IntColumn,
+                IntColumns = record.IntColumns,
+                LongColumn = record.LongColumn,
+                LongColumns = record.LongColumns,
+                DoubleColumn = record.DoubleColumn,
+                DoubleColumns = record.DoubleColumns,
+                BoolColumn = record.BoolColumn,
+                IndexId = record.IndexId,
+                IndexColumn1 = record.IndexColumn1
             };
 
             await Task.Delay(1000);
@@ -208,8 +281,23 @@ namespace Nagiyu.Common.Service.Tests.Services
 
             var result3 = await service.GetRecord<ExtendedTestRecord>(id);
 
-            Assert.AreEqual(record.Column1, result3.Column1);
+            Assert.AreEqual(newRecord.Column1, result3.Column1);
             Assert.AreEqual(newRecord.Column2, result3.Column2);
+
+            record.Column1 = "NewColumn1";
+
+            await Task.Delay(1000);
+
+            await service.UpdateRecord(record);
+
+            var result4 = await service.GetRecord<TestRecord>(id);
+
+            Assert.AreEqual(record.Column1, result4.Column1);
+
+            var result5 = await service.GetRecord<ExtendedTestRecord>(id);
+
+            Assert.AreEqual(record.Column1, result5.Column1);
+            Assert.AreEqual(newRecord.Column2, result5.Column2);
         }
 
         [TestMethod]
@@ -218,6 +306,14 @@ namespace Nagiyu.Common.Service.Tests.Services
             var record = new TestRecord
             {
                 Column1 = "Column1",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
                 IndexId = Guid.NewGuid().ToString(),
                 IndexColumn1 = "IndexColumn1"
             };
@@ -237,6 +333,14 @@ namespace Nagiyu.Common.Service.Tests.Services
             var record = new TestRecord
             {
                 Column1 = "Column1",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
                 IndexId = Guid.NewGuid().ToString(),
                 IndexColumn1 = "IndexColumn1"
             };
@@ -257,6 +361,30 @@ namespace Nagiyu.Common.Service.Tests.Services
         public string Column1 { get; set; }
 
         [DynamoDBProperty]
+        public List<string> StringColumns { get; set; } = new List<string>();
+
+        [DynamoDBProperty]
+        public int IntColumn { get; set; }
+
+        [DynamoDBProperty]
+        public List<int> IntColumns { get; set; } = new List<int>();
+
+        [DynamoDBProperty]
+        public long LongColumn { get; set; }
+
+        [DynamoDBProperty]
+        public List<long> LongColumns { get; set; } = new List<long>();
+
+        [DynamoDBProperty]
+        public double DoubleColumn { get; set; }
+
+        [DynamoDBProperty]
+        public List<double> DoubleColumns { get; set; } = new List<double>();
+
+        [DynamoDBProperty]
+        public bool BoolColumn { get; set; }
+
+        [DynamoDBProperty]
         public string IndexId { get; set; }
 
         [DynamoDBProperty]
@@ -268,7 +396,7 @@ namespace Nagiyu.Common.Service.Tests.Services
 
         public TestRecord(Dictionary<string, AttributeValue> keyValuePairs) : base(keyValuePairs)
         {
-            if (keyValuePairs.TryGetValue(nameof(Column1), out var column1))
+            if (keyValuePairs.TryGetValue(nameof(Column1), out var column1) && column1.S != null)
             {
                 Column1 = column1.S;
             }
@@ -277,7 +405,109 @@ namespace Nagiyu.Common.Service.Tests.Services
                 throw new KeyNotFoundException(nameof(Column1));
             }
 
-            if (keyValuePairs.TryGetValue(nameof(IndexId), out var indexId))
+            if (keyValuePairs.TryGetValue(nameof(StringColumns), out var stringColumns) && stringColumns.IsSSSet)
+            {
+                StringColumns = stringColumns.SS;
+            }
+            else
+            {
+                throw new KeyNotFoundException(nameof(StringColumns));
+            }
+
+            if (keyValuePairs.TryGetValue(nameof(IntColumn), out var intColumn) && int.TryParse(intColumn.N, out var intColumnValue))
+            {
+                IntColumn = intColumnValue;
+            }
+            else
+            {
+                throw new KeyNotFoundException(nameof(IntColumn));
+            }
+
+            if (keyValuePairs.TryGetValue(nameof(IntColumns), out var intColumns) && intColumns.IsNSSet)
+            {
+                foreach (var value in intColumns.NS)
+                {
+                    if (int.TryParse(value, out var intValue))
+                    {
+                        IntColumns.Add(intValue);
+                    }
+                    else
+                    {
+                        throw new InvalidCastException(nameof(IntColumns));
+                    }
+                }
+            }
+            else
+            {
+                throw new KeyNotFoundException(nameof(IntColumns));
+            }
+
+            if (keyValuePairs.TryGetValue(nameof(LongColumn), out var longColumn) && long.TryParse(longColumn.N, out var longColumnValue))
+            {
+                LongColumn = longColumnValue;
+            }
+            else
+            {
+                throw new KeyNotFoundException(nameof(LongColumn));
+            }
+
+            if (keyValuePairs.TryGetValue(nameof(LongColumns), out var longColumns) && intColumns.IsNSSet)
+            {
+                foreach (var value in longColumns.NS)
+                {
+                    if (long.TryParse(value, out var intValue))
+                    {
+                        LongColumns.Add(intValue);
+                    }
+                    else
+                    {
+                        throw new InvalidCastException(nameof(LongColumns));
+                    }
+                }
+            }
+            else
+            {
+                throw new KeyNotFoundException(nameof(LongColumns));
+            }
+
+            if (keyValuePairs.TryGetValue(nameof(DoubleColumn), out var doubleColumn) && double.TryParse(doubleColumn.N, out var doubleColumnValue))
+            {
+                DoubleColumn = doubleColumnValue;
+            }
+            else
+            {
+                throw new KeyNotFoundException(nameof(DoubleColumn));
+            }
+
+            if (keyValuePairs.TryGetValue(nameof(DoubleColumns), out var doubleColumns) && doubleColumns.IsNSSet)
+            {
+                foreach (var value in doubleColumns.NS)
+                {
+                    if (double.TryParse(value, out var doubleValue))
+                    {
+                        DoubleColumns.Add(doubleValue);
+                    }
+                    else
+                    {
+                        throw new InvalidCastException(nameof(DoubleColumns));
+                    }
+                }
+            }
+            else
+            {
+                throw new KeyNotFoundException(nameof(DoubleColumns));
+            }
+
+            if (keyValuePairs.TryGetValue(nameof(BoolColumn), out var boolColumn) && boolColumn.IsBOOLSet)
+            {
+                BoolColumn = boolColumn.BOOL;
+            }
+            else
+            {
+                throw new KeyNotFoundException(nameof(BoolColumn));
+            }
+
+            if (keyValuePairs.TryGetValue(nameof(IndexId), out var indexId) && indexId.S != null)
             {
                 IndexId = indexId.S;
             }
@@ -286,7 +516,7 @@ namespace Nagiyu.Common.Service.Tests.Services
                 throw new KeyNotFoundException(nameof(IndexId));
             }
 
-            if (keyValuePairs.TryGetValue(nameof(IndexColumn1), out var indexColumn1))
+            if (keyValuePairs.TryGetValue(nameof(IndexColumn1), out var indexColumn1) && indexColumn1.S != null)
             {
                 IndexColumn1 = indexColumn1.S;
             }
@@ -308,7 +538,7 @@ namespace Nagiyu.Common.Service.Tests.Services
 
         public ExtendedTestRecord(Dictionary<string, AttributeValue> keyValuePairs) : base(keyValuePairs)
         {
-            if (keyValuePairs.TryGetValue(nameof(Column2), out var column2))
+            if (keyValuePairs.TryGetValue(nameof(Column2), out var column2) && column2.S != null)
             {
                 Column2 = column2.S;
             }
