@@ -85,6 +85,56 @@ namespace Nagiyu.Common.Service.Tests.Services
         }
 
         [TestMethod]
+        public async Task UpdateExtendedRecordTest()
+        {
+            var record = new ExtendedTestRecord
+            {
+                Column1 = "Column1",
+                IndexId = Guid.NewGuid().ToString(),
+                IndexColumn1 = "IndexColumn1"
+            };
+
+            var id = await service.AddRecord(record);
+
+            record.Column1 = "UpdatedColumn1";
+
+            await Task.Delay(1000);
+
+            await service.UpdateRecord(record);
+
+            var result1 = await service.GetRecord<ExtendedTestRecord>(id);
+
+            Assert.AreEqual(record.Column1, result1.Column1);
+            Assert.AreEqual(record.Column2, result1.Column2);
+
+            record.Column2 = "UpdatedColumn2";
+
+            await Task.Delay(1000);
+
+            await service.UpdateRecord(record);
+
+            var result2 = await service.GetRecord<ExtendedTestRecord>(id);
+
+            Assert.AreEqual(record.Column1, result2.Column1);
+            Assert.AreEqual(record.Column2, result2.Column2);
+
+            var newRecord = new ExtendedTestRecord
+            {
+                Id = id.ToString(),
+                Column2 = "NewColumn2"
+            };
+
+            await Task.Delay(1000);
+
+            await service.UpdateRecord(newRecord);
+
+            var result3 = await service.GetRecord<ExtendedTestRecord>(id);
+
+            Assert.AreEqual(record.Column1, result3.Column1);
+            Assert.AreEqual(newRecord.Column2, result3.Column2);
+        }
+
+        [TestMethod]
         public async Task DeleteRecordByIdTest()
         {
             var record = new TestRecord
@@ -165,6 +215,28 @@ namespace Nagiyu.Common.Service.Tests.Services
             else
             {
                 throw new KeyNotFoundException(nameof(IndexColumn1));
+            }
+        }
+    }
+
+    internal class ExtendedTestRecord : TestRecord
+    {
+        [DynamoDBProperty]
+        public string Column2 { get; set; }
+
+        public ExtendedTestRecord() : base()
+        {
+        }
+
+        public ExtendedTestRecord(Dictionary<string, AttributeValue> keyValuePairs) : base(keyValuePairs)
+        {
+            if (keyValuePairs.TryGetValue(nameof(Column2), out var column2))
+            {
+                Column2 = column2.S;
+            }
+            else
+            {
+                Column2 = null;
             }
         }
     }
