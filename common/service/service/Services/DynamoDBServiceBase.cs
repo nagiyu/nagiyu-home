@@ -69,6 +69,32 @@ namespace Nagiyu.Common.Service.Services
         }
 
         /// <summary>
+        /// レコードを取得する
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <returns>レコード</returns>
+        public async Task<T> GetRecord<T>(Guid id) where T : RecordBase
+        {
+            var request = new GetItemRequest
+            {
+                TableName = TableName,
+                Key = new Dictionary<string, AttributeValue>
+                {
+                    {
+                        nameof(RecordBase.Id),
+                        new AttributeValue { S = id.ToString() }
+                    }
+                }
+            };
+
+            var response = await client.GetItemAsync(request);
+
+            var item = response.Item;
+
+            return (T)Activator.CreateInstance(typeof(T), item);
+        }
+
+        /// <summary>
         /// 全てのレコードを取得する
         /// </summary>
         /// <returns>レコードのリスト</returns>
@@ -112,6 +138,27 @@ namespace Nagiyu.Common.Service.Services
             record.UpdatedAt = DateTime.Now.ToString();
 
             await UpdateItem(record);
+        }
+
+        /// <summary>
+        /// レコードを削除する
+        /// </summary>
+        /// <param name="id">ID</param>
+        public async Task DeleteRecord(Guid id)
+        {
+            var request = new DeleteItemRequest
+            {
+                TableName = TableName,
+                Key = new Dictionary<string, AttributeValue>
+                {
+                    {
+                        nameof(RecordBase.Id),
+                        new AttributeValue { S = id.ToString() }
+                    }
+                }
+            };
+
+            await client.DeleteItemAsync(request);
         }
 
         /// <summary>
