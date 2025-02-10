@@ -66,6 +66,25 @@ namespace Nagiyu.Common.Service.Tests.Services
 
             Assert.IsTrue(records.Exists(r => r.Column1 == record.Column1));
         }
+
+        [TestMethod]
+        public async Task DeleteRecordTest()
+        {
+            var record = new TestRecord
+            {
+                Column1 = "Column1",
+                IndexId = Guid.NewGuid().ToString(),
+                IndexColumn1 = "IndexColumn1"
+            };
+
+            await service.AddRecord(record);
+
+            await service.DeleteRecord(record);
+
+            var records = await service.GetAllRecords<TestRecord>();
+
+            Assert.IsFalse(records.Exists(r => r.Id == record.Id));
+        }
     }
 
     internal class TestRecord : RecordBase

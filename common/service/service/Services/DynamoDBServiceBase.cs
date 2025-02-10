@@ -115,6 +115,27 @@ namespace Nagiyu.Common.Service.Services
         }
 
         /// <summary>
+        /// レコードを削除する
+        /// </summary>
+        /// <param name="record">レコード</param>
+        public async Task DeleteRecord<T>(T record) where T : RecordBase
+        {
+            var request = new DeleteItemRequest
+            {
+                TableName = TableName,
+                Key = new Dictionary<string, AttributeValue>
+                {
+                    {
+                        nameof(RecordBase.Id),
+                        new AttributeValue { S = record.Id }
+                    }
+                }
+            };
+
+            await client.DeleteItemAsync(request);
+        }
+
+        /// <summary>
         /// 指定されたレコードを更新する
         /// </summary>
         /// <param name="record">レコード</param>
