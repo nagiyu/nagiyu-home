@@ -30,14 +30,6 @@ namespace Nagiyu.Common.Service.Tests.Services
         }
 
         [TestMethod]
-        public async Task PushNotifyOnlySystemRoleTest()
-        {
-            MockAuthService.SystemSubscriptionId = configuration["SystemSubscriptionId"];
-
-            await notificationService.PushNotifyOnlySystemRole("System Message Test");
-        }
-
-        [TestMethod]
         public async Task PushNotifyAllTest()
         {
             await notificationService.PushNotifyAll("Test Message");

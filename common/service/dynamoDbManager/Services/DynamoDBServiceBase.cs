@@ -1,15 +1,17 @@
-﻿using Amazon;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Nagiyu.Common.DynamoDBManager.Services
 {
     /// <summary>
     /// DynamoDB サービスの基底クラス
     /// </summary>
+    [Obsolete]
     public class DynamoDBServiceBase
     {
         /// <summary>
