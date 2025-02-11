@@ -205,13 +205,13 @@ namespace Nagiyu.Common.Service.Tests.Services
                 IndexColumn1 = "IndexColumn1"
             };
 
-            await service.AddRecord(record);
+            var id = await service.AddRecord(record);
 
             await Task.Delay(1000);
 
             record.Column1 = "UpdatedColumn1";
 
-            await service.UpdateRecord(record);
+            await service.UpdateRecord(id, record);
 
             var records = await service.GetRecords<TestRecord>();
 
@@ -242,7 +242,7 @@ namespace Nagiyu.Common.Service.Tests.Services
 
             await Task.Delay(1000);
 
-            await service.UpdateRecord(record);
+            await service.UpdateRecord(id, record);
 
             var result1 = await service.GetRecord<TestRecord>(id);
 
@@ -252,7 +252,7 @@ namespace Nagiyu.Common.Service.Tests.Services
 
             await Task.Delay(1000);
 
-            await service.UpdateRecord(record);
+            await service.UpdateRecord(id, record);
 
             var result2 = await service.GetRecord<ExtendedTestRecord>(id);
 
@@ -277,7 +277,7 @@ namespace Nagiyu.Common.Service.Tests.Services
 
             await Task.Delay(1000);
 
-            await service.UpdateRecord(newRecord);
+            await service.UpdateRecord(id, newRecord);
 
             var result3 = await service.GetRecord<ExtendedTestRecord>(id);
 
@@ -288,7 +288,7 @@ namespace Nagiyu.Common.Service.Tests.Services
 
             await Task.Delay(1000);
 
-            await service.UpdateRecord(record);
+            await service.UpdateRecord(id, record);
 
             var result4 = await service.GetRecord<TestRecord>(id);
 

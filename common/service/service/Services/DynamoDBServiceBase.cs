@@ -155,8 +155,9 @@ namespace Nagiyu.Common.Service.Services
         /// レコードを更新する
         /// </summary>
         /// <param name="record">レコード</param>
-        public async Task UpdateRecord<T>(T record) where T : RecordBase
+        public async Task UpdateRecord<T>(Guid id, T record) where T : RecordBase
         {
+            record.Id = id.ToString();
             record.UpdatedAt = DateTime.Now.ToString();
 
             await UpdateItem(record);
@@ -251,15 +252,31 @@ namespace Nagiyu.Common.Service.Services
                         attributeValue.BOOL = (bool)value;
                         break;
                     case TypeCode.Object when value is List<string> list:
+                        if (list.Count == 0)
+                        {
+                            continue; // 空のリストはスキップ
+                        }
                         attributeValue.SS = list;
                         break;
                     case TypeCode.Object when value is List<int> list:
+                        if (list.Count == 0)
+                        {
+                            continue; // 空のリストはスキップ
+                        }
                         attributeValue.NS = list.Select(i => i.ToString()).ToList();
                         break;
                     case TypeCode.Object when value is List<long> list:
+                        if (list.Count == 0)
+                        {
+                            continue; // 空のリストはスキップ
+                        }
                         attributeValue.NS = list.Select(i => i.ToString()).ToList();
                         break;
                     case TypeCode.Object when value is List<double> list:
+                        if (list.Count == 0)
+                        {
+                            continue; // 空のリストはスキップ
+                        }
                         attributeValue.NS = list.Select(i => i.ToString()).ToList();
                         break;
                     default:

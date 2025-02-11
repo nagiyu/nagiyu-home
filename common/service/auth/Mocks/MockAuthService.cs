@@ -1,9 +1,8 @@
-﻿using Nagiyu.Common.Auth.Service.Consts;
-using Nagiyu.Common.Auth.Service.Interfaces;
-using Nagiyu.Common.Auth.Service.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Nagiyu.Common.Auth.Service.Interfaces;
+using Nagiyu.Common.Auth.Service.Models;
 
 namespace Nagiyu.Common.Auth.Service.Mocks
 {
@@ -38,7 +37,7 @@ namespace Nagiyu.Common.Auth.Service.Mocks
                 UserId = UserId,
                 UserName = "Test",
                 GoogleUserId = "GoogleUserID",
-                SystemRole = SystemRoleConsts.ADMIN,
+                SystemRole = "Admin",
                 OneSignalSubscriptionId = SystemSubscriptionId
             };
         }

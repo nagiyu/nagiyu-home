@@ -1,12 +1,14 @@
-﻿using Nagiyu.Common.Auth.Service.Models;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Nagiyu.Common.Auth.Service.Models;
 
 namespace Nagiyu.Common.Auth.Service.Interfaces
 {
     /// <summary>
     /// 認証サービスのインターフェース
     /// </summary>
+    [Obsolete]
     public interface IAuthService
     {
         /// <summary>

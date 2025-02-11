@@ -1,5 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
-using Nagiyu.Common.Auth.Service.Consts;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Nagiyu.Common.Auth.Service.Interfaces;
 using Nagiyu.Common.Auth.Service.Models;
 using Nagiyu.Common.Service.Consts;
@@ -7,11 +11,6 @@ using Nagiyu.Common.Service.Models.Notification.Requests;
 using Nagiyu.Common.Service.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Nagiyu.Common.Service.Services
 {
@@ -52,7 +51,7 @@ namespace Nagiyu.Common.Service.Services
         {
             var users = await authService.GetAllUsers<UserAuthBase>();
             var subscriptionIds = users
-                .Where(user => user.SystemRole == SystemRoleConsts.ADMIN)
+                .Where(user => user.SystemRole == "Admin")
                 .Select(user => user.OneSignalSubscriptionId)
                 .ToList();
 

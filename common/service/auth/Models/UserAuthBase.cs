@@ -1,13 +1,14 @@
-﻿using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.Model;
 
 namespace Nagiyu.Common.Auth.Service.Models
 {
     /// <summary>
     /// ユーザー認証情報の基底クラス
     /// </summary>
+    [Obsolete]
     public class UserAuthBase
     {
         /// <summary>

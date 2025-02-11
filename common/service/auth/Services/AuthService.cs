@@ -1,21 +1,22 @@
-﻿using Amazon.DynamoDBv2;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Nagiyu.Common.Auth.Service.Interfaces;
 using Nagiyu.Common.Auth.Service.Models;
 using Nagiyu.Common.DynamoDBManager.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Nagiyu.Common.Auth.Service.Services
 {
     /// <summary>
     /// 認証サービス
     /// </summary>
+    [Obsolete]
     public class AuthService : DynamoDBServiceBase, IAuthService
     {
         /// <summary>

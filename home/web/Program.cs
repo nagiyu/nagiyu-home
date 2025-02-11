@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
@@ -6,24 +7,24 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Nagiyu.Auth.Web.Controllers;
 using Nagiyu.Auth.Web.Middlewares;
-using Nagiyu.Common.Auth.Service.Interfaces;
-using Nagiyu.Common.Auth.Service.Services;
 using Nagiyu.Common.Service.Services;
+using Nagiyu.Common.Service.Services.Auth;
 using Nagiyu.Common.Web.Controllers;
 using Nagiyu.Policy.Web.Controllers;
 using Nagiyu.Splatoon3Tracker.Service.Services;
 using Nagiyu.Splatoon3Tracker.Web.Controllers;
 using Nagiyu.Splatoon3Tracker.Web.Policies;
 using Nagiyu.Tools.Web.Controllers;
-using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // サービス登録
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
-builder.Services.AddTransient<IAuthService, AuthService>();
-builder.Services.AddSingleton<AuthService>();
+builder.Services.AddSingleton<UserDynamoDBService>();
+builder.Services.AddTransient<Nagiyu.Common.Service.Interfaces.Auth.IAuthService, AuthService>();
+builder.Services.AddTransient<Nagiyu.Common.Auth.Service.Interfaces.IAuthService, Nagiyu.Common.Auth.Service.Services.AuthService>();
+builder.Services.AddSingleton<Nagiyu.Common.Auth.Service.Services.AuthService>();
 builder.Services.AddSingleton<DynamoDBAccessor>();
 builder.Services.AddSingleton<NotificationService>();
 builder.Services.AddSingleton<KillRateService>();
