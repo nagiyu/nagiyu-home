@@ -25,6 +25,17 @@ awslocal dynamodb create-table \
   --table-class STANDARD \
   --sse-specification Enabled=true,SSEType=AES256
 
+# DynamoDB テーブル「User」を作成
+awslocal dynamodb create-table \
+  --table-name User \
+  --attribute-definitions \
+    AttributeName=Id,AttributeType=S \
+  --key-schema \
+    AttributeName=Id,KeyType=HASH \
+  --billing-mode PAY_PER_REQUEST \
+  --table-class STANDARD \
+  --sse-specification Enabled=true,SSEType=AES256
+
 # DynamoDB テーブル「Auth」を作成
 awslocal dynamodb create-table \
   --table-name Auth \
