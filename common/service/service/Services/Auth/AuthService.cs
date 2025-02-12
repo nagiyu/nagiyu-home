@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Nagiyu.Common.Service.Consts;
 using Nagiyu.Common.Service.Interfaces.Auth;
 using Nagiyu.Common.Service.Models.Auth;
 using Nagiyu.Common.Service.Models.DB.Auth;
@@ -70,6 +71,23 @@ namespace Nagiyu.Common.Service.Services.Auth
             ValidateUser.ValidateUserRecord(record);
 
             return UserModelConverter.ConvertToUserBase(record);
+        }
+
+        /// <summary>
+        /// 特定のロールのユーザー情報のリストを取得する
+        /// </summary>
+        /// <param name="role">ロール</param>
+        /// <returns>ユーザー情報のリスト</returns>
+        public async Task<List<UserBase>> GetUsersByRole(SystemRoleEnums.SystemRole role)
+        {
+            var expressions = new Dictionary<string, string>
+            {
+                { nameof(UserRecord.SystemRole), role.ToString() }
+            };
+
+            var records = await dbService.GetRecords<UserRecord>(expressions: expressions);
+
+            return records.Item1.Select(UserModelConverter.ConvertToUserBase).ToList();
         }
 
         /// <summary>

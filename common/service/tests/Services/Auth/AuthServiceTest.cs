@@ -74,6 +74,22 @@ namespace Nagiyu.Common.Service.Tests.Services.Auth
         }
 
         [TestMethod]
+        public async Task GetUsersByRole()
+        {
+            var user = new UserBase
+            {
+                UserName = "UserName",
+                GoogleUserId = GenerateGoogleUserId(),
+                SystemRole = SystemRoleEnums.SystemRole.Admin
+            };
+            await authService.AddUser(user);
+
+            var result = await authService.GetUsersByRole(SystemRoleEnums.SystemRole.Admin);
+
+            Assert.IsTrue(result.Exists(u => u.UserId == user.UserId));
+        }
+
+        [TestMethod]
         public async Task AddUser()
         {
             var user = new UserBase

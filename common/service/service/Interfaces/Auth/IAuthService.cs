@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Nagiyu.Common.Service.Consts;
 using Nagiyu.Common.Service.Models.Auth;
 
 namespace Nagiyu.Common.Service.Interfaces.Auth
@@ -22,6 +24,13 @@ namespace Nagiyu.Common.Service.Interfaces.Auth
         /// <param name="googleUserId">Google ユーザー ID</param>
         /// <returns>ユーザー情報</returns>
         public Task<UserBase> GetUserByGoogleUserId(string googleUserId);
+
+        /// <summary>
+        /// 特定のロールのユーザー情報のリストを取得する
+        /// </summary>
+        /// <param name="role">ロール</param>
+        /// <returns>ユーザー情報のリスト</returns>
+        public Task<List<UserBase>> GetUsersByRole(SystemRoleEnums.SystemRole role);
 
         /// <summary>
         /// ユーザー情報を追加する
