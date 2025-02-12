@@ -16,7 +16,7 @@ jobs:
         node-version: '22'
 
     - name: Update .env
-      run: echo '${{ secrets.PRODUCTION_ENV }}' > .env
+      run: echo '${{ secrets.DEVELOP_ENV }}' > .env
 
     - name: Install dependencies
       run: npm install
@@ -25,7 +25,7 @@ jobs:
       run: npm run build
 
     - name: Upload build artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: dist
         path: home/web/wwwroot/js/dist
@@ -42,7 +42,7 @@ jobs:
       run: dotnet publish --configuration Release home/web/Nagiyu.Web.csproj
 
     - name: Upload build artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Nagiyu
         path: home/web/bin/Release/net8.0/publish
