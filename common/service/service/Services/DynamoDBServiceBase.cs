@@ -235,25 +235,31 @@ namespace Nagiyu.Common.Service.Services
                     continue;
                 }
 
-                // プロパティの値を AttributeValueUpdate に変換
-                var attributeValue = new AttributeValue();
-
+                // プロパティの値を AttributeValueUpdate に変換して properties に追加
                 switch (Type.GetTypeCode(value.GetType()))
                 {
                     case TypeCode.String:
-                        attributeValue.S = value.ToString();
+                        properties.Add(property.Name, new AttributeValueUpdate
+                        {
+                            Action = AttributeAction.PUT,
+                            Value = new AttributeValue { S = value.ToString() }
+                        });
                         break;
                     case TypeCode.Int32:
-                        attributeValue.N = value.ToString();
-                        break;
                     case TypeCode.Int64:
-                        attributeValue.N = value.ToString();
-                        break;
                     case TypeCode.Double:
-                        attributeValue.N = value.ToString();
+                        properties.Add(property.Name, new AttributeValueUpdate
+                        {
+                            Action = AttributeAction.PUT,
+                            Value = new AttributeValue { N = value.ToString() }
+                        });
                         break;
                     case TypeCode.Boolean:
-                        attributeValue.BOOL = (bool)value;
+                        properties.Add(property.Name, new AttributeValueUpdate
+                        {
+                            Action = AttributeAction.PUT,
+                            Value = new AttributeValue { BOOL = (bool)value }
+                        });
                         break;
                     case TypeCode.Object when value is List<string> list:
                         if (list.Count == 0)
@@ -264,7 +270,11 @@ namespace Nagiyu.Common.Service.Services
                             });
                             continue; // 空のリストは削除
                         }
-                        attributeValue.SS = list;
+                        properties.Add(property.Name, new AttributeValueUpdate
+                        {
+                            Action = AttributeAction.PUT,
+                            Value = new AttributeValue { SS = list }
+                        });
                         break;
                     case TypeCode.Object when value is List<int> list:
                         if (list.Count == 0)
@@ -275,7 +285,11 @@ namespace Nagiyu.Common.Service.Services
                             });
                             continue; // 空のリストは削除
                         }
-                        attributeValue.NS = list.Select(i => i.ToString()).ToList();
+                        properties.Add(property.Name, new AttributeValueUpdate
+                        {
+                            Action = AttributeAction.PUT,
+                            Value = new AttributeValue { NS = list.Select(i => i.ToString()).ToList() }
+                        });
                         break;
                     case TypeCode.Object when value is List<long> list:
                         if (list.Count == 0)
@@ -286,7 +300,11 @@ namespace Nagiyu.Common.Service.Services
                             });
                             continue; // 空のリストは削除
                         }
-                        attributeValue.NS = list.Select(i => i.ToString()).ToList();
+                        properties.Add(property.Name, new AttributeValueUpdate
+                        {
+                            Action = AttributeAction.PUT,
+                            Value = new AttributeValue { NS = list.Select(i => i.ToString()).ToList() }
+                        });
                         break;
                     case TypeCode.Object when value is List<double> list:
                         if (list.Count == 0)
@@ -297,18 +315,16 @@ namespace Nagiyu.Common.Service.Services
                             });
                             continue; // 空のリストは削除
                         }
-                        attributeValue.NS = list.Select(i => i.ToString()).ToList();
+                        properties.Add(property.Name, new AttributeValueUpdate
+                        {
+                            Action = AttributeAction.PUT,
+                            Value = new AttributeValue { NS = list.Select(i => i.ToString()).ToList() }
+                        });
                         break;
                     default:
                         System.Diagnostics.Trace.WriteLine($"Unsupported type: {value.GetType()}");
                         continue; // サポートされていない型はスキップ
                 }
-
-                properties.Add(property.Name, new AttributeValueUpdate
-                {
-                    Action = AttributeAction.PUT,
-                    Value = attributeValue
-                });
             }
 
             var updateRequest = new UpdateItemRequest
