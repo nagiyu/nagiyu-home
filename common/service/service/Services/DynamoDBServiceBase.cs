@@ -225,9 +225,13 @@ namespace Nagiyu.Common.Service.Services
                 // プロパティの値を取得
                 var value = property.GetValue(record);
 
-                // プロパティの値が null の場合はスキップ
+                // プロパティの値が null の場合は削除
                 if (value == null)
                 {
+                    properties.Add(property.Name, new AttributeValueUpdate
+                    {
+                        Action = AttributeAction.DELETE
+                    });
                     continue;
                 }
 
@@ -254,28 +258,44 @@ namespace Nagiyu.Common.Service.Services
                     case TypeCode.Object when value is List<string> list:
                         if (list.Count == 0)
                         {
-                            continue; // 空のリストはスキップ
+                            properties.Add(property.Name, new AttributeValueUpdate
+                            {
+                                Action = AttributeAction.DELETE
+                            });
+                            continue; // 空のリストは削除
                         }
                         attributeValue.SS = list;
                         break;
                     case TypeCode.Object when value is List<int> list:
                         if (list.Count == 0)
                         {
-                            continue; // 空のリストはスキップ
+                            properties.Add(property.Name, new AttributeValueUpdate
+                            {
+                                Action = AttributeAction.DELETE
+                            });
+                            continue; // 空のリストは削除
                         }
                         attributeValue.NS = list.Select(i => i.ToString()).ToList();
                         break;
                     case TypeCode.Object when value is List<long> list:
                         if (list.Count == 0)
                         {
-                            continue; // 空のリストはスキップ
+                            properties.Add(property.Name, new AttributeValueUpdate
+                            {
+                                Action = AttributeAction.DELETE
+                            });
+                            continue; // 空のリストは削除
                         }
                         attributeValue.NS = list.Select(i => i.ToString()).ToList();
                         break;
                     case TypeCode.Object when value is List<double> list:
                         if (list.Count == 0)
                         {
-                            continue; // 空のリストはスキップ
+                            properties.Add(property.Name, new AttributeValueUpdate
+                            {
+                                Action = AttributeAction.DELETE
+                            });
+                            continue; // 空のリストは削除
                         }
                         attributeValue.NS = list.Select(i => i.ToString()).ToList();
                         break;

@@ -353,6 +353,222 @@ namespace Nagiyu.Common.Service.Tests.Services
 
             Assert.IsFalse(records.Item1.Exists(r => r.Id == id.ToString()));
         }
+
+        [TestMethod]
+        public async Task AddRecordTest_EmptyStringColumns_ShouldDeleteAttribute()
+        {
+            var record = new TestRecord
+            {
+                Column1 = "Column1",
+                StringColumns = new List<string>(),
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
+                IndexId = Guid.NewGuid().ToString(),
+                IndexColumn1 = "IndexColumn1"
+            };
+
+            await service.AddRecord(record);
+
+            var records = await service.GetRecords<TestRecord>();
+
+            Assert.IsFalse(records.Item1.Exists(r => r.StringColumns.Count > 0));
+        }
+
+        [TestMethod]
+        public async Task AddRecordTest_EmptyIntColumns_ShouldDeleteAttribute()
+        {
+            var record = new TestRecord
+            {
+                Column1 = "Column1",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int>(),
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
+                IndexId = Guid.NewGuid().ToString(),
+                IndexColumn1 = "IndexColumn1"
+            };
+
+            await service.AddRecord(record);
+
+            var records = await service.GetRecords<TestRecord>();
+
+            Assert.IsFalse(records.Item1.Exists(r => r.IntColumns.Count > 0));
+        }
+
+        [TestMethod]
+        public async Task AddRecordTest_EmptyLongColumns_ShouldDeleteAttribute()
+        {
+            var record = new TestRecord
+            {
+                Column1 = "Column1",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long>(),
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
+                IndexId = Guid.NewGuid().ToString(),
+                IndexColumn1 = "IndexColumn1"
+            };
+
+            await service.AddRecord(record);
+
+            var records = await service.GetRecords<TestRecord>();
+
+            Assert.IsFalse(records.Item1.Exists(r => r.LongColumns.Count > 0));
+        }
+
+        [TestMethod]
+        public async Task AddRecordTest_EmptyDoubleColumns_ShouldDeleteAttribute()
+        {
+            var record = new TestRecord
+            {
+                Column1 = "Column1",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double>(),
+                BoolColumn = true,
+                IndexId = Guid.NewGuid().ToString(),
+                IndexColumn1 = "IndexColumn1"
+            };
+
+            await service.AddRecord(record);
+
+            var records = await service.GetRecords<TestRecord>();
+
+            Assert.IsFalse(records.Item1.Exists(r => r.DoubleColumns.Count > 0));
+        }
+
+        [TestMethod]
+        public async Task UpdateRecordTest_EmptyStringColumns_ShouldDeleteAttribute()
+        {
+            var record = new TestRecord
+            {
+                Column1 = "Column1",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
+                IndexId = Guid.NewGuid().ToString(),
+                IndexColumn1 = "IndexColumn1"
+            };
+
+            var id = await service.AddRecord(record);
+
+            record.StringColumns = new List<string>();
+
+            await service.UpdateRecord(id, record);
+
+            var result = await service.GetRecord<TestRecord>(id);
+
+            Assert.AreEqual(0, result.StringColumns.Count);
+        }
+
+        [TestMethod]
+        public async Task UpdateRecordTest_EmptyIntColumns_ShouldDeleteAttribute()
+        {
+            var record = new TestRecord
+            {
+                Column1 = "Column1",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
+                IndexId = Guid.NewGuid().ToString(),
+                IndexColumn1 = "IndexColumn1"
+            };
+
+            var id = await service.AddRecord(record);
+
+            record.IntColumns = new List<int>();
+
+            await service.UpdateRecord(id, record);
+
+            var result = await service.GetRecord<TestRecord>(id);
+
+            Assert.AreEqual(0, result.IntColumns.Count);
+        }
+
+        [TestMethod]
+        public async Task UpdateRecordTest_EmptyLongColumns_ShouldDeleteAttribute()
+        {
+            var record = new TestRecord
+            {
+                Column1 = "Column1",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
+                IndexId = Guid.NewGuid().ToString(),
+                IndexColumn1 = "IndexColumn1"
+            };
+
+            var id = await service.AddRecord(record);
+
+            record.LongColumns = new List<long>();
+
+            await service.UpdateRecord(id, record);
+
+            var result = await service.GetRecord<TestRecord>(id);
+
+            Assert.AreEqual(0, result.LongColumns.Count);
+        }
+
+        [TestMethod]
+        public async Task UpdateRecordTest_EmptyDoubleColumns_ShouldDeleteAttribute()
+        {
+            var record = new TestRecord
+            {
+                Column1 = "Column1",
+                StringColumns = new List<string> { "StringColumn1", "StringColumn2" },
+                IntColumn = 1,
+                IntColumns = new List<int> { 1, 2 },
+                LongColumn = 1000000000000,
+                LongColumns = new List<long> { 1000000000000, 2000000000000 },
+                DoubleColumn = 1.1,
+                DoubleColumns = new List<double> { 1.1, 2.2 },
+                BoolColumn = true,
+                IndexId = Guid.NewGuid().ToString(),
+                IndexColumn1 = "IndexColumn1"
+            };
+
+            var id = await service.AddRecord(record);
+
+            record.DoubleColumns = new List<double>();
+
+            await service.UpdateRecord(id, record);
+
+            var result = await service.GetRecord<TestRecord>(id);
+
+            Assert.AreEqual(0, result.DoubleColumns.Count);
+        }
     }
 
     internal class TestRecord : RecordBase
