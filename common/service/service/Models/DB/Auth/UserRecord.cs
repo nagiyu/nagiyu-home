@@ -7,7 +7,7 @@ namespace Nagiyu.Common.Service.Models.DB.Auth
     /// <summary>
     /// ユーザー情報のレコード
     /// </summary>
-    internal class UserRecord : RecordBase
+    public class UserRecord : RecordBase
     {
         /// <summary>
         /// ユーザー ID

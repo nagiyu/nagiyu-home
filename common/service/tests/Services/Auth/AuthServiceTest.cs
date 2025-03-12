@@ -6,6 +6,7 @@ using Nagiyu.Common.Service.Consts;
 using Nagiyu.Common.Service.Interfaces.Auth;
 using Nagiyu.Common.Service.Models.Auth;
 using Nagiyu.Common.Service.Services.Auth;
+using Nagiyu.Common.Service.Tests.Utilities;
 
 namespace Nagiyu.Common.Service.Tests.Services.Auth
 {
@@ -33,7 +34,7 @@ namespace Nagiyu.Common.Service.Tests.Services.Auth
             var user = new UserBase
             {
                 UserName = "UserName",
-                GoogleUserId = GenerateGoogleUserId(),
+                GoogleUserId = UserTestUtil.GenerateGoogleUserId(),
                 SystemRole = SystemRoleEnums.SystemRole.None
             };
             var userId = await authService.AddUser(user);
@@ -52,7 +53,7 @@ namespace Nagiyu.Common.Service.Tests.Services.Auth
         [TestMethod]
         public async Task GetUserByGoogleUserId()
         {
-            var googleUserId = GenerateGoogleUserId();
+            var googleUserId = UserTestUtil.GenerateGoogleUserId();
 
             var user = new UserBase
             {
@@ -70,7 +71,7 @@ namespace Nagiyu.Common.Service.Tests.Services.Auth
         [TestMethod]
         public async Task GetUserByGoogleUserId_NotFoundGoogleUserId()
         {
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await authService.GetUserByGoogleUserId(GenerateGoogleUserId()));
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await authService.GetUserByGoogleUserId(UserTestUtil.GenerateGoogleUserId()));
         }
 
         [TestMethod]
@@ -79,7 +80,7 @@ namespace Nagiyu.Common.Service.Tests.Services.Auth
             var user = new UserBase
             {
                 UserName = "UserName",
-                GoogleUserId = GenerateGoogleUserId(),
+                GoogleUserId = UserTestUtil.GenerateGoogleUserId(),
                 SystemRole = SystemRoleEnums.SystemRole.Admin
             };
             await authService.AddUser(user);
@@ -95,7 +96,7 @@ namespace Nagiyu.Common.Service.Tests.Services.Auth
             var user = new UserBase
             {
                 UserName = "UserName",
-                GoogleUserId = GenerateGoogleUserId(),
+                GoogleUserId = UserTestUtil.GenerateGoogleUserId(),
                 SystemRole = SystemRoleEnums.SystemRole.None
             };
             var userId = await authService.AddUser(user);
@@ -117,7 +118,7 @@ namespace Nagiyu.Common.Service.Tests.Services.Auth
             var user = new UserBase
             {
                 UserName = string.Empty,
-                GoogleUserId = GenerateGoogleUserId(),
+                GoogleUserId = UserTestUtil.GenerateGoogleUserId(),
                 SystemRole = SystemRoleEnums.SystemRole.None
             };
             var userId = await authService.AddUser(user);
@@ -132,7 +133,7 @@ namespace Nagiyu.Common.Service.Tests.Services.Auth
         {
             var user = new UserBase
             {
-                GoogleUserId = GenerateGoogleUserId(),
+                GoogleUserId = UserTestUtil.GenerateGoogleUserId(),
                 SystemRole = SystemRoleEnums.SystemRole.None
             };
 
@@ -157,7 +158,7 @@ namespace Nagiyu.Common.Service.Tests.Services.Auth
             var user = new UserBase
             {
                 UserName = "UserName",
-                GoogleUserId = GenerateGoogleUserId()
+                GoogleUserId = UserTestUtil.GenerateGoogleUserId()
             };
             var userId = await authService.AddUser(user);
 
@@ -174,7 +175,7 @@ namespace Nagiyu.Common.Service.Tests.Services.Auth
             var user = new UserBase
             {
                 UserName = "UserName",
-                GoogleUserId = GenerateGoogleUserId(),
+                GoogleUserId = UserTestUtil.GenerateGoogleUserId(),
                 SystemRole = SystemRoleEnums.SystemRole.None
             };
             var userId = await authService.AddUser(user);
@@ -200,7 +201,7 @@ namespace Nagiyu.Common.Service.Tests.Services.Auth
             var user = new UserBase
             {
                 UserName = string.Empty,
-                GoogleUserId = GenerateGoogleUserId(),
+                GoogleUserId = UserTestUtil.GenerateGoogleUserId(),
                 SystemRole = SystemRoleEnums.SystemRole.None
             };
             var userId = await authService.AddUser(user);
@@ -220,7 +221,7 @@ namespace Nagiyu.Common.Service.Tests.Services.Auth
             var user = new UserBase
             {
                 UserName = "UserName",
-                GoogleUserId = GenerateGoogleUserId(),
+                GoogleUserId = UserTestUtil.GenerateGoogleUserId(),
                 SystemRole = SystemRoleEnums.SystemRole.None
             };
             var userId = await authService.AddUser(user);
@@ -236,7 +237,7 @@ namespace Nagiyu.Common.Service.Tests.Services.Auth
             var user = new UserBase
             {
                 UserName = "UserName",
-                GoogleUserId = GenerateGoogleUserId(),
+                GoogleUserId = UserTestUtil.GenerateGoogleUserId(),
                 SystemRole = SystemRoleEnums.SystemRole.None
             };
             var userId = await authService.AddUser(user);
@@ -252,7 +253,7 @@ namespace Nagiyu.Common.Service.Tests.Services.Auth
             var user = new UserBase
             {
                 UserName = "UserName",
-                GoogleUserId = GenerateGoogleUserId(),
+                GoogleUserId = UserTestUtil.GenerateGoogleUserId(),
                 SystemRole = SystemRoleEnums.SystemRole.None
             };
             var userId = await authService.AddUser(user);
@@ -268,14 +269,6 @@ namespace Nagiyu.Common.Service.Tests.Services.Auth
             Assert.AreEqual(expected.UserName, actual.UserName);
             Assert.AreEqual(expected.GoogleUserId, actual.GoogleUserId);
             Assert.AreEqual(expected.SystemRole, actual.SystemRole);
-        }
-
-        private static string GenerateGoogleUserId()
-        {
-            var random = new Random();
-            var buffer = new byte[8];
-            random.NextBytes(buffer);
-            return BitConverter.ToInt64(buffer, 0).ToString();
         }
     }
 }
