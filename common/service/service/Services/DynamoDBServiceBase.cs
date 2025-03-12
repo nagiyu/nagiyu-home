@@ -82,6 +82,11 @@ namespace Nagiyu.Common.Service.Services
 
             var item = response.Item;
 
+            if (item.Count == 0)
+            {
+                return null;
+            }
+
             return (T)Activator.CreateInstance(typeof(T), item);
         }
 

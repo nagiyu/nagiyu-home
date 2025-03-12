@@ -16,9 +16,9 @@ namespace Nagiyu.Common.Service.Utilities
             return GetValueOrThrow(keyValuePairs, key, v => v.SS, throwIfNotFound);
         }
 
-        public static int GetIntValue(Dictionary<string, AttributeValue> keyValuePairs, string key, bool throwIfNotFound = true)
+        public static int? GetIntValue(Dictionary<string, AttributeValue> keyValuePairs, string key, bool throwIfNotFound = true)
         {
-            return GetValueOrThrow(keyValuePairs, key, v => int.Parse(v.N), throwIfNotFound);
+            return GetValueOrThrow<int?>(keyValuePairs, key, v => int.Parse(v.N), throwIfNotFound);
         }
 
         public static List<int> GetIntListValue(Dictionary<string, AttributeValue> keyValuePairs, string key, bool throwIfNotFound = true)
@@ -26,9 +26,9 @@ namespace Nagiyu.Common.Service.Utilities
             return GetValueOrThrow(keyValuePairs, key, v => v.NS.ConvertAll(int.Parse), throwIfNotFound);
         }
 
-        public static long GetLongValue(Dictionary<string, AttributeValue> keyValuePairs, string key, bool throwIfNotFound = true)
+        public static long? GetLongValue(Dictionary<string, AttributeValue> keyValuePairs, string key, bool throwIfNotFound = true)
         {
-            return GetValueOrThrow(keyValuePairs, key, v => long.Parse(v.N), throwIfNotFound);
+            return GetValueOrThrow<long?>(keyValuePairs, key, v => long.Parse(v.N), throwIfNotFound);
         }
 
         public static List<long> GetLongListValue(Dictionary<string, AttributeValue> keyValuePairs, string key, bool throwIfNotFound = true)
@@ -36,9 +36,9 @@ namespace Nagiyu.Common.Service.Utilities
             return GetValueOrThrow(keyValuePairs, key, v => v.NS.ConvertAll(long.Parse), throwIfNotFound);
         }
 
-        public static double GetDoubleValue(Dictionary<string, AttributeValue> keyValuePairs, string key, bool throwIfNotFound = true)
+        public static double? GetDoubleValue(Dictionary<string, AttributeValue> keyValuePairs, string key, bool throwIfNotFound = true)
         {
-            return GetValueOrThrow(keyValuePairs, key, v => double.Parse(v.N), throwIfNotFound);
+            return GetValueOrThrow<double?>(keyValuePairs, key, v => double.Parse(v.N), throwIfNotFound);
         }
 
         public static List<double> GetDoubleListValue(Dictionary<string, AttributeValue> keyValuePairs, string key, bool throwIfNotFound = true)
@@ -46,9 +46,9 @@ namespace Nagiyu.Common.Service.Utilities
             return GetValueOrThrow(keyValuePairs, key, v => v.NS.ConvertAll(double.Parse), throwIfNotFound);
         }
 
-        public static bool GetBoolValue(Dictionary<string, AttributeValue> keyValuePairs, string key, bool throwIfNotFound = true)
+        public static bool? GetBoolValue(Dictionary<string, AttributeValue> keyValuePairs, string key, bool throwIfNotFound = true)
         {
-            return GetValueOrThrow(keyValuePairs, key, v => v.BOOL, throwIfNotFound);
+            return GetValueOrThrow<bool?>(keyValuePairs, key, v => v.BOOL, throwIfNotFound);
         }
 
         private static T GetValueOrThrow<T>(Dictionary<string, AttributeValue> keyValuePairs, string key, Func<AttributeValue, T> selector, bool throwIfNotFound)
