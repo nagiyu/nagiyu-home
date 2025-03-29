@@ -94,10 +94,9 @@ namespace Nagiyu.Common.Service.Services
         /// レコードを取得する
         /// </summary>
         /// <param name="expressions">条件</param>
-        /// <param name="limit">取得件数</param>
         /// <param name="startId">開始ID</param>
         /// <returns>レコードのリスト, 次のID</returns>
-        public async Task<(List<T>, Guid?)> GetRecords<T>(Dictionary<string, string> expressions = null, int limit = 0, Guid? startId = null) where T : RecordBase
+        public async Task<(List<T>, Guid?)> GetRecords<T>(Dictionary<string, string> expressions = null, Guid? startId = null) where T : RecordBase
         {
             var request = new ScanRequest
             {
@@ -108,11 +107,6 @@ namespace Nagiyu.Common.Service.Services
             {
                 request.FilterExpression = string.Join(" AND ", expressions.Keys.Select(key => $"{key} = :{key}"));
                 request.ExpressionAttributeValues = expressions.ToDictionary(kv => $":{kv.Key}", kv => new AttributeValue { S = kv.Value });
-            }
-
-            if (limit > 0)
-            {
-                request.Limit = limit;
             }
 
             if (startId != null)
@@ -137,6 +131,67 @@ namespace Nagiyu.Common.Service.Services
 
             return (items.Select(item => (T)Activator.CreateInstance(typeof(T), item)).ToList(), nextId);
         }
+
+        ///// <summary>
+        ///// レコードを取得する
+        ///// </summary>
+        ///// <param name="expressions">条件</param>
+        ///// <param name="limit">取得件数</param>
+        ///// <param name="startId">開始ID</param>
+        ///// <returns>レコードのリスト, 次のID</returns>
+        //public async Task<(List<T>, Guid?)> GetRecords<T>(Dictionary<string, string> expressions = null, int limit, Guid? startId = null) where T : RecordBase
+        //{
+        //    var request = new ScanRequest
+        //    {
+        //        TableName = TableName
+        //    };
+
+        //    if (expressions != null)
+        //    {
+        //        request.FilterExpression = string.Join(" AND ", expressions.Keys.Select(key => $"{key} = :{key}"));
+        //        request.ExpressionAttributeValues = expressions.ToDictionary(kv => $":{kv.Key}", kv => new AttributeValue { S = kv.Value });
+        //    }
+
+        //    request.Limit = limit;
+
+        //    if (startId != null)
+        //    {
+        //        request.ExclusiveStartKey = new Dictionary<string, AttributeValue>
+        //        {
+        //            {
+        //                nameof(RecordBase.Id),
+        //                new AttributeValue { S = startId.ToString() }
+        //            }
+        //        };
+        //    }
+
+        //    var items = new List<Dictionary<string, AttributeValue>>();
+        //    var lastEvaluatedKey = startId != null ? request.ExclusiveStartKey : null;
+
+        //    while (lastEvaluatedKey != null && (limit == 0 || items.Count < limit))
+        //    {
+        //        var response = await client.ScanAsync(request);
+        //        items.AddRange(response.Items);
+        //        lastEvaluatedKey = response.LastEvaluatedKey;
+        //        request.ExclusiveStartKey = lastEvaluatedKey;
+        //    };
+
+        //    if (limit > 0 && items.Count > limit)
+        //    {
+        //        items = items.Take(limit).ToList();
+        //        lastEvaluatedKey = items.Last().ContainsKey(nameof(RecordBase.Id))
+        //            ? new Dictionary<string, AttributeValue> { { nameof(RecordBase.Id), items.Last()[nameof(RecordBase.Id)] } }
+        //            : null;
+        //    }
+
+        //    Guid? nextId = null;
+        //    if (lastEvaluatedKey != null && Guid.TryParse(lastEvaluatedKey.FirstOrDefault().Value.S, out var id))
+        //    {
+        //        nextId = id;
+        //    }
+
+        //    return (items.Select(item => (T)Activator.CreateInstance(typeof(T), item)).ToList(), nextId);
+        //}
 
         /// <summary>
         /// レコードを追加する

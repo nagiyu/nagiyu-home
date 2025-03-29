@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
@@ -129,8 +130,123 @@ namespace Nagiyu.Common.Service.Tests.Services
             Assert.IsNull(retrievedRecord);
         }
 
+        [TestMethod]
+        public async Task GetRecordsTest()
+        {
+            var record1 = new TestRecord
+            {
+                NonNullableString = "Test1",
+                NonNullableStringList = new List<string> { "Test1", "Test2" },
+                NonNullableInt = 1,
+                NonNullableIntList = new List<int> { 1, 2 },
+                NonNullableLong = 1L,
+                NonNullableLongList = new List<long> { 1L, 2L },
+                NonNullableDouble = 1.0,
+                NonNullableDoubleList = new List<double> { 1.0, 2.0 },
+                NonNullableBool = true,
+                NullableString = "NullableTest1",
+                NullableStringList = new List<string> { "NullableTest1", "NullableTest2" },
+                NullableInt = 2,
+                NullableIntList = new List<int> { 3, 4 },
+                NullableLong = 2L,
+                NullableLongList = new List<long> { 3L, 4L },
+                NullableDouble = 2.0,
+                NullableDoubleList = new List<double> { 3.0, 4.0 },
+                NullableBool = false
+            };
+
+            var record2 = new TestRecord
+            {
+                NonNullableString = "Test2",
+                NonNullableStringList = new List<string> { "Test3", "Test4" },
+                NonNullableInt = 3,
+                NonNullableIntList = new List<int> { 5, 6 },
+                NonNullableLong = 3L,
+                NonNullableLongList = new List<long> { 5L, 6L },
+                NonNullableDouble = 3.0,
+                NonNullableDoubleList = new List<double> { 5.0, 6.0 },
+                NonNullableBool = true,
+                NullableString = "NullableTest2",
+                NullableStringList = new List<string> { "NullableTest3", "NullableTest4" },
+                NullableInt = 4,
+                NullableIntList = new List<int> { 7, 8 },
+                NullableLong = 4L,
+                NullableLongList = new List<long> { 7L, 8L },
+                NullableDouble = 4.0,
+                NullableDoubleList = new List<double> { 7.0, 8.0 },
+                NullableBool = false
+            };
+
+            var id1 = await service.AddRecord(record1);
+            var id2 = await service.AddRecord(record2);
+
+            var (records, nextId) = await service.GetRecords<TestRecord>();
+
+            Assert.IsNotNull(records);
+            Assert.IsTrue(records.Any(r => r.Id == id1.ToString()));
+            Assert.IsTrue(records.Any(r => r.Id == id2.ToString()));
+        }
+
+        [TestMethod]
+        public async Task GetRecordsWithExpressionsTest()
+        {
+            var record1 = new TestRecord
+            {
+                NonNullableString = "Test1",
+                NonNullableStringList = new List<string> { "Test1", "Test2" },
+                NonNullableInt = 1,
+                NonNullableIntList = new List<int> { 1, 2 },
+                NonNullableLong = 1L,
+                NonNullableLongList = new List<long> { 1L, 2L },
+                NonNullableDouble = 1.0,
+                NonNullableDoubleList = new List<double> { 1.0, 2.0 },
+                NonNullableBool = true,
+                NullableString = "NullableTest1",
+                NullableStringList = new List<string> { "NullableTest1", "NullableTest2" },
+                NullableInt = 2,
+                NullableIntList = new List<int> { 3, 4 },
+                NullableLong = 2L,
+                NullableLongList = new List<long> { 3L, 4L },
+                NullableDouble = 2.0,
+                NullableDoubleList = new List<double> { 3.0, 4.0 },
+                NullableBool = false
+            };
+
+            var record2 = new TestRecord
+            {
+                NonNullableString = "Test2",
+                NonNullableStringList = new List<string> { "Test3", "Test4" },
+                NonNullableInt = 3,
+                NonNullableIntList = new List<int> { 5, 6 },
+                NonNullableLong = 3L,
+                NonNullableLongList = new List<long> { 5L, 6L },
+                NonNullableDouble = 3.0,
+                NonNullableDoubleList = new List<double> { 5.0, 6.0 },
+                NonNullableBool = true,
+                NullableString = "NullableTest2",
+                NullableStringList = new List<string> { "NullableTest3", "NullableTest4" },
+                NullableInt = 4,
+                NullableIntList = new List<int> { 7, 8 },
+                NullableLong = 4L,
+                NullableLongList = new List<long> { 7L, 8L },
+                NullableDouble = 4.0,
+                NullableDoubleList = new List<double> { 7.0, 8.0 },
+                NullableBool = false
+            };
+
+            var id1 = await service.AddRecord(record1);
+            var id2 = await service.AddRecord(record2);
+
+            var expressions = new Dictionary<string, string> { { "NonNullableString", "Test2" } };
+            var (records, nextId) = await service.GetRecords<TestRecord>(expressions);
+
+            Assert.IsNotNull(records);
+            Assert.IsTrue(records.Any(r => r.Id == id2.ToString()));
+            Assert.IsFalse(records.Any(r => r.Id == id1.ToString()));
+        }
+
         //[TestMethod]
-        //public async Task GetRecordsTest()
+        //public async Task GetRecordsWithLimitTest()
         //{
         //    var record1 = new TestRecord
         //    {
@@ -176,13 +292,187 @@ namespace Nagiyu.Common.Service.Tests.Services
         //        NullableBool = false
         //    };
 
-        //    await service.AddRecord(record1);
-        //    await service.AddRecord(record2);
+        //    var id1 = await service.AddRecord(record1);
+        //    var id2 = await service.AddRecord(record2);
 
-        //    var (records, nextId) = await service.GetRecords<TestRecord>();
+        //    var (records, nextId) = await service.GetRecords<TestRecord>(limit: 1);
 
         //    Assert.IsNotNull(records);
-        //    Assert.IsTrue(records.Count >= 2);
+        //    Assert.AreEqual(1, records.Count);
+        //}
+
+        [TestMethod]
+        public async Task GetRecordsWithStartIdTest()
+        {
+            var record1 = new TestRecord
+            {
+                NonNullableString = "Test1",
+                NonNullableStringList = new List<string> { "Test1", "Test2" },
+                NonNullableInt = 1,
+                NonNullableIntList = new List<int> { 1, 2 },
+                NonNullableLong = 1L,
+                NonNullableLongList = new List<long> { 1L, 2L },
+                NonNullableDouble = 1.0,
+                NonNullableDoubleList = new List<double> { 1.0, 2.0 },
+                NonNullableBool = true,
+                NullableString = "NullableTest1",
+                NullableStringList = new List<string> { "NullableTest1", "NullableTest2" },
+                NullableInt = 2,
+                NullableIntList = new List<int> { 3, 4 },
+                NullableLong = 2L,
+                NullableLongList = new List<long> { 3L, 4L },
+                NullableDouble = 2.0,
+                NullableDoubleList = new List<double> { 3.0, 4.0 },
+                NullableBool = false
+            };
+
+            var record2 = new TestRecord
+            {
+                NonNullableString = "Test2",
+                NonNullableStringList = new List<string> { "Test3", "Test4" },
+                NonNullableInt = 3,
+                NonNullableIntList = new List<int> { 5, 6 },
+                NonNullableLong = 3L,
+                NonNullableLongList = new List<long> { 5L, 6L },
+                NonNullableDouble = 3.0,
+                NonNullableDoubleList = new List<double> { 5.0, 6.0 },
+                NonNullableBool = true,
+                NullableString = "NullableTest2",
+                NullableStringList = new List<string> { "NullableTest3", "NullableTest4" },
+                NullableInt = 4,
+                NullableIntList = new List<int> { 7, 8 },
+                NullableLong = 4L,
+                NullableLongList = new List<long> { 7L, 8L },
+                NullableDouble = 4.0,
+                NullableDoubleList = new List<double> { 7.0, 8.0 },
+                NullableBool = false
+            };
+
+            var id1 = await service.AddRecord(record1);
+            var id2 = await service.AddRecord(record2);
+            var (records, nextId) = await service.GetRecords<TestRecord>(startId: id2);
+
+            Assert.IsNotNull(records);
+            Assert.IsTrue(records.Any(r => r.Id == id2.ToString()));
+            Assert.IsFalse(records.Any(r => r.Id == id1.ToString()));
+        }
+
+        //[TestMethod]
+        //public async Task GetRecordsWithExpressionsAndLimitTest()
+        //{
+        //    var record1 = new TestRecord
+        //    {
+        //        NonNullableString = "Test1",
+        //        NonNullableStringList = new List<string> { "Test1", "Test2" },
+        //        NonNullableInt = 1,
+        //        NonNullableIntList = new List<int> { 1, 2 },
+        //        NonNullableLong = 1L,
+        //        NonNullableLongList = new List<long> { 1L, 2L },
+        //        NonNullableDouble = 1.0,
+        //        NonNullableDoubleList = new List<double> { 1.0, 2.0 },
+        //        NonNullableBool = true,
+        //        NullableString = "NullableTest1",
+        //        NullableStringList = new List<string> { "NullableTest1", "NullableTest2" },
+        //        NullableInt = 2,
+        //        NullableIntList = new List<int> { 3, 4 },
+        //        NullableLong = 2L,
+        //        NullableLongList = new List<long> { 3L, 4L },
+        //        NullableDouble = 2.0,
+        //        NullableDoubleList = new List<double> { 3.0, 4.0 },
+        //        NullableBool = false
+        //    };
+
+        //    var record2 = new TestRecord
+        //    {
+        //        NonNullableString = "Test2",
+        //        NonNullableStringList = new List<string> { "Test3", "Test4" },
+        //        NonNullableInt = 3,
+        //        NonNullableIntList = new List<int> { 5, 6 },
+        //        NonNullableLong = 3L,
+        //        NonNullableLongList = new List<long> { 5L, 6L },
+        //        NonNullableDouble = 3.0,
+        //        NonNullableDoubleList = new List<double> { 5.0, 6.0 },
+        //        NonNullableBool = true,
+        //        NullableString = "NullableTest2",
+        //        NullableStringList = new List<string> { "NullableTest3", "NullableTest4" },
+        //        NullableInt = 4,
+        //        NullableIntList = new List<int> { 7, 8 },
+        //        NullableLong = 4L,
+        //        NullableLongList = new List<long> { 7L, 8L },
+        //        NullableDouble = 4.0,
+        //        NullableDoubleList = new List<double> { 7.0, 8.0 },
+        //        NullableBool = false
+        //    };
+
+        //    var id1 = await service.AddRecord(record1);
+        //    var id2 = await service.AddRecord(record2);
+
+        //    var expressions = new Dictionary<string, string> { { "NonNullableString", "Test2" } };
+        //    var (records, nextId) = await service.GetRecords<TestRecord>(expressions, 1);
+
+        //    Assert.IsNotNull(records);
+        //    Assert.AreEqual(1, records.Count);
+        //    Assert.IsTrue(records.Any(r => r.Id == id2.ToString()));
+        //    Assert.IsFalse(records.Any(r => r.Id == id1.ToString()));
+        //}
+
+        //[TestMethod]
+        //public async Task GetRecordsWithExpressionsLimitAndStartIdTest()
+        //{
+        //    var record1 = new TestRecord
+        //    {
+        //        NonNullableString = "Test1",
+        //        NonNullableStringList = new List<string> { "Test1", "Test2" },
+        //        NonNullableInt = 1,
+        //        NonNullableIntList = new List<int> { 1, 2 },
+        //        NonNullableLong = 1L,
+        //        NonNullableLongList = new List<long> { 1L, 2L },
+        //        NonNullableDouble = 1.0,
+        //        NonNullableDoubleList = new List<double> { 1.0, 2.0 },
+        //        NonNullableBool = true,
+        //        NullableString = "NullableTest1",
+        //        NullableStringList = new List<string> { "NullableTest1", "NullableTest2" },
+        //        NullableInt = 2,
+        //        NullableIntList = new List<int> { 3, 4 },
+        //        NullableLong = 2L,
+        //        NullableLongList = new List<long> { 3L, 4L },
+        //        NullableDouble = 2.0,
+        //        NullableDoubleList = new List<double> { 3.0, 4.0 },
+        //        NullableBool = false
+        //    };
+
+        //    var record2 = new TestRecord
+        //    {
+        //        NonNullableString = "Test2",
+        //        NonNullableStringList = new List<string> { "Test3", "Test4" },
+        //        NonNullableInt = 3,
+        //        NonNullableIntList = new List<int> { 5, 6 },
+        //        NonNullableLong = 3L,
+        //        NonNullableLongList = new List<long> { 5L, 6L },
+        //        NonNullableDouble = 3.0,
+        //        NonNullableDoubleList = new List<double> { 5.0, 6.0 },
+        //        NonNullableBool = true,
+        //        NullableString = "NullableTest2",
+        //        NullableStringList = new List<string> { "NullableTest3", "NullableTest4" },
+        //        NullableInt = 4,
+        //        NullableIntList = new List<int> { 7, 8 },
+        //        NullableLong = 4L,
+        //        NullableLongList = new List<long> { 7L, 8L },
+        //        NullableDouble = 4.0,
+        //        NullableDoubleList = new List<double> { 7.0, 8.0 },
+        //        NullableBool = false
+        //    };
+
+        //    var id1 = await service.AddRecord(record1);
+        //    var id2 = await service.AddRecord(record2);
+
+        //    var expressions = new Dictionary<string, string> { { "NonNullableString", "Test2" } };
+        //    var (records, nextId) = await service.GetRecords<TestRecord>(expressions, 1, id1);
+
+        //    Assert.IsNotNull(records);
+        //    Assert.AreEqual(1, records.Count);
+        //    Assert.IsTrue(records.Any(r => r.Id == id2.ToString()));
+        //    Assert.IsFalse(records.Any(r => r.Id == id1.ToString()));
         //}
 
         //[TestMethod]
