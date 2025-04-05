@@ -4,15 +4,19 @@
 
 ## 構成
 
+## データモデルの設計
+
 ![](./assets/DynamoDB/Container.drawio.svg)
 
-- 各 Service から直接 DynamoDB にアクセスするのではなく、DynamoDBService を経由する
+- 各 Service から直接 DynamoDB にアクセスするのではなく、DynamoDBService を経由します。これにより、データアクセスの一元管理が可能になります。
 
 - DynamoDBService は DynamoDB のテーブルごとに作成する
 
-- DynamoDBService と DynamoDB のやり取りは Item のクラスを使用し、各 Service と DynamoDBService のやり取りは Model のクラスを使用する
+- DynamoDBService と DynamoDB のやり取りは Item のクラスを使用し、各 Service と DynamoDBService のやり取りは Model のクラスを使用します。
 
 ### DynamoDB
+
+- DynamoDBの特性を活かし、複数のDBを作成するのではなく、1つのDBに異なる特徴のレコードを格納します。これにより、データの管理が容易になり、ビューを作成することで、異なるデータを効率的に表示できます。また、データの一貫性を保ちながら、柔軟なクエリが可能になります。
 
 ```mermaid
 erDiagram
@@ -48,7 +52,7 @@ erDiagram
 
             - HogeItem の Id を管理する
 
-            - DynamoDB はオートインクリメントが無いため
+            - DynamoDBはオートインクリメント機能を持たないため、`Counter`アイテムを使用してIDを管理します。これにより、各アイテムのIDを一意に生成することができ、データの整合性を保つことができます。
 
 ### Item
 
