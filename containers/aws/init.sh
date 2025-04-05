@@ -5,25 +5,47 @@ awslocal dynamodb create-table \
   --table-name Test \
   --attribute-definitions \
     AttributeName=Id,AttributeType=S \
-    AttributeName=IndexId,AttributeType=S \
+    AttributeName=ItemType,AttributeType=S \
+    AttributeName=SystemKey,AttributeType=S \
+    AttributeName=SystemValue,AttributeType=S \
   --key-schema \
     AttributeName=Id,KeyType=HASH \
   --global-secondary-indexes \
-    '[
+    '[ 
       {
-        "IndexName": "Test-index",
+        "IndexName": "Test-Item-Index",
         "KeySchema": [
-          { "AttributeName": "IndexId", "KeyType": "HASH" }
+          { "AttributeName": "Id", "KeyType": "HASH" }
+        ],
+        "Projection": {
+          "ProjectionType": "ALL",
+        }
+      },
+      {
+        "IndexName": "Test-System-Index",
+        "KeySchema": [
+          { "AttributeName": "Id", "KeyType": "HASH" }
         ],
         "Projection": {
           "ProjectionType": "INCLUDE",
-          "NonKeyAttributes": ["IndexColumn1"]
+          "NonKeyAttributes": ["ItemType", "SystemKey", "SystemValue"]
         }
       }
     ]' \
   --billing-mode PAY_PER_REQUEST \
   --table-class STANDARD \
   --sse-specification Enabled=true,SSEType=AES256
+
+# DynamoDB の Test にデータ追加
+awslocal dynamodb put-item \
+  --table-name Auth \
+  --item \
+    '{
+      "Id": {"S": "0"},
+      "ItemType": {"S": "System"},
+      "SystemKey": {"S": "Counter"},
+      "SystemValue": {"S": "1"}
+    }'
 
 # DynamoDB テーブル「Auth」を作成
 awslocal dynamodb create-table \

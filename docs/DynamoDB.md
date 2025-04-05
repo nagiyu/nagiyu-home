@@ -38,8 +38,8 @@ erDiagram
     SystemItem {
         string Id
         string ItemType
-        string Key
-        string Value
+        string SystemKey
+        string SystemValue
         string CreatedAt
         string UpdatedAt
     }
