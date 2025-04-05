@@ -18,6 +18,7 @@
             "wayou.vscode-todo-highlight",
             "vue.volar",
             "dbaeumer.vscode-eslint",
+            "bierner.markdown-mermaid",
         ]
     },
     "settings": {
