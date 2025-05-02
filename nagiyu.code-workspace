@@ -49,6 +49,9 @@
             "typescript",
             "vue"
         ],
-        "editor.formatOnSave": true
+        "editor.formatOnSave": true,
+        "[markdown]": {
+            "editor.tabSize": 2
+        }
     },
 }
