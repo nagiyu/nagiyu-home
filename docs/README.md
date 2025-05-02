@@ -91,9 +91,9 @@ graph TD;
 │   └── docker-compose.yml   # 開発環境用の Docker Compose 設定
 │
 └── /.github                # GitHub Actions 設定
-    ├── workflows           # ワークフロー設定
-    │   ├── deploy_dev.yml  # 開発環境用のデプロイワークフロー
-    │   └── deploy_prod.yml # 本番環境用のデプロイワークフロー
+    └── workflows           # ワークフロー設定
+        ├── deploy_dev.yml  # 開発環境用のデプロイワークフロー
+        └── deploy_prod.yml # 本番環境用のデプロイワークフロー
 ```
 
 ### 構成のポイント
@@ -103,3 +103,7 @@ graph TD;
 4. **Nginx 設定**: Nginx の設定ファイルを専用のフォルダにまとめ、開発環境での設定を行います。
 5. **Docker 設定**: 開発環境用の Docker 設定を配置し、AWS Lambda でのデプロイを考慮します。
 6. **GitHub Actions 設定**: 開発環境用と本番環境用のデプロイ設定を分けて管理します。
+
+## 6. ベースプロジェクト
+
+このプロジェクトは、`service1`や`service2`のControllerをまとめて受け付けるベースとなるプロジェクトです。
